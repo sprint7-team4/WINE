@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,6 +9,19 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+
+  /* colors */
+  /* etc */
+  --main: #6a42db;
+  --main-10: #f1edfc;
+  --black: #101318;
+  --white: #ffffff;
+
+  /* Grayscale */
+  --grayscale-100: #f2f4f8;
+  --grayscale-300: #cfdbea;
+  --grayscale-500: #9facbd;
+  --grayscale-800: #2d3034;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -16,6 +32,11 @@
   }
 }
 
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
@@ -24,10 +45,135 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+
+  font-family:
+    'Pretendard Variable',
+    Pretendard,
+    -apple-system,
+    BlinkMacSystemFont,
+    system-ui,
+    Roboto,
+    'Helvetica Neue',
+    'Segoe UI',
+    'Apple SD Gothic Neo',
+    'Noto Sans KR',
+    'Malgun Gothic',
+    'Apple Color Emoji',
+    'Segoe UI Emoji',
+    'Segoe UI Symbol',
+    sans-serif;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  .font-bold-32 {
+    @apply text-[32px] font-bold leading-[42px];
+  }
+
+  .font-semibold-32 {
+    @apply text-[32px] font-semibold leading-[42px];
+  }
+
+  .font-bold-24 {
+    @apply text-[24px] font-bold leading-[32px];
+  }
+
+  .font-semibold-24 {
+    @apply text-[24px] font-semibold leading-[32px];
+  }
+
+  .font-medium-24 {
+    @apply text-[24px] font-medium leading-[32px];
+  }
+
+  .font-regular-24 {
+    @apply text-[24px] font-normal leading-[32px];
+  }
+
+  .font-bold-20 {
+    @apply text-[20px] font-bold leading-[32px];
+  }
+
+  .font-semibold-20 {
+    @apply text-[20px] font-semibold leading-[32px];
+  }
+
+  .font-medium-20 {
+    @apply text-[20px] font-medium leading-[32px];
+  }
+
+  .font-regular-20 {
+    @apply text-[20px] font-normal leading-[32px];
+  }
+
+  .font-bold-18 {
+    @apply text-[18px] font-bold leading-[26px];
+  }
+
+  .font-semibold-18 {
+    @apply text-[18px] font-semibold leading-[26px];
+  }
+
+  .font-medium-18 {
+    @apply text-[18px] font-medium leading-[26px];
+  }
+
+  .font-regular-18 {
+    @apply text-[18px] font-normal leading-[26px];
+  }
+
+  .font-bold-16 {
+    @apply text-[16px] font-bold leading-[26px];
+  }
+
+  .font-semibold-16 {
+    @apply text-[16px] font-semibold leading-[26px];
+  }
+
+  .font-medium-16 {
+    @apply text-[16px] font-medium leading-[26px];
+  }
+
+  .font-regular-16 {
+    @apply text-[16px] font-normal leading-[26px];
+  }
+
+  .font-bold-14 {
+    @apply text-[14px] font-bold leading-[24px];
+  }
+
+  .font-semibold-14 {
+    @apply text-[14px] font-semibold leading-[24px];
+  }
+
+  .font-medium-14 {
+    @apply text-[14px] font-medium leading-[24px];
+  }
+
+  .font-regular-14 {
+    @apply text-[14px] font-normal leading-[24px];
+  }
+
+  .font-semibold-13 {
+    @apply text-[13px] font-semibold leading-[22px];
+  }
+
+  .font-medium-13 {
+    @apply text-[13px] font-medium leading-[22px];
+  }
+
+  .font-semibold-12 {
+    @apply text-[12px] font-semibold leading-[20px];
+  }
+
+  .font-medium-12 {
+    @apply text-[12px] font-medium leading-[18px];
+  }
+
+  .font-regular-12 {
+    @apply text-[12px] font-normal leading-[18px];
   }
 }
