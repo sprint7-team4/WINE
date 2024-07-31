@@ -25,6 +25,7 @@ const config: Config = {
       spacing: createPxValues(200),
       width: createPxValues(2000), // 이 부분 추가
       height: createPxValues(2000), // 이 부분 추가
+      borderRadius: createPxValues(200),
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':
