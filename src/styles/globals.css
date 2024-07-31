@@ -164,4 +164,8 @@ body {
   .font-regular-12 {
     @apply text-[12px] font-normal leading-[18px];
   }
+
+  .flex-center {
+    @apply flex justify-center items-center;
+  }
 }
