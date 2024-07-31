@@ -20,6 +20,8 @@ const config: Config = {
       lineHeight: createPxValues(100),
       minWidth: createPxValues(200),
       minHeight: createPxValues(200),
+      maxWidth: createPxValues(2000),
+      maxHeight: createPxValues(2000),
       spacing: createPxValues(200),
       width: createPxValues(2000), // 이 부분 추가
       height: createPxValues(2000), // 이 부분 추가
