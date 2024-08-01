@@ -8,7 +8,9 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       {showHeader && <Header />}
-      <Component {...pageProps} />
+      <main className="mt-[66px] md:mt-[94px]">
+        <Component {...pageProps} />
+      </main>
     </>
   );
 }
