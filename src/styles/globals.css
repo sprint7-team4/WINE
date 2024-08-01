@@ -170,3 +170,28 @@ body {
     @apply flex justify-center items-center;
   }
 }
+
+/* 공통 slider 설정 */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+
+  height: 6px;
+  background-color: var(--grayscale-100);
+  border-radius: 50px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  border-radius: 50px;
+}
+
+/* slider의 thumb 각자 설정 [input의 id 추가] */
+input[type="range"]#taste-slider::-webkit-slider-thumb {
+  width: 16px;
+  height: 16px;
+  background-color: var(--main);
+}
+
