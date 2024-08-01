@@ -13,7 +13,13 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       {showHeader && <Header />}
-      <main className={isAuthPage ? "mt-0" : "mt-[66px] md:mt-[94px]"}>
+      <main
+        className={
+          isAuthPage
+            ? "mt-0"
+            : "max-w-1140 m-[0_auto] mt-[66px] md:mt-[94px] px-16 md:px-20 lg:px-0"
+        }
+      >
         <Component {...pageProps} />
       </main>
     </>
