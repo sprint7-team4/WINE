@@ -1,7 +1,7 @@
 export interface GetWinesParams {
   limit: number;
   cursor?: number;
-  type?: 'RED' | 'WHITE' | 'SPARKLING';
+  type?: "RED" | "WHITE" | "SPARKLING";
   minPrice?: number;
   maxPrice?: number;
   rating?: number;
@@ -32,7 +32,7 @@ export interface Wine {
   price: number;
   avgRating: number;
   reviewCount: number;
-  recentReview: RecentReview;
+  recentReview?: RecentReview;
   userId: number;
 }
 
