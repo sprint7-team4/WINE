@@ -9,13 +9,11 @@ import LandingCard1 from "@/assets/img/landing-card1.svg";
 import LandingCard2 from "@/assets/img/landing-card2.svg";
 import LandingCard3 from "@/assets/img/landing-card3.svg";
 import LandingCard4 from "@/assets/img/landing-card4.svg";
-import Header from "@/components/common/Header";
 
 export default function Home() {
   return (
-    <div className="bg-grayscale-100">
-      <Header />
-      <div className="max-w-1140 h-full w-full mx-auto mt-174">
+    <div className="bg-grayscale-100 pt-174 w-full">
+      <div className="max-w-1140 h-full w-full mx-auto ">
         <div className="w-full h-535 bg-[#171A21] mb-160 rounded-16 flex-center relative">
           <div className="flex-center flex-col gap-32 absolute top-112">
             <Image
@@ -132,7 +130,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="mx-auto w-699 h-full relative mt-96 pb-104">
+      <div className="mx-auto w-699 h-full relative mt-96 mb-104">
         <div className="w-640 h-320 rounded-16 bg-[#EBEEF4] border border-color-[#E0E6EE] outline-1 border-solid relative  overflow-hidden">
           <div className="flex flex-col gap-8 absolute top-56 left-32">
             <p className="text-grayscale-800 font-bold-24 inline-block">
@@ -153,6 +151,9 @@ export default function Home() {
             className="absolute left-322"
           />
         </div>
+      </div>
+      <div className="mx-auto">
+        <button>버튼</button>
       </div>
     </div>
   );
