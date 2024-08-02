@@ -3,7 +3,6 @@ import { getWines } from "@/lib/wineApi";
 import StarRating from "@/components/StarRating";
 import BestWineList from "@/components/BestWineList";
 import TopFiltering from "@/components/TopFiltering";
-import { SideFilterMenu } from "@/components/SideFilterMenu";
 import SideFiltering from "@/components/SideFiltering";
 
 const WineListPage: React.FC = () => {
