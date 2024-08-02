@@ -41,6 +41,12 @@ const config: Config = {
         "grayscale-500": "var(--grayscale-500)",
         "grayscale-800": "var(--grayscale-800)",
       },
+      screens: {
+        "max-sm": { max: "639px" }, // `sm` 이하의 화면
+        "max-md": { max: "767px" }, // `md` 이하의 화면
+        "max-lg": { max: "1023px" }, // `lg` 이하의 화면
+        "max-xl": { max: "1279px" }, // `xl` 이하의 화면
+      },
     },
   },
   plugins: [],
