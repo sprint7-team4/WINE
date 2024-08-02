@@ -7,13 +7,13 @@ export default function App({ Component, pageProps }: AppProps) {
   const showHeader = pageProps.showHeader !== false; // Header컴포넌트 조건부렌더링을 위한 변수
 
   const router = useRouter();
-  const isAuthPage =
-    router.pathname === "/login" || router.pathname === "/signup";
-  const isExcludeMainArea = isAuthPage || router.pathname === "/";
+  const isExcludeMainArea =
+    router.pathname === "/login" ||
+    router.pathname === "/signup" ||
+    router.pathname === "/";
 
   const mainClassName = `
-  ${!isAuthPage ? "max-w-1140 m-[0_auto] px-16 md:px-20 lg:px-0" : "p-0"}
-  ${isExcludeMainArea ? "mt-0" : "mt-[66px] md:mt-[94px]"}
+  ${!isExcludeMainArea ? "m-[0_auto] px-16 md:px-20 lg:px-0 mt-[66px] md:mt-[94px] max-w-1140" : "p-0 mt-0"}
 `.trim();
 
   return (
