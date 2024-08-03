@@ -1,15 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
-@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css');
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap");
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+@import "@fortawesome/fontawesome-free/css/all.min.css";
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-
   /* colors */
   /* etc */
   --main: #6a42db;
@@ -38,29 +35,21 @@
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-
   font-family:
-    'Pretendard Variable',
+    "Pretendard Variable",
     Pretendard,
     -apple-system,
     BlinkMacSystemFont,
     system-ui,
     Roboto,
-    'Helvetica Neue',
-    'Segoe UI',
-    'Apple SD Gothic Neo',
-    'Noto Sans KR',
-    'Malgun Gothic',
-    'Apple Color Emoji',
-    'Segoe UI Emoji',
-    'Segoe UI Symbol',
+    "Helvetica Neue",
+    "Segoe UI",
+    "Apple SD Gothic Neo",
+    "Noto Sans KR",
+    "Malgun Gothic",
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Segoe UI Symbol",
     sans-serif;
 }
 
@@ -176,4 +165,48 @@ body {
   .font-regular-12 {
     @apply text-[12px] font-normal leading-[18px];
   }
+
+  .flex-center {
+    @apply flex justify-center items-center;
+  }
+}
+
+/* 공통 slider 설정 */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+
+  height: 6px;
+  background-color: var(--grayscale-100);
+  border-radius: 50px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  border-radius: 50px;
+}
+
+/* slider의 thumb 각자 설정 [input의 id 추가] */
+input[type="range"]#taste-slider::-webkit-slider-thumb {
+  width: 12px;
+  height: 12px;
+  background-color: var(--main);
+}
+
+/* sm (640px 이상) */
+@media (min-width: 640px) {
+}
+
+/* md (768px 이상) */
+@media (min-width: 768px) {
+  input[type="range"]#taste-slider::-webkit-slider-thumb {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+/* lg (1024px 이상) */
+@media (min-width: 1024px) {
 }
