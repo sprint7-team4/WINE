@@ -20,19 +20,25 @@ const sliderStyles = {
 };
 
 function SliderComponent({ axis, xmax, xmin, xstep, onChange, value }: any) {
-  const [selectedPrice, setSelectedPrice] = useState<number>(0);
+  const [showValue, setShowValue] = useState("0");
+  let inputValue = "";
 
   const handleChange = (value: any) => {
     console.log("Slider value:", value);
     onChange(value);
-    setSelectedPrice(value);
+    inputValue = value.toLocaleString("ko-KR", {
+      maximumFractionDigits: 4,
+    });
+    setShowValue(inputValue);
   };
 
   return (
     <div>
-      <div className="w-284 h-26 flex justify-between">
-        <span>0</span>
-        <span>{selectedPrice}</span>
+      <div className="w-284 h-26 flex justify-between mt-20">
+        <span className="text-16 text-main font-medium">&#8361; 0</span>
+        <span className="text-16 text-main font-medium">
+          &#8361; {showValue}
+        </span>
       </div>
       <Slider
         axis={axis}

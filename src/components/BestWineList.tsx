@@ -87,7 +87,7 @@ const BestWineList = () => {
       ) : (
         <>
           {wineList.length > 0 ? (
-            <div className="flex items-center justify-center h-full">
+            <div className="flex items-center justify-center h-180">
               {wineList.map((wine, index) => {
                 const offset =
                   (index - currentIndex + wineList.length) % wineList.length;
@@ -98,29 +98,29 @@ const BestWineList = () => {
                   isVisible && (
                     <div
                       key={wine.id}
-                      className={`absolute w-[232px] h-[185px] rounded-[16px] bg-white shadow-lg transition-all duration-300 ease-out ${
+                      className={`absolute w-232 h-185 pt-10 rounded-16 bg-white shadow-lg transition-all duration-300 ease-out ${
                         offset === 0
-                          ? "z-10 scale-100 opacity-100"
+                          ? "z-5 scale-100 opacity-100"
                           : "scale-75 opacity-50"
                       }`}
                       style={{
                         transform: `
-                        translateX(${(offset === wineList.length - 1 ? -1 : offset) * 120}%)
-                        translateZ(${offset === 0 ? 0 : -100}px)
-                        rotateY(${offset * 45}deg)
+                        translateX(${(offset === wineList.length - 1 ? -1 : offset) * 130}%)
+                        translateZ(${Math.abs(offset) === 0 ? 0 : -100 - Math.abs(offset) * 50}px)
+                        rotateY(${-offset * 5}deg)
                       `,
                       }}
                     >
-                      <div className="flex justify-between p-4">
-                        <div className="w-[44px] h-[161px] bg-gray-200">
+                      <div className="flex justify-between p-10">
+                        <div className="w-44 h-161 bg-gray-200 ml-20">
                           이미지 불러오기
                         </div>
-                        <div className="w-[100px] h-[125px]">
+                        <div className="w-100 h-125">
                           <p className="text-3xl font-extrabold mb-10">
                             {wine.avgRating.toFixed(1)}
                           </p>
                           <StarRating rating={wine.avgRating} />
-                          <p className="mt-2 text-xs text-gray-500 font-normal line-clamp-2 mt-10">
+                          <p className="text-xs text-gray-500 font-normal line-clamp-2 mt-10">
                             {wine.name}
                           </p>
                         </div>
@@ -131,7 +131,7 @@ const BestWineList = () => {
               })}
             </div>
           ) : (
-            <p className="text-center">No wines available</p>
+            <p className="flex-center">No wines available</p>
           )}
         </>
       )}
