@@ -1,9 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import black_logo from "@/assets/img/logo-black.svg";
-import { getHeaderStaticProps } from "@/utils/getHeaderStaticProps";
 import LoginForm from "@/components/authentication/LoginForm";
 import SocialLogin from "@/components/authentication/SocialLogin";
+import { getHeaderStaticProps } from "@/utils/getHeaderStaticProps";
+import { socialArray } from "@/constants/socialLogins";
 
 export const getStaticProps = async () => {
   return getHeaderStaticProps(false);
@@ -25,7 +26,7 @@ export default function Login() {
         </Link>
         <LoginForm />
         <div className="flex flex-col gap-16 mb-24 md:mb-32 w-[100%]">
-          <SocialLogin />
+          <SocialLogin socialData={socialArray} />
         </div>
         <div className="font-regular-14 md:font-regular-16 text-grayscale-500">
           계정이 없으신가요?
