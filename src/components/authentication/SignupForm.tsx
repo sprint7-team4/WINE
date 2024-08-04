@@ -1,14 +1,23 @@
-import React from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import { signup } from "@/lib/authApi";
+import useRedirectAuthenticated from "@/hooks/useRedirectAuthenticated";
 
 interface FormValues {
   email: string;
   nickname: string;
   password: string;
-  passwordCheck: string;
+  passwordConfirmation: string;
 }
 
 export default function SignupForm() {
+  const router = useRouter();
+
+  const [emailDuplicationError, setEmailDuplicationError] = useState("");
+
+  useRedirectAuthenticated();
+
   const {
     control,
     handleSubmit,
@@ -16,8 +25,19 @@ export default function SignupForm() {
     trigger,
   } = useForm<FormValues>();
 
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    try {
+      await signup({ ...data });
+      router.push("/login");
+    } catch (error: any) {
+      console.error("회원가입 오류", error);
+      if (error.message === "이미 사용중인 이메일입니다.") {
+        setEmailDuplicationError(error.message);
+      } else if (error.message === "Internal Server Error") {
+        // Server Error 500 이긴 하지만 닉네임 중복일 때 발생해서 일단 추가해놓음
+        setEmailDuplicationError("이미 사용중인 닉네임입니다.");
+      }
+    }
   };
 
   return (
@@ -53,9 +73,17 @@ export default function SignupForm() {
                 await field.onBlur();
                 trigger("email");
               }}
+              onChange={(e) => {
+                field.onChange(e);
+                if (e.target.value) {
+                  trigger("email");
+                }
+              }}
             />
             {errors.email && (
-              <span className="text-red-500">{errors.email.message}</span>
+              <span className="text-red-500 relative top-[-8px] md:top-[-15px]">
+                {errors.email.message}
+              </span>
             )}
           </>
         )}
@@ -92,9 +120,17 @@ export default function SignupForm() {
                 await field.onBlur();
                 trigger("nickname");
               }}
+              onChange={(e) => {
+                field.onChange(e);
+                if (e.target.value) {
+                  trigger("nickname");
+                }
+              }}
             />
             {errors.nickname && (
-              <span className="text-red-500">{errors.nickname.message}</span>
+              <span className="text-red-500 relative top-[-8px] md:top-[-15px]">
+                {errors.nickname.message}
+              </span>
             )}
           </>
         )}
@@ -118,7 +154,8 @@ export default function SignupForm() {
           },
           pattern: {
             value: /^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*]).{8,}$/,
-            message: "비밀번호는 숫자, 영문, 특수문자로만 가능합니다.",
+            message:
+              "비밀번호는 숫자, 영문, 특수문자가 모두 포함되어야 합니다.",
           },
         }}
         render={({ field }) => (
@@ -126,7 +163,7 @@ export default function SignupForm() {
             <input
               type="password"
               id="password"
-              placeholder="영문, 숫자 포함 8자 이상"
+              placeholder="영문, 숫자, 특수문자 포함 8자 이상"
               {...field}
               className={`mb-16 md:mb-24 px-20 py-14 h-42 md:h-48 border-1 border-solid ${
                 errors.password ? "border-red-500" : "border-grayscale-300"
@@ -135,22 +172,30 @@ export default function SignupForm() {
                 await field.onBlur();
                 trigger("password");
               }}
+              onChange={(e) => {
+                field.onChange(e);
+                if (e.target.value) {
+                  trigger("password");
+                }
+              }}
             />
             {errors.password && (
-              <span className="text-red-500">{errors.password.message}</span>
+              <span className="text-red-500 relative top-[-8px] md:top-[-15px]">
+                {errors.password.message}
+              </span>
             )}
           </>
         )}
       />
 
       <label
-        htmlFor="password-check"
+        htmlFor="password-confirmation"
         className="mb-10 font-medium-14 md:font-medium-16 text-grayscale-800"
       >
         비밀번호 확인
       </label>
       <Controller
-        name="passwordCheck"
+        name="passwordConfirmation"
         control={control}
         defaultValue=""
         rules={{
@@ -162,25 +207,42 @@ export default function SignupForm() {
           <>
             <input
               type="password"
-              id="password-check"
+              id="password-confirmation"
               placeholder="비밀번호 확인 입력"
               {...field}
               className={`mb-40 md:mb-32 px-20 py-14 h-42 md:h-48 border-1 border-solid ${
-                errors.passwordCheck ? "border-red-500" : "border-grayscale-300"
+                errors.passwordConfirmation
+                  ? "border-red-500"
+                  : "border-grayscale-300"
               } rounded-12 placeholder-grayscale-500`}
               onBlur={async () => {
                 await field.onBlur();
-                trigger("passwordCheck");
+                trigger("passwordConfirmation");
+              }}
+              onChange={(e) => {
+                field.onChange(e);
+                if (e.target.value) {
+                  trigger("passwordConfirmation");
+                }
+                if (e.target.value === field.value) {
+                  trigger("passwordConfirmation");
+                }
               }}
             />
-            {errors.passwordCheck && (
-              <span className="text-red-500">
-                {errors.passwordCheck.message}
+            {errors.passwordConfirmation && (
+              <span className="text-red-500 relative top-[-32px] md:top-[-23px]">
+                {errors.passwordConfirmation.message}
               </span>
             )}
           </>
         )}
       />
+
+      {emailDuplicationError && (
+        <span className="text-red-500 mt-[-30px] md:mt-[-22px] mb-16">
+          {emailDuplicationError}
+        </span>
+      )}
 
       <button
         type="submit"
