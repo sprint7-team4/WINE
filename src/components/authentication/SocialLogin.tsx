@@ -1,10 +1,21 @@
 import Image from "next/image";
-import { socialArray } from "@/constants/socialLogins";
 
-export default function SocialLogin() {
+type socialDataType = {
+  id: string;
+  innerText: string;
+  altText: string;
+  titleText: string;
+  srcUrl: string;
+};
+
+interface Props {
+  socialData: socialDataType[];
+}
+
+export default function SocialLogin({ socialData }: Props) {
   return (
     <>
-      {socialArray.map(({ id, titleText, altText, innerText, srcUrl }) => (
+      {socialData.map(({ id, titleText, altText, innerText, srcUrl }) => (
         <button
           type="button"
           title={titleText}
