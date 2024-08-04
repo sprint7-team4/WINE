@@ -1,6 +1,6 @@
 import Image from "next/image";
-import { balancedProfiles } from "@/constants/review";
-import Slider from "../Slider/Slider";
+import { balancedProfiles as initialBalancedProfiles } from "@/constants/review";
+import Slider from "../slider/Slider";
 import ReviewTag from "./ReviewTag";
 import defaultUserImg from "@/assets/img/profile-default.svg";
 import favoriteImg from "@/assets/img/like.svg";
@@ -9,19 +9,73 @@ import moreImg from "@/assets/img/more.svg";
 import { Review } from "@/types/wineTypes";
 import { getElapsedTime } from "@/utils/wineDetailUtils";
 import { AROMA_TO_KR } from "@/constants/aroma";
+import { useEffect, useState } from "react";
+import { getReviewId } from "@/lib/wineApi";
+import { BalancedProfile, WineBalance } from "@/types/reviewTypes";
 
-const ReviewCard = ({
-  review: {
+const initialReview: Review = {
+  id: 0,
+  rating: 0,
+  aroma: [],
+  content: "",
+  createdAt: "",
+  updatedAt: "",
+  user: {
+    id: 0,
+    nickname: "",
+    image: "",
+  },
+  lightBold: 0,
+  smoothTannic: 0,
+  drySweet: 0,
+  softAcidic: 0,
+  wineId: 0,
+};
+
+const ReviewCard = ({ review: { id } }: { review: Review }) => {
+  const [review, setReview] = useState<Review>(initialReview);
+  const [profilesArray, setProfilesArray] = useState<BalancedProfile[]>([]);
+
+  const {
     user: { nickname, image },
     createdAt,
     content,
     aroma,
     rating,
-  },
-}: {
-  review: Review;
-}) => {
+  } = review;
   const userImage = image || defaultUserImg;
+
+  const fetchWineData = async (id: number) => {
+    try {
+      const data = await getReviewId(id);
+      setReview(data);
+    } catch (error) {
+      console.error("Error fetching review data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchWineData(id);
+  }, [id]);
+
+  useEffect(() => {
+    if (review && review.id !== initialReview.id) {
+      const updatedBalancedProfiles: Record<string, BalancedProfile> = {
+        ...initialBalancedProfiles,
+      };
+
+      Object.keys(updatedBalancedProfiles).forEach((key) => {
+        const profileKey = key as keyof WineBalance;
+        updatedBalancedProfiles[profileKey] = {
+          ...updatedBalancedProfiles[profileKey],
+          scale: review[profileKey],
+        };
+      });
+
+      const profilesArray = Object.values(updatedBalancedProfiles);
+      setProfilesArray(profilesArray);
+    }
+  }, [review]);
 
   return (
     <section className="max-lg:w-full max-w-800 p-[16px_20px] md:p-[32px_40px_24px] lg:p-[16.5px_40px_20px] rounded-16 border border-grayscale-300 border-solid">
@@ -66,18 +120,18 @@ const ReviewCard = ({
             <ReviewTag key={index} tag={AROMA_TO_KR[tag]} />
           ))}
         </div>
-        <div className="w-60 h-36 md:w-80 md:h-42 flex flex-center gap-3 p-[8px_10px} md:p-[8px_15px} bg-main-10 rounded-12">
+        <div className="w-60 h-36 md:w-80 md:h-42 flex flex-center gap-3 p-[8px_10px] md:p-[8px_15px] bg-main-10 rounded-12">
           <div className="fas fa-star text-main w-16 h-16 md:w-20 md:h-20 flex flex-center"></div>
           <span className="font-bold-14 md:font-bold-18 text-main flex items-center">
             {rating.toFixed(1)}
           </span>
         </div>
       </div>
-      <p className="mt-16 md:mt-24 mb-16 md:mb-20 font-regular-14 md:font-regular-16 ">
+      <p className="mt-16 md:mt-24 mb-16 md:mb-20 font-regular-14 md:font-regular-16">
         {content}
       </p>
       <div className="flex flex-col gap-15 md:gap-18">
-        {balancedProfiles.map((profile) => (
+        {profilesArray.map((profile) => (
           <Slider key={profile.name} profile={profile} />
         ))}
       </div>

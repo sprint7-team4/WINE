@@ -41,3 +41,13 @@ export const getWineId = async (id: string): Promise<Wine> => {
     throw error;
   }
 };
+
+export const getReviewId = async (id: number): Promise<Review> => {
+  try {
+    const response = await axios.get<Review>(`reviews/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching wines", error);
+    throw error;
+  }
+};

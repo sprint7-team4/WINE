@@ -1,6 +1,6 @@
-import WineHero from "@/components/WineDetails/WineHero";
-import ReviewCard from "@/components/WineDetails/ReviewCard";
-import StarRatingSection from "@/components/WineDetails/StarRatingSection";
+import WineHero from "@/components/wineDetails/WineHero";
+import ReviewCard from "@/components/wineDetails/ReviewCard";
+import StarRatingSection from "@/components/wineDetails/StarRatingSection";
 import { getWineId } from "@/lib/wineApi";
 import { Wine } from "@/types/wineTypes";
 import { GetServerSideProps } from "next";
@@ -30,7 +30,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 };
 
-const WineDetailPage = ({ wine }: { wine: Wine }) => {
+const WineDetailPage = ({ wine, wine: { reviews } }: { wine: Wine }) => {
   if (!wine) {
     return;
   }
@@ -42,7 +42,7 @@ const WineDetailPage = ({ wine }: { wine: Wine }) => {
         <h2 className="font-bold-20 max-lg:hidden">리뷰 목록</h2>
         <div className="flex flex-col lg:flex-row gap-20 md:gap-36 lg:gap-60">
           <div className="order-2 lg:order-none flex flex-col gap-16 md:gap-24 lg:gap-20 mt-0 lg:mt-22">
-            {wine.reviews.map((review) => (
+            {reviews.map((review) => (
               <ReviewCard key={review.id} review={review} />
             ))}
           </div>

@@ -33,18 +33,12 @@ export interface Wine {
   image: string;
   price: number;
   avgRating: number;
-  avgRatings: {
-    1: number;
-    2: number;
-    3: number;
-    4: number;
-    5: number;
-  };
+  avgRatings: avgRatings;
   reviewCount: number;
   recentReview?: RecentReview;
   userId: number;
   reviews: Review[];
-}
+} // avgRatings 타입으로 변경
 
 export interface GetWinesResponse {
   totalCount: number;
@@ -52,6 +46,7 @@ export interface GetWinesResponse {
   list: Wine[];
 }
 
+// 리뷰 타입 추가
 export interface Review {
   id: number;
   rating: number;
@@ -60,4 +55,27 @@ export interface Review {
   createdAt: string;
   updatedAt: string;
   user: User;
+  lightBold: number;
+  smoothTannic: number;
+  drySweet: number;
+  softAcidic: number;
+  wineId: number;
+}
+
+// 별점 각 점수
+export enum STAR_RATING_NUMBER {
+  ONE = 1,
+  TWO,
+  THREE,
+  FOUR,
+  FIVE,
+}
+
+// avgRatings
+export interface avgRatings {
+  [STAR_RATING_NUMBER.ONE]: number;
+  [STAR_RATING_NUMBER.TWO]: number;
+  [STAR_RATING_NUMBER.THREE]: number;
+  [STAR_RATING_NUMBER.FOUR]: number;
+  [STAR_RATING_NUMBER.FIVE]: number;
 }
