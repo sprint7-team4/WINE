@@ -11,7 +11,7 @@ const WineHero = ({ wine: { image, name, price, region } }: { wine: Wine }) => {
         height={209}
         className="w-58 h-209 md:w-84 md:h-302 lg:w-58 lg:h-209 max-lg:absolute max-lg:bottom-0"
       />
-      <div className="flex flex-col pl-20 md:pl-60 ml-58 md:ml-84 ">
+      <div className="flex flex-col pl-20 lg:pl-0 md:pl-60 ml-58 md:ml-84 lg:ml-0">
         <h1 className="flex w-180 md:w-300 font-semibold text-30 leading-[35.8px] max-md:text-20 max-md:leading-[23.87px] text-grayscale-800 mb-15 md:mb-20">
           {name}
         </h1>
