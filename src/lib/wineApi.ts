@@ -1,5 +1,10 @@
 import axios from "./axios";
-import { GetWinesParams, GetWinesResponse, Wine } from "../types/wineTypes";
+import {
+  GetWinesParams,
+  GetWinesResponse,
+  Review,
+  Wine,
+} from "../types/wineTypes";
 
 export const getWines = async (
   params: GetWinesParams
@@ -23,6 +28,26 @@ export const getRecommendedWines = async (
     return res.data;
   } catch (error) {
     console.log("Error fetching recommended Wines", error);
+    throw error;
+  }
+};
+
+export const getWineId = async (id: string): Promise<Wine> => {
+  try {
+    const response = await axios.get<Wine>(`wines/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching wines", error);
+    throw error;
+  }
+};
+
+export const getReviewId = async (id: number): Promise<Review> => {
+  try {
+    const response = await axios.get<Review>(`reviews/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching wines", error);
     throw error;
   }
 };
