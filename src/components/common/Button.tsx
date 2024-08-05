@@ -16,9 +16,9 @@ const itemVariants = {
     "flex-centerw-full h-48 rounded-16 px-172 py-16 font-bold-16 text-white bg-main " +
     "lg:h-50",
   wineRegister:
-    "flex-center w-343 h-48 px-172 py-16 bg-main font-bold-16 text-white rounded-16 " +
-    "md:w-220 md:h-48 md:h-48 md:gap-10 md:px-0 md:bg-black " +
-    "lg:w-full lg:h-50 lg:bg-red-600",
+    "flex-center w-343 h-48 px-98 py-12 bg-main font-bold-16 text-white rounded-12 " +
+    "md:w-220 md:h-48 md:h-48 md:gap-10 md:px-0 md:rounded-16 md:px-66 md:py-11 " +
+    "lg:w-full lg:h-50 lg:rounded-16 lg:px-133 lg:py-12",
   wineTypes:
     "flex-center w-auto h-42 px-18 py-10 font-medium-16 bg-white text-[#2D3034] border border-grayscale-300 rounded-100 ",
   reviewSubmit:
