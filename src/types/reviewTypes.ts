@@ -1,3 +1,5 @@
+import { Review } from "./wineTypes";
+
 export interface WineBalance {
   drySweet: number;
   lightBold: number;
@@ -10,4 +12,11 @@ export interface BalancedProfile {
   minimumText: string;
   maximumText: string;
   scale: number;
+}
+
+export interface ReviewFormProps {
+  mode: "create" | "edit";
+  review?: Review;
+  onSubmit: (review: Review) => void;
+  onCancel: () => void;
 }

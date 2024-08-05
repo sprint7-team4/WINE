@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { balancedProfiles as initialBalancedProfiles } from "@/constants/review";
-import Slider from "../slider/Slider";
 import ReviewTag from "./ReviewTag";
 import defaultUserImg from "@/assets/img/profile-default.svg";
 import favoriteImg from "@/assets/img/like.svg";
@@ -12,6 +11,7 @@ import { AROMA_TO_KR } from "@/constants/aroma";
 import { useEffect, useState } from "react";
 import { getReviewId } from "@/lib/wineApi";
 import { BalancedProfile, WineBalance } from "@/types/reviewTypes";
+import ProfileSliders from "./ProfileSliders";
 
 const initialReview: Review = {
   id: 0,
@@ -78,7 +78,7 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
   }, [review]);
 
   return (
-    <section className="max-lg:w-full max-w-800 p-[16px_20px] md:p-[32px_40px_24px] lg:p-[16.5px_40px_20px] rounded-16 border border-grayscale-300 border-solid">
+    <section className="max-lg:w-full w-800 p-[16px_20px] md:p-[32px_40px_24px] lg:p-[16.5px_40px_20px] rounded-16 border border-grayscale-300 border-solid">
       <div className="flex justify-between mb-16 md:mb-20">
         <div className="flex gap-16 items-center">
           <Image
@@ -131,9 +131,7 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
         {content}
       </p>
       <div className="flex flex-col gap-15 md:gap-18">
-        {profilesArray.map((profile) => (
-          <Slider key={profile.name} profile={profile} />
-        ))}
+        <ProfileSliders profilesArray={profilesArray} />
       </div>
       <div className="flex flex-center mt-16 md:mt-24">
         <Image
