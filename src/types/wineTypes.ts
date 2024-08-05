@@ -33,12 +33,15 @@ export interface Wine {
   image: string;
   price: number;
   avgRating: number;
-  avgRatings: avgRatings;
   reviewCount: number;
   recentReview?: RecentReview;
   userId: number;
+}
+
+export interface WineReview extends Wine {
+  avgRatings: avgRatings;
   reviews: Review[];
-} // avgRatings 타입으로 변경
+}
 
 export interface GetWinesResponse {
   totalCount: number;
