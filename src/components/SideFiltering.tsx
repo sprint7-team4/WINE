@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { PriceSlider } from "./PriceSlider";
+import StarRatingFilter from "./StarRatingFilter";
 
 const SideFiltering = () => {
   const wineTypes = ["Red", "White", "Sparkling"];
@@ -31,7 +32,12 @@ const SideFiltering = () => {
 
         <div className="mt-60">
           <p className="text-20 text-gray-800 font-bold mb-12">RATING</p>
+          <StarRatingFilter />
         </div>
+
+        <button className="cursor-pointer mt-60 w-full h-50 rounded-16 bg-main text-16 text-white font-bold">
+          와인 등록하기
+        </button>
       </div>
     </div>
   );

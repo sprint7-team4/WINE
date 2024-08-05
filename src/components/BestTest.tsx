@@ -11,18 +11,18 @@ const BestWineList = () => {
     limit: 10,
   };
 
-  const dummyData: Wine[] = [
-    {
-      id: 5,
-      name: "보르뇨 와인 보르뇨 qwrqwe lasidfsdnleew",
-      image: "@/assets/img/wine1.png",
-      price: 10000,
-      region: "seoul",
-      avgRating: 3.4,
-      reviewCount: 5,
-      userId: 5,
-    },
-  ];
+  //   const dummyData: Wine[] = [
+  //     {
+  //       id: 5,
+  //       name: "보르뇨 와인 보르뇨 qwrqwe lasidfsdnleew",
+  //       image: "@/assets/img/wine1.png",
+  //       price: 10000,
+  //       region: "seoul",
+  //       avgRating: 3.4,
+  //       reviewCount: 5,
+  //       userId: 5,
+  //     },
+  //   ];
 
   const fetchBestWineList = async () => {
     setLoading(true);
