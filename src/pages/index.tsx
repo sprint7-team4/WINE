@@ -11,6 +11,7 @@ export default function Home() {
       <Button title="리뷰 남기기" items="reviewSubmit" />
       <Button title="변경하기" items="changeProfile" />
       <Button title="삭제하기" items="delete" />
+      <Button title="취소" items="wineRegisterCancel" />
     </>
   );
 }
