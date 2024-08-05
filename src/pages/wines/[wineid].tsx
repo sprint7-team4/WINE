@@ -2,7 +2,7 @@ import WineHero from "@/components/wineDetails/WineHero";
 import ReviewCard from "@/components/wineDetails/ReviewCard";
 import StarRatingSection from "@/components/wineDetails/StarRatingSection";
 import { getWineId } from "@/lib/wineApi";
-import { Wine } from "@/types/wineTypes";
+import { Wine, WineReview } from "@/types/wineTypes";
 import { GetServerSideProps } from "next";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -30,7 +30,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 };
 
-const WineDetailPage = ({ wine, wine: { reviews } }: { wine: Wine }) => {
+const WineDetailPage = ({ wine, wine: { reviews } }: { wine: WineReview }) => {
   if (!wine) {
     return;
   }
