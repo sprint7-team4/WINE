@@ -2,9 +2,10 @@ import React from "react";
 
 interface StarRatingProps {
   rating: number;
+  size?: number; // 크기를 위한 새로운 prop 추가
 }
 
-const StarRating: React.FC<StarRatingProps> = ({ rating }) => {
+const StarRating: React.FC<StarRatingProps> = ({ rating, size = 18 }) => {
   const fullStars = Math.floor(rating);
   const partialStar = rating % 1;
 
@@ -14,20 +15,28 @@ const StarRating: React.FC<StarRatingProps> = ({ rating }) => {
         {[...Array(5)].map((_, i) => (
           <i
             key={`gray-${i}`}
-            className="fas fa-star w-18 h-18 text-grayscale-300"
+            className={`fas fa-star text-grayscale-300`}
+            style={{ width: `${size}px`, height: `${size}px` }}
           />
         ))}
       </div>
 
       <div className="absolute top-0 left-0 flex items-center justify-start">
         {[...Array(fullStars)].map((_, i) => (
-          <i key={`yellow-${i}`} className="fas fa-star w-18 h-18 text-main" />
+          <i
+            key={`purple-${i}`}
+            className={`fas fa-star text-main`}
+            style={{ width: `${size}px`, height: `${size}px` }}
+          />
         ))}
         {partialStar > 0 && (
-          <div className="relative w-18 h-18 overflow-hidden">
+          <div
+            className="relative overflow-hidden"
+            style={{ width: `${size}px`, height: `${size}px` }}
+          >
             <i
               className="fas fa-star absolute overflow-hidden top-0 left-0 text-main"
-              style={{ width: `${partialStar * 100}%` }}
+              style={{ width: `${partialStar * 100}%`, height: `${size}px` }}
             />
           </div>
         )}
