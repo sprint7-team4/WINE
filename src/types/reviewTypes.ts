@@ -14,8 +14,14 @@ export interface BalancedProfile {
   scale: number;
 }
 
+export enum REVIEW_MODE {
+  REVIEW = "review",
+  CREATE = "create",
+  EDIT = "edit",
+}
+
 export interface ReviewFormProps {
-  mode: "create" | "edit";
+  mode: REVIEW_MODE;
   review?: Review;
   onSubmit: (review: Review) => void;
   onCancel: () => void;
