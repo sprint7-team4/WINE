@@ -1,4 +1,8 @@
-import { BalancedProfile, ReviewFormProps } from "@/types/reviewTypes";
+import {
+  BalancedProfile,
+  REVIEW_MODE,
+  ReviewFormProps,
+} from "@/types/reviewTypes";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import closeButton from "@/assets/img/close.svg";
@@ -15,7 +19,7 @@ const ReviewForm = ({ mode, review, onCancel }: ReviewFormProps) => {
   const [aroma, setAroma] = useState<string[]>([]);
 
   useEffect(() => {
-    if (mode === "edit" && review) {
+    if (mode === REVIEW_MODE.EDIT && review) {
       setRating(review.rating);
       setContent(review.content);
       setAroma(review.aroma);
@@ -33,7 +37,7 @@ const ReviewForm = ({ mode, review, onCancel }: ReviewFormProps) => {
       <div>
         <div className="flex justify-between mb-48">
           <h1 className="font-bold-32">
-            {mode === "create" ? "리뷰 등록" : "수정하기"}
+            {mode === REVIEW_MODE.CREATE ? "리뷰 등록" : "수정하기"}
           </h1>
           <button onClick={onCancel}>
             <Image src={closeButton} alt="닫기 버튼" width={34} height={34} />
@@ -73,7 +77,7 @@ const ReviewForm = ({ mode, review, onCancel }: ReviewFormProps) => {
       </div>
       <div>
         <button className="w-full font-bold-16 text-white p-[16px_36px] bg-main rounded-12">
-          {mode === "create" ? "리뷰 남기기" : "수정하기"}
+          {mode === REVIEW_MODE.CREATE ? "리뷰 남기기" : "수정하기"}
         </button>
       </div>
     </form>

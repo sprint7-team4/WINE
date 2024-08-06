@@ -1,20 +1,20 @@
 import React, { useState } from "react";
 import Slider from "./Slider";
-import { BalancedProfile, ReviewMode } from "@/types/reviewTypes";
+import { BalancedProfile, REVIEW_MODE } from "@/types/reviewTypes";
 
 interface ProfileSlidersProps {
-  mode?: ReviewMode;
+  mode?: REVIEW_MODE;
   profilesArray: BalancedProfile[];
 }
 
 const ProfileSliders: React.FC<ProfileSlidersProps> = ({
-  mode = "review",
+  mode = REVIEW_MODE.REVIEW,
   profilesArray,
 }) => {
   const [sliderValue, setSliderValue] = useState<number>(50);
 
   const handleSliderChange = (value: number) => {
-    if (mode !== "review") {
+    if (mode !== REVIEW_MODE.REVIEW) {
       setSliderValue(value);
     }
   };

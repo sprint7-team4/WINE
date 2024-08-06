@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from "react";
-import { BalancedProfile, ReviewMode } from "@/types/reviewTypes";
+import { BalancedProfile, REVIEW_MODE } from "@/types/reviewTypes";
 
 const MAX_SCALE = 10;
 
 interface SliderProps {
   profile: BalancedProfile;
-  mode?: ReviewMode;
+  mode?: REVIEW_MODE;
   onChange?: (value: number) => void;
 }
 
@@ -20,7 +20,7 @@ const Slider: React.FC<SliderProps> = ({ profile, mode, onChange }) => {
   const clamp = (val: number) => Math.max(0, Math.min(val, MAX_SCALE));
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (mode !== "review") {
+    if (mode !== REVIEW_MODE.REVIEW) {
       const newValue = clamp(Number(event.target.value));
       setValue(newValue);
       setTooltipValue(newValue);
@@ -39,7 +39,7 @@ const Slider: React.FC<SliderProps> = ({ profile, mode, onChange }) => {
   const handleMouseEnter = () => setShowTooltip(true);
   const handleMouseLeave = () => setShowTooltip(false);
   const handleMouseMove = (event: React.MouseEvent<HTMLInputElement>) => {
-    if (mode !== "review" && sliderRef.current) {
+    if (mode !== REVIEW_MODE.REVIEW && sliderRef.current) {
       const { left, width } = sliderRef.current.getBoundingClientRect();
       const offsetX = event.clientX - left;
       const newValue = (offsetX / width) * MAX_SCALE;
@@ -78,7 +78,7 @@ const Slider: React.FC<SliderProps> = ({ profile, mode, onChange }) => {
           <input
             ref={sliderRef}
             className={`w-full border border-gray-300 transition-opacity duration-150 ease-in-out ${
-              mode === "review" ? "cursor-default" : ""
+              mode === REVIEW_MODE.REVIEW ? "cursor-default" : ""
             }`}
             id="taste-slider"
             type="range"
@@ -89,13 +89,15 @@ const Slider: React.FC<SliderProps> = ({ profile, mode, onChange }) => {
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             onMouseMove={handleMouseMove}
-            disabled={mode === "review"}
+            disabled={mode === REVIEW_MODE.REVIEW}
           />
           {showTooltip && (
             <div
               ref={tooltipRef}
               className={`absolute flex flex-center bg-gray-400 text-white text-xs rounded py-2 px-4 ${
-                mode === "review" ? "left-1/2 transform -translate-x-1/2" : ""
+                mode === REVIEW_MODE.REVIEW
+                  ? "left-1/2 transform -translate-x-1/2"
+                  : ""
               }`}
               style={{
                 bottom: "90%",
