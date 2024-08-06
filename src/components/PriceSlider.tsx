@@ -24,7 +24,6 @@ function SliderComponent({ axis, xmax, xmin, xstep, onChange, value }: any) {
   let inputValue = "";
 
   const handleChange = (value: any) => {
-    console.log("Slider value:", value);
     onChange(value);
     inputValue = value.toLocaleString("ko-KR", {
       maximumFractionDigits: 4,

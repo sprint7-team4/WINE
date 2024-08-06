@@ -16,6 +16,7 @@ const ReviewForm = ({ mode, review, onCancel }: ReviewFormProps) => {
   const [localBalancedProfiles, setLocalBalancedProfiles] = useState({
     ...balancedProfiles,
   });
+  const [selectedAroma, setSelectedAroma] = useState<string[]>([]);
 
   useEffect(() => {
     if (mode === REVIEW_MODE.EDIT && review) {
@@ -46,9 +47,14 @@ const ReviewForm = ({ mode, review, onCancel }: ReviewFormProps) => {
 
   const handleRatingChange = (newRating: number) => {};
 
-  const handleCancel = () => {
-    setLocalBalancedProfiles({ ...balancedProfiles });
-    if (onCancel) onCancel();
+  const handleTagClick = (tag: string) => {
+    setSelectedAroma((prev) => {
+      if (prev.includes(tag)) {
+        return prev.filter((item) => item !== tag);
+      } else {
+        return [...prev, tag];
+      }
+    });
   };
 
   return (
@@ -58,7 +64,7 @@ const ReviewForm = ({ mode, review, onCancel }: ReviewFormProps) => {
           <h1 className="font-bold-32">
             {mode === REVIEW_MODE.CREATE ? "리뷰 등록" : "수정하기"}
           </h1>
-          <button onClick={handleCancel}>
+          <button onClick={onCancel}>
             <Image src={closeButton} alt="닫기 버튼" width={34} height={34} />
           </button>
         </div>
@@ -94,7 +100,13 @@ const ReviewForm = ({ mode, review, onCancel }: ReviewFormProps) => {
               <h3 className="font-bold-20 mb-24">기억에 남는 향이 있나요?</h3>
               <div className="flex gap-4 md:gap-10 flex-wrap">
                 {Object.entries(AROMA_TO_KR).map(([aroma, korean]) => (
-                  <ReviewTag key={aroma} tag={korean} />
+                  <ReviewTag
+                    mode={mode}
+                    key={aroma}
+                    tag={korean}
+                    isSelected={selectedAroma.includes(korean)}
+                    onClick={handleTagClick}
+                  />
                 ))}
               </div>
             </div>
