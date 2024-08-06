@@ -57,7 +57,7 @@ const ReviewForm = ({ mode, review, onCancel }: ReviewFormProps) => {
             <div>
               <h3 className="font-bold-20 mb-24">와인의 맛은 어땠나요?</h3>
               <div className="flex flex-col gap-18">
-                <ProfileSliders profilesArray={profilesArray} />
+                <ProfileSliders mode={mode} profilesArray={profilesArray} />
               </div>
             </div>
             <div>

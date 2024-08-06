@@ -1,15 +1,15 @@
 import { useState, useEffect, useRef } from "react";
-import { BalancedProfile } from "@/types/reviewTypes";
+import { BalancedProfile, ReviewMode } from "@/types/reviewTypes";
 
-const MAX_SCALE = 100;
+const MAX_SCALE = 10;
 
-const Slider = ({
-  profile,
-  mode = "review",
-}: {
+interface SliderProps {
   profile: BalancedProfile;
-  mode: string;
-}) => {
+  mode?: ReviewMode;
+  onChange?: (value: number) => void;
+}
+
+const Slider: React.FC<SliderProps> = ({ profile, mode, onChange }) => {
   const { name, minimumText, maximumText, scale } = profile;
   const [value, setValue] = useState<number>(scale);
   const [showTooltip, setShowTooltip] = useState<boolean>(false);
@@ -20,9 +20,14 @@ const Slider = ({
   const clamp = (val: number) => Math.max(0, Math.min(val, MAX_SCALE));
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = clamp(Number(event.target.value));
-    setValue(newValue);
-    setTooltipValue(newValue);
+    if (mode !== "review") {
+      const newValue = clamp(Number(event.target.value));
+      setValue(newValue);
+      setTooltipValue(newValue);
+      if (onChange) {
+        onChange(newValue);
+      }
+    }
   };
 
   useEffect(() => {
@@ -34,7 +39,7 @@ const Slider = ({
   const handleMouseEnter = () => setShowTooltip(true);
   const handleMouseLeave = () => setShowTooltip(false);
   const handleMouseMove = (event: React.MouseEvent<HTMLInputElement>) => {
-    if (sliderRef.current) {
+    if (mode !== "review" && sliderRef.current) {
       const { left, width } = sliderRef.current.getBoundingClientRect();
       const offsetX = event.clientX - left;
       const newValue = (offsetX / width) * MAX_SCALE;
@@ -47,7 +52,7 @@ const Slider = ({
           Math.max(0, offsetX - tooltipWidth / 2),
           width - tooltipWidth
         );
-        tooltipRef.current.style.left = `${newTooltipLeft + 10}px`;
+        tooltipRef.current.style.left = `${newTooltipLeft}px`;
       }
     }
   };
@@ -65,10 +70,16 @@ const Slider = ({
         <h3 className="w-70 font-medium-14 md:font-medium-16 grayscale-800 whitespace-nowrap flex-shrink-0">
           {minimumText}
         </h3>
-        <div className="relative w-full mx-[15.5px]">
+        <div
+          className="relative w-full mx-[15.5px]"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
           <input
             ref={sliderRef}
-            className={`w-full border border-gray-300 transition-opacity duration-150 ease-in-out`}
+            className={`w-full border border-gray-300 transition-opacity duration-150 ease-in-out ${
+              mode === "review" ? "cursor-default" : ""
+            }`}
             id="taste-slider"
             type="range"
             min="0"
@@ -78,14 +89,16 @@ const Slider = ({
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             onMouseMove={handleMouseMove}
+            disabled={mode === "review"}
           />
           {showTooltip && (
             <div
               ref={tooltipRef}
-              className="absolute flex flex-center bg-gray-400 text-white text-xs rounded py-2 px-4"
+              className={`absolute flex flex-center bg-gray-400 text-white text-xs rounded py-2 px-4 ${
+                mode === "review" ? "left-1/2 transform -translate-x-1/2" : ""
+              }`}
               style={{
                 bottom: "90%",
-                transform: "translateX(-50%)",
                 whiteSpace: "nowrap",
                 pointerEvents: "none",
               }}

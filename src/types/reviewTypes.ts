@@ -14,8 +14,10 @@ export interface BalancedProfile {
   scale: number;
 }
 
+export type ReviewMode = "review" | "create" | "edit";
+
 export interface ReviewFormProps {
-  mode: "create" | "edit";
+  mode: ReviewMode;
   review?: Review;
   onSubmit: (review: Review) => void;
   onCancel: () => void;
