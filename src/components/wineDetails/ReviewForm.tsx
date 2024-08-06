@@ -1,22 +1,21 @@
-import {
-  BalancedProfile,
-  REVIEW_MODE,
-  ReviewFormProps,
-} from "@/types/reviewTypes";
+import { REVIEW_MODE, ReviewFormProps } from "@/types/reviewTypes";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import closeButton from "@/assets/img/close.svg";
 import wineIcon from "@/assets/img/wineImg.svg";
-import StarRating from "../StarRating";
 import ProfileSliders from "./ProfileSliders";
 import { balancedProfiles } from "@/constants/review";
 import ReviewTag from "./ReviewTag";
 import { AROMA_TO_KR } from "@/constants/aroma";
+import InteractiveStarRating from "./InteractiveStarRating";
 
 const ReviewForm = ({ mode, review, onCancel }: ReviewFormProps) => {
-  const [rating, setRating] = useState<number>(0);
-  const [content, setContent] = useState<string>("");
-  const [aroma, setAroma] = useState<string[]>([]);
+  const [rating, setRating] = useState(0);
+  const [content, setContent] = useState("");
+  const [aroma, setAroma] = useState([""]);
+  const [localBalancedProfiles, setLocalBalancedProfiles] = useState({
+    ...balancedProfiles,
+  });
 
   useEffect(() => {
     if (mode === REVIEW_MODE.EDIT && review) {
@@ -26,11 +25,31 @@ const ReviewForm = ({ mode, review, onCancel }: ReviewFormProps) => {
     }
   }, [mode, review]);
 
-  const newBalancedProfiles: Record<string, BalancedProfile> = {
-    ...balancedProfiles,
+  useEffect(() => {}, [mode]);
+
+  const handleSliderValuesChange = (values: number[]) => {
+    setLocalBalancedProfiles((prevProfiles) => {
+      const updatedProfiles = { ...prevProfiles };
+
+      Object.entries(updatedProfiles).forEach(([key, value], index) => {
+        if (index < values.length) {
+          updatedProfiles[key as keyof typeof updatedProfiles] = {
+            ...value,
+            scale: values[index],
+          };
+        }
+      });
+
+      return updatedProfiles;
+    });
   };
 
-  const profilesArray = Object.values(newBalancedProfiles);
+  const handleRatingChange = (newRating: number) => {};
+
+  const handleCancel = () => {
+    setLocalBalancedProfiles({ ...balancedProfiles });
+    if (onCancel) onCancel();
+  };
 
   return (
     <form className="flex flex-col justify-between max-w-528 h-1006 p-[24px_24px] text-grayscale-800">
@@ -39,7 +58,7 @@ const ReviewForm = ({ mode, review, onCancel }: ReviewFormProps) => {
           <h1 className="font-bold-32">
             {mode === REVIEW_MODE.CREATE ? "리뷰 등록" : "수정하기"}
           </h1>
-          <button onClick={onCancel}>
+          <button onClick={handleCancel}>
             <Image src={closeButton} alt="닫기 버튼" width={34} height={34} />
           </button>
         </div>
@@ -47,7 +66,10 @@ const ReviewForm = ({ mode, review, onCancel }: ReviewFormProps) => {
           <Image src={wineIcon} alt="와인 아이콘" width={68} height={68} />
           <div className="w-full flex flex-col gap-8 justify-between font-semibold-18">
             <h2>Sentinel Carbernet Sauvignon 2016</h2>
-            <StarRating rating={4.5} />
+            <InteractiveStarRating
+              initialRating={rating}
+              onRatingChange={handleRatingChange}
+            />
           </div>
         </div>
         <div className="flex flex-col gap-40">
@@ -61,7 +83,11 @@ const ReviewForm = ({ mode, review, onCancel }: ReviewFormProps) => {
             <div>
               <h3 className="font-bold-20 mb-24">와인의 맛은 어땠나요?</h3>
               <div className="flex flex-col gap-18">
-                <ProfileSliders mode={mode} profilesArray={profilesArray} />
+                <ProfileSliders
+                  mode={mode}
+                  profilesArray={Object.values(localBalancedProfiles)}
+                  onSliderValuesChange={handleSliderValuesChange}
+                />
               </div>
             </div>
             <div>
