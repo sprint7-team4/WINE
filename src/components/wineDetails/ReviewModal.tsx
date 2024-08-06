@@ -2,6 +2,7 @@ import React from "react";
 import useModalStore from "@/store/modalStore";
 import ReviewForm from "./ReviewForm";
 import Modal from "../common/Modal";
+import { REVIEW_MODE } from "@/types/reviewTypes";
 
 interface ReviewModalProps {
   isOpen: boolean;
@@ -24,7 +25,7 @@ const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose }) => {
     <Modal className="bg-[#101318] bg-opacity-30 rounded-16">
       <div className="bg-white max-w-528">
         <ReviewForm
-          mode={"create"}
+          mode={REVIEW_MODE.CREATE}
           onSubmit={handleSubmit}
           onCancel={handleCancle}
         />

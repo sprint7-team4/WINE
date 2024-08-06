@@ -1,6 +1,6 @@
 import InstantRatingBar from "./InstantRatingBar";
 import StarRating from "../StarRating";
-import { Wine } from "@/types/wineTypes";
+import { Wine, WineReview } from "@/types/wineTypes";
 import { useState } from "react";
 import ReviewModal from "./ReviewModal";
 import useModalStore from "@/store/modalStore";
@@ -10,7 +10,7 @@ const MAX_BAR_WIDTH = 241;
 const StarRatingSection = ({
   wine: { avgRating, reviewCount, avgRatings },
 }: {
-  wine: Wine;
+  wine: WineReview;
 }) => {
   const maxCount = Math.max(...Object.values(avgRatings));
   const sortedRatings = Object.entries(avgRatings).sort(
