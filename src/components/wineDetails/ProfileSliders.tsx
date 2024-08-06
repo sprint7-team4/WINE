@@ -16,7 +16,6 @@ const ProfileSliders: React.FC<ProfileSlidersProps> = ({
   const handleSliderChange = (value: number) => {
     if (mode !== "review") {
       setSliderValue(value);
-      console.log("Slider value:", value);
     }
   };
 
