@@ -1,4 +1,3 @@
-// 업데이트 된 시간을 기준으로 경과 시간 구함
 export function getElapsedTime(updatedAtString: string) {
   const updatedAt = new Date(updatedAtString);
   const currentTime = new Date();
@@ -12,8 +11,8 @@ export function getElapsedTime(updatedAtString: string) {
   const months = Math.floor(days / 30);
   const years = Math.floor(days / 365);
 
-  if (seconds < 60) {
-    return `${seconds}초 전`;
+  if (minutes < 1) {
+    return "방금 전";
   } else if (minutes < 60) {
     return `${minutes}분 전`;
   } else if (hours < 24) {

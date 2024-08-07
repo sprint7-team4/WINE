@@ -1,7 +1,7 @@
 import WineHero from "@/components/wineDetails/WineHero";
 import ReviewCard from "@/components/wineDetails/ReviewCard";
 import StarRatingSection from "@/components/wineDetails/StarRatingSection";
-import { getWineId } from "@/lib/wineApi";
+import { getWineId } from "@/lib/reviewApi";
 import { Wine, WineReview } from "@/types/wineTypes";
 import { GetServerSideProps } from "next";
 
