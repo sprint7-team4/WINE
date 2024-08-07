@@ -9,14 +9,11 @@ import ReviewTag from "./ReviewTag";
 import { AROMA_TO_KR, EN_AROMAS } from "@/constants/aroma";
 import InteractiveStarRating from "./InteractiveStarRating";
 import { createReview } from "@/lib/reviewApi";
-import { useRouter } from "next/router";
+import { useWineStore } from "@/store/reviewStore";
 
 const INITIALRATING = 0;
 
 const ReviewForm = ({ mode, review, onCancel }: ReviewFormProps) => {
-  const router = useRouter();
-  const { wineid } = router.query;
-
   const [localBalancedProfiles, setLocalBalancedProfiles] = useState({
     ...balancedProfiles,
   });
@@ -29,13 +26,20 @@ const ReviewForm = ({ mode, review, onCancel }: ReviewFormProps) => {
     drySweet: 0,
     softAcidic: 0,
     content: "",
-    wineId: Number(wineid),
+    wineId: 0,
   });
+  const wineData = useWineStore((state) => state.wine);
 
   useEffect(() => {
     if (mode === REVIEW_MODE.EDIT && review) {
     }
-  }, [mode, review]);
+    if (wineData) {
+      setReviewData((prevData) => ({
+        ...prevData,
+        wineId: wineData.id,
+      }));
+    }
+  }, [mode, review, wineData]);
 
   const handleSliderValuesChange = (values: number[]) => {
     setLocalBalancedProfiles((prevProfiles) => {
@@ -87,6 +91,10 @@ const ReviewForm = ({ mode, review, onCancel }: ReviewFormProps) => {
     }
   };
 
+  if (!wineData) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -104,7 +112,7 @@ const ReviewForm = ({ mode, review, onCancel }: ReviewFormProps) => {
         <div className="flex items-center gap-16">
           <Image src={wineIcon} alt="와인 아이콘" width={68} height={68} />
           <div className="w-full flex flex-col gap-8 justify-between font-semibold-18">
-            <h2>Sentinel Carbernet Sauvignon 2016</h2>
+            <h2>{wineData.name}</h2>
             <InteractiveStarRating
               initialRating={INITIALRATING}
               onRatingChange={(rating) =>

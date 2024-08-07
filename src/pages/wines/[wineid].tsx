@@ -4,6 +4,8 @@ import StarRatingSection from "@/components/wineDetails/StarRatingSection";
 import { getWineId } from "@/lib/reviewApi";
 import { Wine, WineReview } from "@/types/wineTypes";
 import { GetServerSideProps } from "next";
+import { useEffect } from "react";
+import { useWineStore } from "@/store/reviewStore";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const wineId = context.params?.wineid;
@@ -31,8 +33,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 const WineDetailPage = ({ wine, wine: { reviews } }: { wine: WineReview }) => {
+  const setWine = useWineStore((state) => state.setWine);
+
+  useEffect(() => {
+    setWine(wine);
+  }, [wine, setWine]);
+
   if (!wine) {
-    return;
+    return <div>Loading...</div>;
   }
 
   return (
