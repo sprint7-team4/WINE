@@ -1,3 +1,4 @@
+import { EN_AROMAS } from "@/constants/aroma";
 import { Review } from "./wineTypes";
 
 export interface WineBalance {
@@ -25,4 +26,15 @@ export interface ReviewFormProps {
   review?: Review;
   onSubmit: (review: Review) => void;
   onCancel: () => void;
+}
+
+export interface SendReview {
+  rating: number;
+  lightBold: number;
+  smoothTannic: number;
+  drySweet: number;
+  softAcidic: number;
+  aroma: EN_AROMAS[];
+  content: string;
+  wineId: number;
 }

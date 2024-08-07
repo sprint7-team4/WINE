@@ -1,4 +1,4 @@
-import { REVIEW_MODE, ReviewFormProps } from "@/types/reviewTypes";
+import { REVIEW_MODE, ReviewFormProps, SendReview } from "@/types/reviewTypes";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import closeButton from "@/assets/img/close.svg";
@@ -6,27 +6,36 @@ import wineIcon from "@/assets/img/wineImg.svg";
 import ProfileSliders from "./ProfileSliders";
 import { balancedProfiles } from "@/constants/review";
 import ReviewTag from "./ReviewTag";
-import { AROMA_TO_KR } from "@/constants/aroma";
+import { AROMA_TO_KR, EN_AROMAS } from "@/constants/aroma";
 import InteractiveStarRating from "./InteractiveStarRating";
+import { createReview } from "@/lib/reviewApi";
+import { useRouter } from "next/router";
+
+const INITIALRATING = 0;
 
 const ReviewForm = ({ mode, review, onCancel }: ReviewFormProps) => {
-  const [rating, setRating] = useState(0);
-  const [content, setContent] = useState("");
-  const [aroma, setAroma] = useState([""]);
+  const router = useRouter();
+  const { wineid } = router.query;
+
   const [localBalancedProfiles, setLocalBalancedProfiles] = useState({
     ...balancedProfiles,
   });
-  const [selectedAroma, setSelectedAroma] = useState<string[]>([]);
+  const [selectedAroma, setSelectedAroma] = useState<EN_AROMAS[]>([]);
+  const [reviewData, setReviewData] = useState<SendReview>({
+    rating: 0,
+    aroma: [],
+    lightBold: 0,
+    smoothTannic: 0,
+    drySweet: 0,
+    softAcidic: 0,
+    content: "",
+    wineId: Number(wineid),
+  });
 
   useEffect(() => {
     if (mode === REVIEW_MODE.EDIT && review) {
-      setRating(review.rating);
-      setContent(review.content);
-      setAroma(review.aroma);
     }
   }, [mode, review]);
-
-  useEffect(() => {}, [mode]);
 
   const handleSliderValuesChange = (values: number[]) => {
     setLocalBalancedProfiles((prevProfiles) => {
@@ -41,24 +50,48 @@ const ReviewForm = ({ mode, review, onCancel }: ReviewFormProps) => {
         }
       });
 
+      setReviewData((prevData) => ({
+        ...prevData,
+        lightBold: updatedProfiles.lightBold.scale,
+        smoothTannic: updatedProfiles.smoothTannic.scale,
+        drySweet: updatedProfiles.drySweet.scale,
+        softAcidic: updatedProfiles.softAcidic.scale,
+      }));
+
       return updatedProfiles;
     });
   };
 
-  const handleRatingChange = (newRating: number) => {};
-
-  const handleTagClick = (tag: string) => {
+  const handleTagClick = (tag: EN_AROMAS) => {
     setSelectedAroma((prev) => {
-      if (prev.includes(tag)) {
-        return prev.filter((item) => item !== tag);
-      } else {
-        return [...prev, tag];
-      }
+      const newSelection = prev.includes(tag)
+        ? prev.filter((item) => item !== tag)
+        : [...prev, tag];
+
+      setReviewData((prevData) => ({
+        ...prevData,
+        aroma: newSelection,
+      }));
+
+      return newSelection;
     });
   };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    try {
+      if (mode === REVIEW_MODE.CREATE) {
+        await createReview(reviewData);
+      }
+    } catch (error) {
+      console.error("Error submitting review:", error);
+    }
+  };
+
   return (
-    <form className="flex flex-col justify-between max-w-528 h-1006 p-[24px_24px] text-grayscale-800">
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col justify-between max-w-528 h-1006 p-[24px_24px] text-grayscale-800"
+    >
       <div>
         <div className="flex justify-between mb-48">
           <h1 className="font-bold-32">
@@ -73,16 +106,26 @@ const ReviewForm = ({ mode, review, onCancel }: ReviewFormProps) => {
           <div className="w-full flex flex-col gap-8 justify-between font-semibold-18">
             <h2>Sentinel Carbernet Sauvignon 2016</h2>
             <InteractiveStarRating
-              initialRating={rating}
-              onRatingChange={handleRatingChange}
+              initialRating={INITIALRATING}
+              onRatingChange={(rating) =>
+                setReviewData((prevData) => ({
+                  ...prevData,
+                  rating,
+                }))
+              }
             />
           </div>
         </div>
         <div className="flex flex-col gap-40">
           <textarea
             className="mt-24 w-full h-120 p-[14px_20px] resize-none outline-none placeholder-font-medium-16 placeholder-grayscale-500 border border-gray-300 rounded-16"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
+            value={reviewData.content}
+            onChange={(e) =>
+              setReviewData((prevData) => ({
+                ...prevData,
+                content: e.target.value,
+              }))
+            }
             placeholder="후기를 작성해 주세요"
           />
           <div className="flex flex-col gap-40">
@@ -104,8 +147,8 @@ const ReviewForm = ({ mode, review, onCancel }: ReviewFormProps) => {
                     mode={mode}
                     key={aroma}
                     tag={korean}
-                    isSelected={selectedAroma.includes(korean)}
-                    onClick={handleTagClick}
+                    isSelected={selectedAroma.includes(aroma as EN_AROMAS)}
+                    onClick={() => handleTagClick(aroma as EN_AROMAS)}
                   />
                 ))}
               </div>

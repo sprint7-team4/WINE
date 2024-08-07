@@ -9,7 +9,7 @@ import { Review } from "@/types/wineTypes";
 import { getElapsedTime } from "@/utils/wineDetailUtils";
 import { AROMA_TO_KR } from "@/constants/aroma";
 import { useEffect, useState } from "react";
-import { getReviewId } from "@/lib/wineApi";
+import { getReviewId } from "@/lib/reviewApi";
 import { BalancedProfile, WineBalance } from "@/types/reviewTypes";
 import ProfileSliders from "./ProfileSliders";
 
