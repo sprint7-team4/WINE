@@ -9,7 +9,8 @@ import ReviewTag from "./ReviewTag";
 import { AROMA_TO_KR, EN_AROMAS } from "@/constants/aroma";
 import InteractiveStarRating from "./InteractiveStarRating";
 import { createReview } from "@/lib/reviewApi";
-import { useWineStore } from "@/store/reviewStore";
+import { useReviewSubmitStore, useWineStore } from "@/store/reviewStore";
+import useModalStore from "@/store/modalStore";
 
 const INITIALRATING = 0;
 
@@ -29,6 +30,10 @@ const ReviewForm = ({ mode, review, onCancel }: ReviewFormProps) => {
     wineId: 0,
   });
   const wineData = useWineStore((state) => state.wine);
+  const setReviewSubmitted = useReviewSubmitStore(
+    (state) => state.setReviewSubmitted
+  );
+  const { closeModal } = useModalStore();
 
   useEffect(() => {
     if (mode === REVIEW_MODE.EDIT && review) {
@@ -82,12 +87,16 @@ const ReviewForm = ({ mode, review, onCancel }: ReviewFormProps) => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     try {
       if (mode === REVIEW_MODE.CREATE) {
         await createReview(reviewData);
+        setReviewSubmitted(true);
       }
     } catch (error) {
       console.error("Error submitting review:", error);
+    } finally {
+      closeModal();
     }
   };
 

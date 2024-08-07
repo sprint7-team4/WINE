@@ -1,4 +1,4 @@
-import { Review, Wine } from "@/types/wineTypes";
+import { Review, Wine, WineReview } from "@/types/wineTypes";
 import axios from "./axios";
 import { SendReview } from "@/types/reviewTypes";
 
@@ -6,9 +6,9 @@ const getAccessToken = () => {
   return localStorage.getItem("accessToken");
 };
 
-export const getWineId = async (id: string): Promise<Wine> => {
+export const getWineId = async (id: string): Promise<WineReview> => {
   try {
-    const response = await axios.get<Wine>(`wines/${id}`);
+    const response = await axios.get<WineReview>(`wines/${id}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching wines", error);
