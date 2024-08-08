@@ -31,7 +31,6 @@ export const createReview = async (
 ): Promise<SendReview> => {
   try {
     const token = getAccessToken();
-    console.log(reviewData);
 
     const response = await axios.post("reviews/", reviewData, {
       headers: {

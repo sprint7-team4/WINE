@@ -5,12 +5,16 @@ import { signOut } from "next-auth/react";
 import { getUser } from "@/lib/authApi";
 import white_logo from "@/assets/img/logo-white.svg";
 import profile_img from "@/assets/img/profile-default.svg";
+import Dropdown from "./Dropdown";
+import { HEADER_MENU } from "@/constants/dropdown";
+import { useRouter } from "next/router";
 
 export default function Header() {
   const [isClient, setIsClient] = useState(false);
   const [user, setUser] = useState({
     image: "",
   });
+  const router = useRouter();
 
   useEffect(() => {
     setIsClient(true);
@@ -39,6 +43,14 @@ export default function Header() {
     localStorage.removeItem("accessToken");
   };
 
+  const handleSelect = (item: string) => {
+    if (item === HEADER_MENU.MY_PAGE) {
+      router.push("/mypage");
+    } else if (item === HEADER_MENU.LOGOUT) {
+      handleLogoutClick();
+    }
+  };
+
   return (
     <header
       role="banner"
@@ -57,18 +69,18 @@ export default function Header() {
       ) : (
         <div className="flex-center gap-20 md:gap-40 font-medium-16 text-white">
           <button type="button">
-            <img
-              src={user?.image ?? profile_img.src}
-              alt="프로필이미지"
-              className="w-20 h-20 md:w-45 md:h-45 rounded-[50%] border-1 boder-solid border-grayscale-300 object-contain"
+            <Dropdown
+              trigger={
+                <img
+                  src={user?.image ?? profile_img.src}
+                  alt="프로필이미지"
+                  className="w-20 h-20 md:w-45 md:h-45 rounded-[50%] border-1 boder-solid border-grayscale-300 object-contain"
+                />
+              }
+              items={[HEADER_MENU.MY_PAGE, HEADER_MENU.LOGOUT]}
+              onSelect={handleSelect}
             />
           </button>
-          <ul>
-            <li>
-              <Link href="/mypage">마이페이지</Link>
-            </li>
-            <li onClick={handleLogoutClick}>로그아웃</li>
-          </ul>
         </div>
       )}
     </header>
