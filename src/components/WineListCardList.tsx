@@ -16,9 +16,9 @@ const WineListCardList = () => {
 
   return (
     <>
-      {filteredWineList.map((wine) => (
+      {/* {filteredWineList.map((wine) => (
         <WineListCard />
-      ))}
+      ))} */}
     </>
   );
 };
