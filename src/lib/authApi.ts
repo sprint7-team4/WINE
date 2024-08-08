@@ -73,7 +73,7 @@ export const login = async ({ email, password }: dataType) => {
   return data;
 };
 
-export const loginWithGoogle = async ({
+export const loginWithSocial = async ({
   state,
   redirectUri,
   token,
@@ -97,14 +97,16 @@ export const loginWithGoogle = async ({
 };
 
 export const getUser = async () => {
-  const Token = localStorage.getItem("accessToken");
+  const token = localStorage.getItem("accessToken");
+
+  if (!token) return;
 
   const url = "/users/me";
   const options = {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${Token}`,
+      Authorization: `Bearer ${token}`,
     },
   };
 

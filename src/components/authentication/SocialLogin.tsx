@@ -1,6 +1,6 @@
+import { SetStateAction, Dispatch } from "react";
 import Image from "next/image";
-import { signIn, useSession } from "next-auth/react";
-import { loginWithGoogle } from "@/lib/authApi";
+import { signIn } from "next-auth/react";
 
 type socialDataType = {
   id: string;
@@ -12,18 +12,14 @@ type socialDataType = {
 
 interface Props {
   socialData: socialDataType[];
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
 }
 
-export default function SocialLogin({ socialData }: Props) {
-  const { data: session } = useSession();
-
-  const handleSubmitClick = async (id: string) => {
-    signIn(id, { callbackUrl: "/" });
-
-    await loginWithGoogle({
-      token: session?.idToken,
-      provider: id.toUpperCase(),
-    });
+export default function SocialLogin({ socialData, setIsLoading }: Props) {
+  const handleSubmitClick = (id: string) => {
+    setIsLoading(true);
+    localStorage.setItem("provider", id);
+    signIn(id, { callbackUrl: "/authCallback" });
   };
 
   return (

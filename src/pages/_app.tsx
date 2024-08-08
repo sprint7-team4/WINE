@@ -14,6 +14,7 @@ export default function App({
   const isExcludeMainArea =
     router.pathname === "/login" ||
     router.pathname === "/signup" ||
+    router.pathname === "/authCallback" ||
     router.pathname === "/";
 
   const mainClassName = `
