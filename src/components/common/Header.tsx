@@ -5,12 +5,16 @@ import { signOut } from "next-auth/react";
 import { getUser } from "@/lib/authApi";
 import white_logo from "@/assets/img/logo-white.svg";
 import profile_img from "@/assets/img/profile-default.svg";
+import Dropdown from "./Dropdown";
+import { HEADER_MENU } from "@/constants/dropdown";
+import { useRouter } from "next/router";
 
 export default function Header() {
   const [isClient, setIsClient] = useState(false);
   const [user, setUser] = useState({
     image: null,
   });
+  const router = useRouter();
 
   useEffect(() => {
     setIsClient(true);
@@ -41,6 +45,14 @@ export default function Header() {
     localStorage.removeItem("accessToken");
   };
 
+  const handleSelect = (item: string) => {
+    if (item === HEADER_MENU.MY_PAGE) {
+      router.push("/mypage");
+    } else if (item === HEADER_MENU.LOGOUT) {
+      handleLogoutClick();
+    }
+  };
+
   return (
     <header
       role="banner"
@@ -65,12 +77,6 @@ export default function Header() {
               className="w-20 h-20 md:w-45 md:h-45 rounded-[50%] border-1 boder-solid border-grayscale-300 object-contain"
             />
           </button>
-          <ul>
-            <li>
-              <Link href="/mypage">마이페이지</Link>
-            </li>
-            <li onClick={handleLogoutClick}>로그아웃</li>
-          </ul>
         </div>
       )}
     </header>
