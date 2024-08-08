@@ -8,10 +8,17 @@ type dataType = {
   passwordConfirmation?: string;
 };
 
+type OauthDataType = {
+  state?: string;
+  redirectUri?: string;
+  token: string | undefined;
+  provider?: string;
+};
+
 interface RequestOptions {
   method: string;
   headers: Record<string, string>;
-  data?: dataType;
+  data?: dataType | OauthDataType;
 }
 
 const fetchRequest = async (url: string, options: RequestOptions) => {
@@ -64,4 +71,44 @@ export const login = async ({ email, password }: dataType) => {
   const data = await fetchRequest(url, options);
   localStorage.setItem("accessToken", data.accessToken);
   return data;
+};
+
+export const loginWithSocial = async ({
+  state,
+  redirectUri,
+  token,
+  provider,
+}: OauthDataType) => {
+  const url = `auth/signIn/${provider}`;
+  const options = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: {
+      state,
+      redirectUri,
+      token,
+    },
+  };
+  const data = await fetchRequest(url, options);
+  localStorage.setItem("accessToken", data.accessToken);
+  return data;
+};
+
+export const getUser = async () => {
+  const token = localStorage.getItem("accessToken");
+
+  if (!token) return;
+
+  const url = "/users/me";
+  const options = {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  return fetchRequest(url, options);
 };
