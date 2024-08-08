@@ -2,14 +2,19 @@ import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import Header from "@/components/common/Header";
 import { useRouter } from "next/router";
+import { SessionProvider } from "next-auth/react";
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({
+  Component,
+  pageProps: { session, ...pageProps },
+}: AppProps) {
   const showHeader = pageProps.showHeader !== false; // Header컴포넌트 조건부렌더링을 위한 변수
 
   const router = useRouter();
   const isExcludeMainArea =
     router.pathname === "/login" ||
     router.pathname === "/signup" ||
+    router.pathname === "/authCallback" ||
     router.pathname === "/";
 
   const mainClassName = `
@@ -18,10 +23,12 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <>
-      {showHeader && <Header />}
-      <main className={mainClassName}>
-        <Component {...pageProps} />
-      </main>
+      <SessionProvider session={session}>
+        {showHeader && <Header />}
+        <main className={mainClassName}>
+          <Component {...pageProps} />
+        </main>
+      </SessionProvider>
     </>
   );
 }
