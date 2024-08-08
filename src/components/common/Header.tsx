@@ -71,10 +71,16 @@ export default function Header() {
       ) : (
         <div className="flex-center gap-20 md:gap-40 font-medium-16 text-white">
           <button type="button">
-            <img
-              src={user.image ?? profile_img.src}
-              alt="프로필이미지"
-              className="w-20 h-20 md:w-45 md:h-45 rounded-[50%] border-1 boder-solid border-grayscale-300 object-contain"
+            <Dropdown
+              trigger={
+                <img
+                  src={user.image ?? profile_img.src}
+                  alt="프로필이미지"
+                  className="w-20 h-20 md:w-45 md:h-45 rounded-[50%] border-1 boder-solid border-grayscale-300 object-contain"
+                />
+              }
+              items={[HEADER_MENU.MY_PAGE, HEADER_MENU.LOGOUT]}
+              onSelect={handleSelect}
             />
           </button>
         </div>

@@ -23,11 +23,11 @@ export default function GoogleAuthCallback() {
             token: session.idToken,
             provider: storedProvider.toUpperCase(),
           });
+          router.push("/");
           localStorage.removeItem("provider");
         } catch (error) {
           console.error("소셜 로그인 오류:", error);
         }
-        router.push("/");
       };
 
       performLoginWithSocial();

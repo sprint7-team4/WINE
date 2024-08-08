@@ -23,11 +23,11 @@ export default function KakaoAuthCallback() {
             token: code,
             provider: "KAKAO",
           });
+          router.push("/");
         } catch (error) {
           console.error("소셜 로그인 오류:", error);
         }
       }
-      router.push("/");
     };
 
     loginWithKakao();
