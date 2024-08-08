@@ -2,8 +2,10 @@ import WineHero from "@/components/wineDetails/WineHero";
 import ReviewCard from "@/components/wineDetails/ReviewCard";
 import StarRatingSection from "@/components/wineDetails/StarRatingSection";
 import { getWineId } from "@/lib/reviewApi";
-import { Wine, WineReview } from "@/types/wineTypes";
+import { WineReview } from "@/types/wineTypes";
 import { GetServerSideProps } from "next";
+import { useEffect, useState } from "react";
+import { useReviewSubmitStore, useWineStore } from "@/store/reviewStore";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const wineId = context.params?.wineid;
@@ -30,24 +32,54 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 };
 
-const WineDetailPage = ({ wine, wine: { reviews } }: { wine: WineReview }) => {
-  if (!wine) {
-    return;
+const WineDetailPage = ({ wine }: { wine: WineReview }) => {
+  const [currentWine, setCurrentWine] = useState<WineReview | null>(null);
+  const setWine = useWineStore((state) => state.setWine);
+  const { isReviewSubmitted, setReviewSubmitted } = useReviewSubmitStore(
+    (state) => ({
+      isReviewSubmitted: state.isReviewSubmitted,
+      setReviewSubmitted: state.setReviewSubmitted,
+    })
+  );
+
+  useEffect(() => {
+    setWine(wine);
+    setCurrentWine(wine);
+  }, [wine, setWine]);
+
+  useEffect(() => {
+    if (isReviewSubmitted) {
+      const fetchWine = async () => {
+        try {
+          const res = await getWineId(String(wine.id));
+          setCurrentWine(res);
+          setReviewSubmitted(false);
+        } catch (error) {
+          console.error("Error fetching wine data:", error);
+        }
+      };
+
+      fetchWine();
+    }
+  }, [isReviewSubmitted, wine.id, setReviewSubmitted]);
+
+  if (!currentWine) {
+    return <div>Loading...</div>;
   }
 
   return (
     <div className="max-w-1140 mx-auto pt-[20px]">
-      <WineHero wine={wine} />
+      <WineHero wine={currentWine} />
       <div className="flex flex-col mt-60">
         <h2 className="font-bold-20 max-lg:hidden">리뷰 목록</h2>
         <div className="flex flex-col lg:flex-row gap-20 md:gap-36 lg:gap-60">
           <div className="order-2 lg:order-none flex flex-col gap-16 md:gap-24 lg:gap-20 mt-0 lg:mt-22">
-            {reviews.map((review) => (
+            {currentWine.reviews.map((review) => (
               <ReviewCard key={review.id} review={review} />
             ))}
           </div>
           <div className="flex-shrink-0 order-1 lg:order-none">
-            <StarRatingSection wine={wine} />
+            <StarRatingSection wine={currentWine} />
           </div>
         </div>
       </div>
