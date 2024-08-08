@@ -12,6 +12,8 @@ import { useEffect, useState } from "react";
 import { getReviewId } from "@/lib/reviewApi";
 import { BalancedProfile, WineBalance } from "@/types/reviewTypes";
 import ProfileSliders from "./ProfileSliders";
+import Dropdown from "../common/Dropdown";
+import { EDIT_MENU } from "@/constants/dropdown";
 
 const initialReview: Review = {
   id: 0,
@@ -44,6 +46,7 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
     rating,
   } = review;
   const userImage = image || defaultUserImg;
+  const [selectedItem, setSelectedItem] = useState("");
 
   const fetchWineData = async (id: number) => {
     try {
@@ -105,12 +108,20 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
             height={38}
             className="w-32 h-32 md:w-38 md:h-38"
           />
-          <Image
-            src={menuImg}
-            alt="메뉴"
-            width={38}
-            height={38}
-            className="w-32 h-32 md:w-38 md:h-38"
+          <Dropdown
+            trigger={
+              <Image
+                src={menuImg}
+                alt="메뉴"
+                width={38}
+                height={38}
+                className="w-32 h-32 md:w-38 md:h-38"
+              />
+            }
+            items={[EDIT_MENU.EDIT, EDIT_MENU.DELETE]}
+            onSelect={(item) => {
+              setSelectedItem(item);
+            }}
           />
         </div>
       </div>
