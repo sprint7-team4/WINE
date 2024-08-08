@@ -11,7 +11,7 @@ type dataType = {
 type OauthDataType = {
   state?: string;
   redirectUri?: string;
-  token: string | undefined;
+  token: string | string[] | undefined;
   provider?: string;
 };
 
@@ -98,8 +98,6 @@ export const loginWithSocial = async ({
 
 export const getUser = async () => {
   const token = localStorage.getItem("accessToken");
-
-  if (!token) return;
 
   const url = "/users/me";
   const options = {

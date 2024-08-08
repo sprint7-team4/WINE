@@ -12,7 +12,7 @@ import { useRouter } from "next/router";
 export default function Header() {
   const [isClient, setIsClient] = useState(false);
   const [user, setUser] = useState({
-    image: "",
+    image: null,
   });
   const router = useRouter();
 
@@ -22,8 +22,10 @@ export default function Header() {
     const getUserApi = async () => {
       try {
         const response = await getUser();
-        setUser(response);
-        console.log(response);
+        setUser((prevUser) => ({
+          ...prevUser,
+          ...response,
+        }));
       } catch (error) {
         console.error("유저 오류", error);
       }
@@ -72,7 +74,7 @@ export default function Header() {
             <Dropdown
               trigger={
                 <img
-                  src={user?.image ?? profile_img.src}
+                  src={user.image ?? profile_img.src}
                   alt="프로필이미지"
                   className="w-20 h-20 md:w-45 md:h-45 rounded-[50%] border-1 boder-solid border-grayscale-300 object-contain"
                 />

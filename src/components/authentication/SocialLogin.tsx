@@ -15,11 +15,21 @@ interface Props {
   setIsLoading: Dispatch<SetStateAction<boolean>>;
 }
 
+const REST_API_KEY = process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID;
+const REDIRECT_URI = process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI;
+const link = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
+
 export default function SocialLogin({ socialData, setIsLoading }: Props) {
   const handleSubmitClick = (id: string) => {
     setIsLoading(true);
-    localStorage.setItem("provider", id);
-    signIn(id, { callbackUrl: "/authCallback" });
+
+    if (id === "google") {
+      localStorage.setItem("provider", id);
+      signIn(id, { callbackUrl: "/auth/googleAuthCallback" });
+    }
+    if (id === "kakao") {
+      window.location.href = link;
+    }
   };
 
   return (
