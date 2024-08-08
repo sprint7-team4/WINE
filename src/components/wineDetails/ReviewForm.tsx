@@ -9,7 +9,7 @@ import ReviewTag from "./ReviewTag";
 import { AROMA_TO_KR, EN_AROMAS } from "@/constants/aroma";
 import InteractiveStarRating from "./InteractiveStarRating";
 import { createReview } from "@/lib/reviewApi";
-import { useReviewSubmitStore, useWineStore } from "@/store/reviewStore";
+import { useReviewRerenderStore, useWineStore } from "@/store/reviewStore";
 import useModalStore from "@/store/modalStore";
 
 const INITIALRATING = 0;
@@ -30,8 +30,8 @@ const ReviewForm = ({ mode, review, onCancel }: ReviewFormProps) => {
     wineId: 0,
   });
   const wineData = useWineStore((state) => state.wine);
-  const setReviewSubmitted = useReviewSubmitStore(
-    (state) => state.setReviewSubmitted
+  const setReviewSubmitted = useReviewRerenderStore(
+    (state) => state.setReviewRerendered
   );
   const { closeModal } = useModalStore();
 
@@ -95,6 +95,7 @@ const ReviewForm = ({ mode, review, onCancel }: ReviewFormProps) => {
       }
     } catch (error) {
       console.error("Error submitting review:", error);
+      alert("유효한 로그인이 아닙니다. 로그인을 해주세요.");
     } finally {
       closeModal();
     }
