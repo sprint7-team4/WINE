@@ -11,7 +11,7 @@ type dataType = {
 type OauthDataType = {
   state?: string;
   redirectUri?: string;
-  token: string | undefined;
+  token: string | string[] | undefined;
   provider?: string;
 };
 
