@@ -99,6 +99,8 @@ export const loginWithSocial = async ({
 export const getUser = async () => {
   const token = localStorage.getItem("accessToken");
 
+  if (!token) return;
+
   const url = "/users/me";
   const options = {
     method: "GET",
