@@ -11,10 +11,16 @@ import LandingCard3 from "@/assets/img/landing-card3.svg";
 import LandingCard4 from "@/assets/img/landing-card4.svg";
 
 import Button from "@/components/common/Button";
+import { useRouter } from "next/router";
 
 export default function Home() {
+  const router = useRouter();
+
+  const routeToWineList = () => {
+    router.push("/wineListPage");
+  };
   return (
-    <div className="bg-grayscale-100 pt-174 w-full">
+    <div className="bg-grayscale-100 pt-174 w-full pb-109">
       <div className="max-w-1140 h-full w-full mx-auto ">
         <div className="w-full h-535 bg-[#171A21] mb-160 rounded-16 flex-center relative">
           <div className="flex-center flex-col gap-32 absolute top-112">
@@ -154,8 +160,12 @@ export default function Home() {
           />
         </div>
       </div>
-      <div className="mx-auto">
-        <button>버튼</button>
+      <div className="mx-auto w-full flex-center">
+        <Button
+          title="와인 보러가기"
+          items="goWine"
+          onClick={routeToWineList}
+        />
       </div>
     </div>
   );
