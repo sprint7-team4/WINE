@@ -10,6 +10,8 @@ import LandingCard2 from "@/assets/img/landing-card2.svg";
 import LandingCard3 from "@/assets/img/landing-card3.svg";
 import LandingCard4 from "@/assets/img/landing-card4.svg";
 
+import Button from "@/components/common/Button";
+
 export default function Home() {
   return (
     <div className="bg-grayscale-100 pt-174 w-full">
