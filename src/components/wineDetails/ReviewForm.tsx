@@ -15,6 +15,7 @@ import {
   useWineStore,
 } from "@/store/reviewStore";
 import useModalStore from "@/store/modalStore";
+import { showToast } from "../common/Toast";
 
 const INITIALRATING = 0;
 
@@ -99,10 +100,11 @@ const ReviewForm = ({ mode, review }: ReviewFormProps) => {
       if (mode === REVIEW_MODE.CREATE) {
         await createReview(reviewData);
         setReviewSubmitted(true);
+        showToast("리뷰 등록에 성공했습니다!", "success");
       }
     } catch (error) {
       console.error("Error submitting review:", error);
-      alert("유효한 로그인이 아닙니다. 로그인을 해주세요.");
+      showToast("유효한 로그인이 아닙니다. <br /> 로그인을 해주세요.", "error");
     } finally {
       setFormType(REVIEW_MODE.EDIT);
       closeModal();
