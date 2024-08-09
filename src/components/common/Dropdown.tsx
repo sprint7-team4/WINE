@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import useClickOutside from "@/hooks/useClickOutside";
 import { DropdownProps } from "@/types/dropdownTypes";
+import { MenuItem } from "@/constants/dropdown";
 
 export default function Dropdown({
   trigger = <></>,
@@ -24,7 +25,7 @@ export default function Dropdown({
     onToggle(!isOpen);
   };
 
-  const handleItemClick = (item: string) => {
+  const handleItemClick = (item: MenuItem) => {
     setSelectedItem(item);
     setIsOpen(false);
     onSelect(item);

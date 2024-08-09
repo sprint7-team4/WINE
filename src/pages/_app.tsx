@@ -1,8 +1,10 @@
 import "@/styles/globals.css";
+import "@/styles/common.scss";
 import type { AppProps } from "next/app";
 import Header from "@/components/common/Header";
 import { useRouter } from "next/router";
 import { SessionProvider } from "next-auth/react";
+import { ToastContainer } from "react-toastify";
 
 export default function App({
   Component,
@@ -28,6 +30,7 @@ export default function App({
           <Component {...pageProps} />
         </main>
       </SessionProvider>
+      <ToastContainer />
     </>
   );
 }

@@ -13,8 +13,10 @@ import { deleteReview, getAccessToken, getReviewId } from "@/lib/reviewApi";
 import { BalancedProfile, WineBalance } from "@/types/reviewTypes";
 import ProfileSliders from "./ProfileSliders";
 import Dropdown from "../common/Dropdown";
-import { EDIT_MENU } from "@/constants/dropdown";
+import { EDIT_MENU, MenuItem } from "@/constants/dropdown";
 import { useReviewRerenderStore } from "@/store/reviewStore";
+import "react-toastify/dist/ReactToastify.css";
+import { showToast } from "../common/Toast";
 
 const initialReview: Review = {
   id: 0,
@@ -83,7 +85,7 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
     }
   }, [review]);
 
-  const handleSelect = async (item: string) => {
+  const handleSelect = async (item: MenuItem) => {
     const token = getAccessToken();
 
     if (!token) {
@@ -96,6 +98,7 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
       try {
         await deleteReview(id);
         setReviewRerendered(true);
+        showToast("삭제되었습니다.");
       } catch (error) {
         console.error("Failed to delete review:", error);
         alert("유효한 로그인이 아니거나 삭제 권한이 없습니다.");
@@ -106,7 +109,7 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
   return (
     <section className="max-lg:w-full w-800 p-[16px_20px] md:p-[32px_40px_24px] lg:p-[16.5px_40px_20px] rounded-16 border border-grayscale-300 border-solid">
       <div className="flex justify-between mb-16 md:mb-20">
-        <div className="flex gap-16 items-center">
+        <button className="flex gap-16 items-center">
           <Image
             src={userImage}
             alt="유저 프로필"
@@ -122,7 +125,7 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
               {getElapsedTime(createdAt)}
             </span>
           </div>
-        </div>
+        </button>
         <div className="flex items-center gap-18 md:gap-24">
           <Image
             src={favoriteImg}
