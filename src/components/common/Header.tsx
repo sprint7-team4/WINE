@@ -6,7 +6,7 @@ import { getUser } from "@/lib/authApi";
 import white_logo from "@/assets/img/logo-white.svg";
 import profile_img from "@/assets/img/profile-default.svg";
 import Dropdown from "./Dropdown";
-import { HEADER_MENU } from "@/constants/dropdown";
+import { HEADER_MENU, MenuItem } from "@/constants/dropdown";
 import { useRouter } from "next/router";
 
 export default function Header() {
@@ -43,7 +43,7 @@ export default function Header() {
     localStorage.removeItem("accessToken");
   };
 
-  const handleSelect = (item: string) => {
+  const handleSelect = (item: MenuItem) => {
     if (item === HEADER_MENU.MY_PAGE) {
       router.push("/mypage");
     } else if (item === HEADER_MENU.LOGOUT) {
