@@ -17,6 +17,7 @@ import { EDIT_MENU, MenuItem } from "@/constants/dropdown";
 import { useReviewRerenderStore } from "@/store/reviewStore";
 import "react-toastify/dist/ReactToastify.css";
 import { showToast } from "../common/Toast";
+import useModalStore from "@/store/modalStore";
 
 const initialReview: Review = {
   id: 0,
@@ -43,7 +44,7 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
   const setReviewRerendered = useReviewRerenderStore(
     (state) => state.setReviewRerendered
   );
-
+  const { openModal } = useModalStore();
   const {
     user: { nickname, image },
     createdAt,
@@ -89,19 +90,20 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
     const token = getAccessToken();
 
     if (!token) {
-      alert("권한이 없습니다. 로그인을 해주세요.");
+      showToast("권한이 없습니다. 로그인을 해주세요.", "error");
       return;
     }
 
     if (item === EDIT_MENU.EDIT) {
+      openModal();
     } else if (item === EDIT_MENU.DELETE) {
       try {
         await deleteReview(id);
         setReviewRerendered(true);
-        showToast("삭제되었습니다.");
+        showToast("삭제되었습니다!", "success");
       } catch (error) {
         console.error("Failed to delete review:", error);
-        alert("유효한 로그인이 아니거나 삭제 권한이 없습니다.");
+        showToast("유효한 로그인이 아니거나 삭제 권한이 없습니다.", "error");
       }
     }
   };
