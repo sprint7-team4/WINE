@@ -9,12 +9,16 @@ import ReviewTag from "./ReviewTag";
 import { AROMA_TO_KR, EN_AROMAS } from "@/constants/aroma";
 import InteractiveStarRating from "./InteractiveStarRating";
 import { createReview } from "@/lib/reviewApi";
-import { useReviewRerenderStore, useWineStore } from "@/store/reviewStore";
+import {
+  useFormType,
+  useReviewRerenderStore,
+  useWineStore,
+} from "@/store/reviewStore";
 import useModalStore from "@/store/modalStore";
 
 const INITIALRATING = 0;
 
-const ReviewForm = ({ mode, review, onCancel }: ReviewFormProps) => {
+const ReviewForm = ({ mode, review }: ReviewFormProps) => {
   const [localBalancedProfiles, setLocalBalancedProfiles] = useState({
     ...balancedProfiles,
   });
@@ -34,6 +38,9 @@ const ReviewForm = ({ mode, review, onCancel }: ReviewFormProps) => {
     (state) => state.setReviewRerendered
   );
   const { closeModal } = useModalStore();
+  const { setFormType } = useFormType((state) => ({
+    setFormType: state.setFormType,
+  }));
 
   useEffect(() => {
     if (mode === REVIEW_MODE.EDIT && review) {
@@ -97,6 +104,7 @@ const ReviewForm = ({ mode, review, onCancel }: ReviewFormProps) => {
       console.error("Error submitting review:", error);
       alert("유효한 로그인이 아닙니다. 로그인을 해주세요.");
     } finally {
+      setFormType(REVIEW_MODE.EDIT);
       closeModal();
     }
   };
@@ -115,7 +123,13 @@ const ReviewForm = ({ mode, review, onCancel }: ReviewFormProps) => {
           <h1 className="font-bold-32">
             {mode === REVIEW_MODE.CREATE ? "리뷰 등록" : "수정하기"}
           </h1>
-          <button onClick={onCancel}>
+          <button
+            type="button"
+            onClick={() => {
+              closeModal();
+              setFormType(REVIEW_MODE.EDIT);
+            }}
+          >
             <Image src={closeButton} alt="닫기 버튼" width={34} height={34} />
           </button>
         </div>

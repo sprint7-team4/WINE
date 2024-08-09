@@ -24,8 +24,6 @@ export enum REVIEW_MODE {
 export interface ReviewFormProps {
   mode: REVIEW_MODE;
   review?: Review;
-  onSubmit: (review: Review) => void;
-  onCancel: () => void;
 }
 
 export interface SendReview {
