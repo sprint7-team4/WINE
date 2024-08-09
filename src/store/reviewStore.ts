@@ -13,11 +13,11 @@ export const useWineStore = create<WineStore>((set) => ({
 
 interface ReviewRerenderStore {
   isReviewRerendered: boolean;
-  setReviewRerendered: (submitted: boolean) => void;
+  setReviewRerendered: (Rerendered: boolean) => void;
 }
 
 export const useReviewRerenderStore = create<ReviewRerenderStore>((set) => ({
   isReviewRerendered: false,
-  setReviewRerendered: (submitted: boolean) =>
-    set({ isReviewRerendered: submitted }),
+  setReviewRerendered: (Rerendered: boolean) =>
+    set({ isReviewRerendered: Rerendered }),
 }));

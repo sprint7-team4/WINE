@@ -1,3 +1,4 @@
+import { MenuItem } from "@/constants/dropdown";
 import { ReactElement } from "react";
 
 export interface TriggerType {
@@ -5,9 +6,9 @@ export interface TriggerType {
 }
 
 export interface DropdownProps extends TriggerType {
-  items?: string[];
+  items?: MenuItem[];
   children?: React.ReactNode;
-  onSelect?: (item: string) => void;
+  onSelect?: (item: MenuItem) => void;
   textDrop?: boolean;
   triggerClassName?: string;
   menuClassName?: string;
