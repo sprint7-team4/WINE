@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useWineStore } from "@/store/filteringStore";
+import { useDebounce } from "@/hooks/useDebounce";
+import { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import Slider from "react-input-slider";
 
@@ -19,16 +21,18 @@ const sliderStyles = {
   },
 };
 
-function SliderComponent({ axis, xmax, xmin, xstep, onChange, value }: any) {
+function SliderComponent({ axis, xmax, xmin, xstep, value, onChange }: any) {
+  const { setPriceRange } = useWineStore();
   const [showValue, setShowValue] = useState("0");
-  let inputValue = "";
+  const debouncedValue = useDebounce(value, 500);
 
-  const handleChange = (value: any) => {
+  useEffect(() => {
+    setPriceRange?.([0, debouncedValue]);
+  }, [debouncedValue, setPriceRange]);
+
+  const handleChange = (value: number) => {
+    setShowValue(value.toLocaleString("ko-KR", { maximumFractionDigits: 4 }));
     onChange(value);
-    inputValue = value.toLocaleString("ko-KR", {
-      maximumFractionDigits: 4,
-    });
-    setShowValue(inputValue);
   };
 
   return (
@@ -67,8 +71,8 @@ export const PriceSlider = () => {
             xmax={100000}
             xmin={0}
             xstep={1000}
-            onChange={onChange}
             value={value}
+            onChange={onChange}
           />
         )}
       />

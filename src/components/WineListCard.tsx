@@ -2,8 +2,14 @@ import wine1 from "@/assets/img/wine1.png";
 import right from "@/assets/img/right.svg";
 import Image from "next/image";
 import StarRating from "./StarRating";
+import { useState } from "react";
+import { Wine } from "@/types/wineTypes";
 
 const WineListCard = () => {
+  const [wineList, setWineList] = useState<Wine[]>([]);
+
+  const fetchWineList = async () => {};
+
   return (
     <>
       <div className="w-800 h-375 rounded-16 border border-grayscale-300 flex-col">
