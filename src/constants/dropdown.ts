@@ -7,3 +7,5 @@ export enum EDIT_MENU {
   EDIT = "수정하기",
   DELETE = "삭제하기",
 }
+
+export type MenuItem = HEADER_MENU | EDIT_MENU;
