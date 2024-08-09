@@ -1,11 +1,9 @@
 import InstantRatingBar from "./InstantRatingBar";
 import StarRating from "../StarRating";
-import { Wine, WineReview } from "@/types/wineTypes";
-import { useState } from "react";
-import ReviewModal from "./ReviewModal";
+import { WineReview } from "@/types/wineTypes";
 import useModalStore from "@/store/modalStore";
-
-const MAX_BAR_WIDTH = 241;
+import { useFormType } from "@/store/reviewStore";
+import { REVIEW_MODE } from "@/types/reviewTypes";
 
 const StarRatingSection = ({
   wine: { avgRating, reviewCount, avgRatings },
@@ -16,7 +14,15 @@ const StarRatingSection = ({
   const sortedRatings = Object.entries(avgRatings).sort(
     ([a], [b]) => Number(b) - Number(a)
   );
-  const { isOpen, openModal, closeModal } = useModalStore();
+  const { openModal } = useModalStore();
+  const { setFormType } = useFormType((state) => ({
+    setFormType: state.setFormType,
+  }));
+
+  const handleClick = () => {
+    openModal();
+    setFormType(REVIEW_MODE.CREATE);
+  };
 
   return (
     <section className="md:h-162 max-lg:grid grid-rows-1 md:grid-rows-2 max-lg:grid-cols-2 max-lg:max-w-578 m-[0_auto]">
@@ -48,11 +54,10 @@ const StarRatingSection = ({
       <div className="max-md:flex max-md:justify-end">
         <button
           className="lg:row-span-2 w-100 h-40 md:w-113 md:h-42 lg:order-none mt-0 md:mt-20 lg:mt-30 bg-main font-bold-14 md:font-bold-16 text-white rounded-12"
-          onClick={openModal}
+          onClick={handleClick}
         >
           리뷰 남기기
         </button>
-        <ReviewModal isOpen={isOpen} onClose={closeModal} />
       </div>
     </section>
   );

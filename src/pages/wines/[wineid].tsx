@@ -5,7 +5,14 @@ import { getWineId } from "@/lib/reviewApi";
 import { WineReview } from "@/types/wineTypes";
 import { GetServerSideProps } from "next";
 import { useEffect, useState } from "react";
-import { useReviewRerenderStore, useWineStore } from "@/store/reviewStore";
+import {
+  useFormType,
+  useReviewRerenderStore,
+  useWineStore,
+} from "@/store/reviewStore";
+import ReviewModal from "@/components/wineDetails/ReviewModal";
+import { REVIEW_MODE } from "@/types/reviewTypes";
+import useModalStore from "@/store/modalStore";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const wineId = context.params?.wineid;
@@ -41,6 +48,11 @@ const WineDetailPage = ({ wine }: { wine: WineReview }) => {
       setReviewRerendered: state.setReviewRerendered,
     })
   );
+  const { isOpen, closeModal } = useModalStore();
+  const { formType, setFormType } = useFormType((state) => ({
+    formType: state.formType,
+    setFormType: state.setFormType,
+  }));
 
   useEffect(() => {
     setWine(wine);
@@ -83,6 +95,7 @@ const WineDetailPage = ({ wine }: { wine: WineReview }) => {
           </div>
         </div>
       </div>
+      <ReviewModal mode={formType} />
     </div>
   );
 };
