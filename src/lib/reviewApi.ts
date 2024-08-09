@@ -2,11 +2,11 @@ import { Review, Wine, WineReview } from "@/types/wineTypes";
 import axios from "./axios";
 import { SendReview } from "@/types/reviewTypes";
 
-const getAccessToken = () => {
+export const getAccessToken = () => {
   return localStorage.getItem("accessToken");
 };
 
-export const getWineId = async (id: string): Promise<WineReview> => {
+export const getWineId = async (id: string) => {
   try {
     const response = await axios.get<WineReview>(`wines/${id}`);
     return response.data;
@@ -16,7 +16,7 @@ export const getWineId = async (id: string): Promise<WineReview> => {
   }
 };
 
-export const getReviewId = async (id: number): Promise<Review> => {
+export const getReviewId = async (id: number) => {
   try {
     const response = await axios.get<Review>(`reviews/${id}`);
     return response.data;
@@ -41,6 +41,22 @@ export const createReview = async (
     return response.data;
   } catch (error) {
     console.error("Error creating review:", error);
+    throw error;
+  }
+};
+
+export const deleteReview = async (id: number) => {
+  try {
+    const token = getAccessToken();
+
+    await axios.delete(`reviews/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error) {
+    console.error("Error deleting review:", error);
     throw error;
   }
 };

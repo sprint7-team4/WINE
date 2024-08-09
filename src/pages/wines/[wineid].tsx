@@ -5,7 +5,7 @@ import { getWineId } from "@/lib/reviewApi";
 import { WineReview } from "@/types/wineTypes";
 import { GetServerSideProps } from "next";
 import { useEffect, useState } from "react";
-import { useReviewSubmitStore, useWineStore } from "@/store/reviewStore";
+import { useReviewRerenderStore, useWineStore } from "@/store/reviewStore";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const wineId = context.params?.wineid;
@@ -35,10 +35,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 const WineDetailPage = ({ wine }: { wine: WineReview }) => {
   const [currentWine, setCurrentWine] = useState<WineReview | null>(null);
   const setWine = useWineStore((state) => state.setWine);
-  const { isReviewSubmitted, setReviewSubmitted } = useReviewSubmitStore(
+  const { isReviewRerendered, setReviewRerendered } = useReviewRerenderStore(
     (state) => ({
-      isReviewSubmitted: state.isReviewSubmitted,
-      setReviewSubmitted: state.setReviewSubmitted,
+      isReviewRerendered: state.isReviewRerendered,
+      setReviewRerendered: state.setReviewRerendered,
     })
   );
 
@@ -48,12 +48,12 @@ const WineDetailPage = ({ wine }: { wine: WineReview }) => {
   }, [wine, setWine]);
 
   useEffect(() => {
-    if (isReviewSubmitted) {
+    if (isReviewRerendered) {
       const fetchWine = async () => {
         try {
           const res = await getWineId(String(wine.id));
           setCurrentWine(res);
-          setReviewSubmitted(false);
+          setReviewRerendered(false);
         } catch (error) {
           console.error("Error fetching wine data:", error);
         }
@@ -61,7 +61,7 @@ const WineDetailPage = ({ wine }: { wine: WineReview }) => {
 
       fetchWine();
     }
-  }, [isReviewSubmitted, wine.id, setReviewSubmitted]);
+  }, [isReviewRerendered, wine.id, setReviewRerendered]);
 
   if (!currentWine) {
     return <div>Loading...</div>;

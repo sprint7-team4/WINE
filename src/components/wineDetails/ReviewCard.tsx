@@ -9,11 +9,12 @@ import { Review } from "@/types/wineTypes";
 import { getElapsedTime } from "@/utils/wineDetailUtils";
 import { AROMA_TO_KR } from "@/constants/aroma";
 import { useEffect, useState } from "react";
-import { getReviewId } from "@/lib/reviewApi";
+import { deleteReview, getAccessToken, getReviewId } from "@/lib/reviewApi";
 import { BalancedProfile, WineBalance } from "@/types/reviewTypes";
 import ProfileSliders from "./ProfileSliders";
 import Dropdown from "../common/Dropdown";
 import { EDIT_MENU } from "@/constants/dropdown";
+import { useReviewRerenderStore } from "@/store/reviewStore";
 
 const initialReview: Review = {
   id: 0,
@@ -37,6 +38,9 @@ const initialReview: Review = {
 const ReviewCard = ({ review: { id } }: { review: Review }) => {
   const [review, setReview] = useState<Review>(initialReview);
   const [profilesArray, setProfilesArray] = useState<BalancedProfile[]>([]);
+  const setReviewRerendered = useReviewRerenderStore(
+    (state) => state.setReviewRerendered
+  );
 
   const {
     user: { nickname, image },
@@ -46,7 +50,6 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
     rating,
   } = review;
   const userImage = image || defaultUserImg;
-  const [selectedItem, setSelectedItem] = useState("");
 
   const fetchWineData = async (id: number) => {
     try {
@@ -79,6 +82,26 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
       setProfilesArray(profilesArray);
     }
   }, [review]);
+
+  const handleSelect = async (item: string) => {
+    const token = getAccessToken();
+
+    if (!token) {
+      alert("권한이 없습니다. 로그인을 해주세요.");
+      return;
+    }
+
+    if (item === EDIT_MENU.EDIT) {
+    } else if (item === EDIT_MENU.DELETE) {
+      try {
+        await deleteReview(id);
+        setReviewRerendered(true);
+      } catch (error) {
+        console.error("Failed to delete review:", error);
+        alert("유효한 로그인이 아니거나 삭제 권한이 없습니다.");
+      }
+    }
+  };
 
   return (
     <section className="max-lg:w-full w-800 p-[16px_20px] md:p-[32px_40px_24px] lg:p-[16.5px_40px_20px] rounded-16 border border-grayscale-300 border-solid">
@@ -119,9 +142,7 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
               />
             }
             items={[EDIT_MENU.EDIT, EDIT_MENU.DELETE]}
-            onSelect={(item) => {
-              setSelectedItem(item);
-            }}
+            onSelect={handleSelect}
           />
         </div>
       </div>

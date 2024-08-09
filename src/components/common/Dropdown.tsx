@@ -55,13 +55,13 @@ export default function Dropdown({
       </div>
       {isOpen && (
         <ul
-          className={`flex flex-col flex-center font-medium-14 md:font-medium-16 translate-y-8 right-0 whitespace-nowrap absolute bg-white rounded-16 border border-grayscale-300 ${menuClassName}`}
+          className={`flex flex-col flex-center font-medium-14 md:font-medium-16 translate-y-8 right-0 whitespace-nowrap absolute bg-white rounded-16 border border-grayscale-300 z-3 ${menuClassName}`}
         >
           {items.length !== 0
             ? items.map((value) => (
-                <div className="p-[3px_6px] z-3" key={value}>
+                <div className="w-110 md:w-126 p-[3px_6px]" key={value}>
                   <li
-                    className={`p-[8px_14px] md:p-[10px_22px] hover:bg-main-10 text-grayscale-800 hover:text-main rounded-10 cursor-pointer ${itemClassName}`}
+                    className={`flex flex-col flex-center p-[8px_14px] md:p-[10px_22px] hover:bg-main-10 text-grayscale-800 hover:text-main rounded-10 cursor-pointer ${itemClassName}`}
                     onClick={() => handleItemClick(value)}
                   >
                     {value}
