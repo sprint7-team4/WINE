@@ -13,12 +13,11 @@ const itemVariants = {
     "flex-center w-full h-48 rounded-16 px-172 py-16 font-bold-16 text-white bg-main " +
     "lg:h-50",
   signIn:
-    "flex-centerw-full h-48 rounded-16 px-172 py-16 font-bold-16 text-white bg-main " +
+    "flex-center w-full h-48 rounded-16 px-172 py-16 font-bold-16 text-white bg-main " +
     "lg:h-50",
   wineRegister:
-    "flex-center w-343 h-48 px-98 py-12 bg-main font-bold-16 text-white rounded-12 " +
-    "md:w-220 md:h-48 md:h-48 md:gap-10 md:px-0 md:rounded-16 md:px-66 md:py-11 " +
-    "lg:w-full lg:h-50 lg:rounded-16 lg:px-133 lg:py-12",
+    "w-[70%] h-54 bg-main font-bold-16 text-white rounded-12 whitespace-nowrap " +
+    "md:w-294",
   wineTypes:
     "flex-center w-auto h-42 px-18 py-10 font-medium-16 bg-white text-[#2D3034] border border-grayscale-300 rounded-100 ",
   reviewSubmit:
@@ -32,8 +31,8 @@ const itemVariants = {
   delete:
     "flex-center w-156 h-54 px-36 py-16 rounded-12 bg-main font-bold-16 text-white",
   wineRegisterCancel:
-    "flex-center w-96 h-54 px-0 py-16 rounded-12 bg-main-10 font-bold-16 text-main " +
-    "lg:w-108 lg:px-36",
+    "w-[30%] h-54 rounded-12 bg-main-10 font-bold-16 text-main whitespace-nowrap " +
+    "md:w-108",
 };
 
 export default function Button(props: ButtonProps) {

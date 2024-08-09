@@ -8,12 +8,17 @@ import SocialLogin from "@/components/authentication/SocialLogin";
 import { getHeaderStaticProps } from "@/utils/getHeaderStaticProps";
 import { socialArray } from "@/constants/socialLogins";
 
+import WineRegistrationModal from "@/components/WineRegistrationModal";
+import useModalStore from "@/store/modalStore";
+
 export const getStaticProps = async () => {
   return getHeaderStaticProps(false);
 };
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
+
+  const { openModal, closeModal } = useModalStore(); //
 
   if (isLoading) {
     return (
@@ -52,6 +57,10 @@ export default function Login() {
           </Link>
         </div>
       </div>
+      <button type="button" onClick={openModal}>
+        나를 클릭해 모달모달~
+      </button>
+      <WineRegistrationModal />
     </div>
   );
 }
