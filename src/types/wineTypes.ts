@@ -3,7 +3,7 @@ import { EN_AROMAS } from "@/constants/aroma";
 export interface GetWinesParams {
   limit: number;
   cursor?: number;
-  type?: "RED" | "WHITE" | "SPARKLING";
+  type?: "RED" | "WHITE" | "SPARKLING" | null;
   minPrice?: number;
   maxPrice?: number;
   rating?: number;
