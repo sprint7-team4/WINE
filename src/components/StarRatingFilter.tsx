@@ -19,8 +19,7 @@ const StarRatingFiltering: React.FC = () => {
   ];
 
   const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { target } = event;
-    const { value } = target;
+    const { value } = event.target;
 
     const numValue = parseInt(value, 10);
     console.log(numValue);

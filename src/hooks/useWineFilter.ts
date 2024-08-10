@@ -40,6 +40,11 @@ export const useWineFilter = () => {
 
         console.log("와인리스트 :::", wineList);
 
+        if (ratingRange[1] < 5) {
+          wineList = wineList.filter(
+            (wine) => wine.avgRating <= ratingRange[1]
+          );
+        }
         // 클라이언트 측 정렬
         if (sortBy === "latest") {
           wineList.sort(
