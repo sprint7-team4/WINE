@@ -4,8 +4,11 @@ import StarRatingFilter from "./StarRatingFilter";
 import { useWineStore } from "@/store/filteringStore";
 
 type WineType = "RED" | "WHITE" | "SPARKLING" | null;
+import useModalStore from "@/store/modalStore";
 
 const SideFiltering = () => {
+  const { openModal } = useModalStore();
+
   const wineTypes: WineType[] = ["RED", "WHITE", "SPARKLING"];
   const [selectedWineType, setSelectedWineType] = useState<WineType>(null);
 
@@ -42,7 +45,10 @@ const SideFiltering = () => {
           <StarRatingFilter />
         </div>
 
-        <button className="cursor-pointer mt-60 w-full h-50 rounded-16 bg-main text-16 text-white font-bold">
+        <button
+          className="cursor-pointer mt-60 w-full h-50 rounded-16 bg-main text-16 text-white font-bold"
+          onClick={openModal}
+        >
           와인 등록하기
         </button>
       </div>

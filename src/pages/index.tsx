@@ -17,7 +17,7 @@ export default function Home() {
   const router = useRouter();
 
   const routeToWineList = () => {
-    router.push("/wineListPage");
+    router.push("/wines");
   };
   return (
     <div className="bg-grayscale-100 pt-174 w-full pb-109">

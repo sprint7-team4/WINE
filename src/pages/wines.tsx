@@ -6,6 +6,7 @@ import WineListCard from "@/components/WineListCard";
 import { useWineFilter } from "@/hooks/useWineFilter";
 import { useWineStore } from "@/store/filteringStore";
 import WineListCardList from "@/components/WineListCardList";
+import WineRegistrationModal from "@/components/WineRegistrationModal";
 
 const WineListPage: FC = () => {
   // const { fetchWines, filteredWines } = useWineFilter();
@@ -46,6 +47,7 @@ const WineListPage: FC = () => {
           </div>
         </div>
       </div>
+      <WineRegistrationModal />
     </>
   );
 };

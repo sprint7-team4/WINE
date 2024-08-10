@@ -1,5 +1,15 @@
 import { EN_AROMAS } from "@/constants/aroma";
 
+export type WineType = "RED" | "WHITE" | "SPARKLING";
+
+export interface PostWine {
+  name: string;
+  region: string;
+  image: string;
+  price: string | number;
+  type: WineType;
+}
+
 export interface GetWinesParams {
   limit: number;
   cursor?: number;
