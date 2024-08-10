@@ -8,27 +8,27 @@ const sliderStyles = {
   track: {
     width: "284px",
     height: "6px",
-    backgroundColor: "#ddd", // 트랙의 기본 배경색
+    backgroundColor: "#ddd",
   },
   active: {
-    backgroundColor: "#6A42DB", // 활성화된 트랙의 배경색
+    backgroundColor: "#6A42DB",
   },
   thumb: {
     width: "20px",
     height: "20px",
-    backgroundColor: "#ffffff", // 썸의 기본 배경색
+    backgroundColor: "#ffffff",
     borderRadius: "50%",
   },
 };
 
 function SliderComponent({ axis, xmax, xmin, xstep, value, onChange }: any) {
-  const { setPriceRange } = useWineStore();
+  const { setMaxPrice } = useWineStore();
   const [showValue, setShowValue] = useState("0");
   const debouncedValue = useDebounce(value, 500);
 
   useEffect(() => {
-    setPriceRange?.([0, debouncedValue]);
-  }, [debouncedValue, setPriceRange]);
+    setMaxPrice(debouncedValue);
+  }, [debouncedValue, setMaxPrice]);
 
   const handleChange = (value: number) => {
     setShowValue(value.toLocaleString("ko-KR", { maximumFractionDigits: 4 }));
@@ -38,7 +38,9 @@ function SliderComponent({ axis, xmax, xmin, xstep, value, onChange }: any) {
   return (
     <div>
       <div className="w-284 h-26 flex justify-between mt-20">
-        <span className="text-16 text-main font-medium">&#8361; 0</span>
+        <span className="text-16 text-main font-medium">
+          &#8361; {xmin.toLocaleString()}
+        </span>
         <span className="text-16 text-main font-medium">
           &#8361; {showValue}
         </span>
@@ -57,19 +59,20 @@ function SliderComponent({ axis, xmax, xmin, xstep, value, onChange }: any) {
 }
 
 export const PriceSlider = () => {
+  const { minPrice } = useWineStore();
   const { control } = useForm();
 
   return (
     <>
       <Controller
         control={control}
-        name="test"
-        defaultValue={50}
+        name="maxPrice"
+        defaultValue={minPrice}
         render={({ field: { value, onChange } }) => (
           <SliderComponent
             axis={"x"}
             xmax={100000}
-            xmin={0}
+            xmin={minPrice}
             xstep={1000}
             value={value}
             onChange={onChange}

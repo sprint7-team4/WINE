@@ -1,84 +1,83 @@
 // useWineFilter.ts
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useWineStore } from "@/store/filteringStore";
 import { getWines } from "@/lib/wineApi";
 import { Wine, GetWinesParams } from "@/types/wineTypes";
 
 export const useWineFilter = () => {
   const {
-    wines,
     sortBy,
     wineType,
-    priceRange,
+    minPrice,
+    maxPrice,
     ratingRange,
-    nextCursor,
-    setWines,
+    searchTerm,
     setIsLoading,
     setTotalCount,
     setNextCursor,
   } = useWineStore();
 
-  const fetchWines = useCallback(async () => {
-    setIsLoading(true);
+  const [filteredWines, setFilteredWines] = useState<Wine[]>([]);
 
-    const params: GetWinesParams = {
-      limit: 10,
-      type: wineType,
-      cursor: nextCursor,
-    };
+  const fetchWines = useCallback(
+    async (cursor?: number) => {
+      setIsLoading(true);
 
-    try {
-      const response = await getWines(params);
+      const params: GetWinesParams = {
+        limit: 10,
+        cursor,
+        type: wineType,
+        minPrice,
+        maxPrice,
+        rating: ratingRange[0],
+        name: searchTerm,
+      };
 
-      let filteredWines: Wine[] = response.list;
+      try {
+        const response = await getWines(params);
 
-      // 클라이언트 측 필터링
-      filteredWines = filteredWines.filter(
-        (wine: Wine) =>
-          wine.price >= priceRange[0] && wine.price <= priceRange[1]
-      );
+        let wineList: Wine[] = response.list;
 
-      filteredWines = filteredWines.filter(
-        (wine: Wine) =>
-          wine.avgRating >= ratingRange[0] && wine.avgRating <= ratingRange[1]
-      );
+        console.log("와인리스트 :::", wineList);
 
-      // 정렬 로직
-      if (sortBy === "latest") {
-        filteredWines = filteredWines.sort(
-          (a, b) =>
-            new Date(b.recentReview?.updatedAt || "").getTime() -
-            new Date(a.recentReview?.updatedAt || "").getTime()
-        );
-      } else if (sortBy === "mostReviews") {
-        filteredWines = filteredWines.sort(
-          (a, b) => b.reviewCount - a.reviewCount
-        );
-      } else if (sortBy === "priceHigh") {
-        filteredWines = filteredWines.sort((a, b) => b.price - a.price);
-      } else if (sortBy === "priceLow") {
-        filteredWines = filteredWines.sort((a, b) => a.price - b.price);
+        // 클라이언트 측 정렬
+        if (sortBy === "latest") {
+          wineList.sort(
+            (a, b) =>
+              new Date(b.recentReview?.updatedAt || "").getTime() -
+              new Date(a.recentReview?.updatedAt || "").getTime()
+          );
+        } else if (sortBy === "mostReviews") {
+          wineList.sort((a, b) => b.reviewCount - a.reviewCount);
+        } else if (sortBy === "priceHigh") {
+          wineList.sort((a, b) => b.price - a.price);
+        } else if (sortBy === "priceLow") {
+          wineList.sort((a, b) => a.price - b.price);
+        } else if (sortBy === "recommended") {
+          wineList.sort((a, b) => b.avgRating - a.avgRating);
+        }
+
+        setFilteredWines(wineList);
+        setTotalCount(response.totalCount);
+        setNextCursor(response.nextCursor);
+      } catch (error) {
+        console.error("Failed to fetch wines:", error);
+      } finally {
+        setIsLoading(false);
       }
+    },
+    [
+      sortBy,
+      wineType,
+      minPrice,
+      maxPrice,
+      ratingRange,
+      searchTerm,
+      setIsLoading,
+      setTotalCount,
+      setNextCursor,
+    ]
+  );
 
-      setWines(filteredWines);
-      setTotalCount(response.totalCount);
-      setNextCursor(response.nextCursor);
-    } catch (error) {
-      console.error("Failed to fetch wines:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [
-    sortBy,
-    wineType,
-    priceRange,
-    ratingRange,
-    nextCursor,
-    setWines,
-    setIsLoading,
-    setTotalCount,
-    setNextCursor,
-  ]);
-
-  return { fetchWines };
+  return { fetchWines, filteredWines };
 };

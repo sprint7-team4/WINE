@@ -2,18 +2,36 @@ import { ChangeEvent, useState } from "react";
 import React from "react";
 import searchIcon from "@/assets/img/search.svg";
 import Image from "next/image";
+import { useWineStore } from "@/store/filteringStore";
+
+type FilterValue =
+  | "latest"
+  | "recommended"
+  | "mostReviews"
+  | "priceHigh"
+  | "priceLow";
+
+interface FilterOption {
+  value: FilterValue;
+  label: string;
+}
 
 const TopFiltering = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedFiltering, setSelectedFiltering] = useState("");
-  const filterList = ["리뷰순", "높은가격순", "낮은가격순", "추천순"];
+  const { searchTerm, setSearchTerm, sortBy, setSortBy } = useWineStore();
+
+  const filterList: FilterOption[] = [
+    { value: "recommended", label: "추천순" },
+    { value: "mostReviews", label: "많은리뷰" },
+    { value: "priceHigh", label: "높은가격순" },
+    { value: "priceLow", label: "낮은가격순" },
+  ];
 
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
 
-  const handleSelectFiltering = (selected: string) => {
-    setSelectedFiltering(selected);
+  const handleSelectFiltering = (selected: FilterValue) => {
+    setSortBy(selected);
   };
   return (
     <div className="mt-40 w-1140 h-48 flex justify-end">
@@ -32,13 +50,13 @@ const TopFiltering = () => {
         />
       </div>
       <div className="w-298 h-48 flex justify-between">
-        {filterList.map((filterName, index) => (
+        {filterList.map((filterName) => (
           <span
-            className={`cursor-pointer h-48 text-16 font-medium flex items-center ${selectedFiltering === filterName ? "text-main" : "text-grayscale-500"}`}
-            key={index}
-            onClick={() => handleSelectFiltering(filterName)}
+            className={`cursor-pointer h-48 text-16 font-medium flex items-center ${sortBy === filterName.value ? "text-main" : "text-grayscale-500"}`}
+            key={filterName.value}
+            onClick={() => handleSelectFiltering(filterName.value)}
           >
-            {filterName}
+            {filterName.label}
           </span>
         ))}
       </div>
