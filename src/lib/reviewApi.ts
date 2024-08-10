@@ -1,14 +1,14 @@
-import { Review, Wine } from "@/types/wineTypes";
+import { Review, Wine, WineReview } from "@/types/wineTypes";
 import axios from "./axios";
 import { SendReview } from "@/types/reviewTypes";
 
-const getAccessToken = () => {
+export const getAccessToken = () => {
   return localStorage.getItem("accessToken");
 };
 
-export const getWineId = async (id: string): Promise<Wine> => {
+export const getWineId = async (id: string) => {
   try {
-    const response = await axios.get<Wine>(`wines/${id}`);
+    const response = await axios.get<WineReview>(`wines/${id}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching wines", error);
@@ -16,7 +16,7 @@ export const getWineId = async (id: string): Promise<Wine> => {
   }
 };
 
-export const getReviewId = async (id: number): Promise<Review> => {
+export const getReviewId = async (id: number) => {
   try {
     const response = await axios.get<Review>(`reviews/${id}`);
     return response.data;
@@ -31,7 +31,6 @@ export const createReview = async (
 ): Promise<SendReview> => {
   try {
     const token = getAccessToken();
-    console.log(reviewData);
 
     const response = await axios.post("reviews/", reviewData, {
       headers: {
@@ -42,6 +41,22 @@ export const createReview = async (
     return response.data;
   } catch (error) {
     console.error("Error creating review:", error);
+    throw error;
+  }
+};
+
+export const deleteReview = async (id: number) => {
+  try {
+    const token = getAccessToken();
+
+    await axios.delete(`reviews/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error) {
+    console.error("Error deleting review:", error);
     throw error;
   }
 };
