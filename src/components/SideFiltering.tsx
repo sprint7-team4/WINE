@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { PriceSlider } from "./PriceSlider";
 import StarRatingFilter from "./StarRatingFilter";
+import useModalStore from "@/store/modalStore";
 
 const SideFiltering = () => {
+  const { openModal } = useModalStore();
   const wineTypes = ["Red", "White", "Sparkling"];
   const [selectedWineType, setSelectedWineType] = useState("");
 
@@ -35,7 +37,10 @@ const SideFiltering = () => {
           <StarRatingFilter />
         </div>
 
-        <button className="cursor-pointer mt-60 w-full h-50 rounded-16 bg-main text-16 text-white font-bold">
+        <button
+          className="cursor-pointer mt-60 w-full h-50 rounded-16 bg-main text-16 text-white font-bold"
+          onClick={openModal}
+        >
           와인 등록하기
         </button>
       </div>

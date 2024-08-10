@@ -4,6 +4,8 @@ import TopFiltering from "@/components/TopFiltering";
 import SideFiltering from "@/components/SideFiltering";
 import WineListCard from "@/components/WineListCard";
 
+import WineRegistrationModal from "@/components/WineRegistrationModal";
+
 const WineListPage: React.FC = () => {
   return (
     <>
@@ -23,6 +25,7 @@ const WineListPage: React.FC = () => {
           <WineListCard />
         </div>
       </div>
+      <WineRegistrationModal />
     </>
   );
 };

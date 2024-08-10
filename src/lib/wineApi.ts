@@ -1,5 +1,10 @@
 import axios from "./axios";
-import { GetWinesParams, GetWinesResponse, Wine } from "../types/wineTypes";
+import {
+  GetWinesParams,
+  GetWinesResponse,
+  PostWine,
+  Wine,
+} from "../types/wineTypes";
 
 export const getWines = async (
   params: GetWinesParams
@@ -23,6 +28,37 @@ export const getRecommendedWines = async (
     return res.data;
   } catch (error) {
     console.log("Error fetching recommended Wines", error);
+    throw error;
+  }
+};
+
+export const postWine = async ({
+  name,
+  price,
+  region,
+  image,
+  type,
+}: PostWine): Promise<PostWine> => {
+  const token = localStorage.getItem("accessToken");
+  try {
+    const res = await axios.post<PostWine>(
+      "wines",
+      {
+        name,
+        price,
+        region,
+        image,
+        type,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return res.data;
+  } catch (error) {
+    console.log("와인 등록에 실패했습니다.", error);
     throw error;
   }
 };
