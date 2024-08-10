@@ -29,7 +29,7 @@ const StarRatingSection = ({
       <div className="max-md:mb-24 max-md:flex max-md:flex-col">
         <div className="md:mt-18 lg:mt-0 flex items-center gap-20 mb-20 max-lg:mb-0 lg:row-span-1">
           <h1 className="text-36 font-extrabold leading-[42.96px] md:text-54 md:leading-[64.44px]">
-            {avgRating.toFixed(1)}
+            {avgRating?.toFixed(1)}
           </h1>
           <div className="flex flex-col gap-5">
             <div className="flex">
