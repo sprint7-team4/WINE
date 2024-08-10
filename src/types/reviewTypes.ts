@@ -26,6 +26,12 @@ export interface ReviewFormProps {
   review?: Review;
 }
 
+export interface User {
+  id: number;
+  nickname: string;
+  image: string;
+}
+
 export interface SendReview {
   rating: number;
   lightBold: number;
@@ -35,4 +41,9 @@ export interface SendReview {
   aroma: EN_AROMAS[];
   content: string;
   wineId: number;
+  updatedAt?: string;
+  createdAt?: string;
+  user?: User;
+  teamId?: number;
+  id?: number;
 }

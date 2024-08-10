@@ -60,3 +60,23 @@ export const deleteReview = async (id: number) => {
     throw error;
   }
 };
+
+export const patchReview = async (id: number, reviewData: SendReview) => {
+  try {
+    const token = getAccessToken();
+
+    const { id, teamId, user, wineId, updatedAt, createdAt, ...dataToPatch } =
+      reviewData;
+
+    console.log(dataToPatch);
+    await axios.patch(`reviews/${id}`, dataToPatch, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error) {
+    console.error("Error patching review:", error);
+    throw error;
+  }
+};
