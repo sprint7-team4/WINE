@@ -40,6 +40,7 @@ export const postWine = async ({
   type,
 }: PostWine): Promise<PostWine> => {
   const token = localStorage.getItem("accessToken");
+
   try {
     const res = await axios.post<PostWine>(
       "wines",
@@ -58,7 +59,7 @@ export const postWine = async ({
     );
     return res.data;
   } catch (error) {
-    console.log("와인 등록에 실패했습니다.", error);
+    console.error("와인 등록에 실패했습니다.", error);
     throw error;
   }
 };
