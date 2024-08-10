@@ -1,24 +1,26 @@
-import { GetWinesParams, Wine } from "@/types/wineTypes";
-import { useState } from "react";
-import { getWines } from "@/lib/wineApi";
+// WineListCardList.tsx
+import { useWineStore } from "@/store/filteringStore";
+import { useEffect, useState } from "react";
 import WineListCard from "./WineListCard";
+import { useWineFilter } from "@/hooks/useWineFilter";
 
 const WineListCardList = () => {
-  const params: GetWinesParams = {
-    limit: 10,
-  };
+  const { fetchWines, filteredWines } = useWineFilter();
+  const { wineType, minPrice, maxPrice, ratingRange, searchTerm, sortBy } =
+    useWineStore();
 
-  const [filteredWineList, setFilteredWineList] = useState<Wine[]>([]);
+  useEffect(() => {
+    const loadWines = async () => {
+      await fetchWines();
+    };
 
-  const fetchWineData = async () => {
-    const { list } = await getWines(params);
-  };
-
+    loadWines();
+  }, [wineType, minPrice, maxPrice, ratingRange, searchTerm, sortBy]);
   return (
     <>
-      {/* {filteredWineList.map((wine) => (
-        <WineListCard />
-      ))} */}
+      {filteredWines.map((wine) => (
+        <WineListCard key={wine.id} wine={wine} />
+      ))}
     </>
   );
 };

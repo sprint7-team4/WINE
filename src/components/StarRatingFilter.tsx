@@ -1,24 +1,35 @@
 import React from "react";
 import { useStarRatingStore } from "@/store/starRatingStore";
+import { useWineStore } from "@/store/filteringStore";
 
 interface FilterOption {
-  value: string;
+  value: number;
   label: string;
 }
 
 const StarRatingFiltering: React.FC = () => {
-  const { ratingFilter, setRatingFilter } = useStarRatingStore();
+  const { ratingRange, setRatingRange } = useWineStore();
 
   const filterOptions: FilterOption[] = [
-    { value: "all", label: "전체" },
-    { value: "4-5", label: "4.0 ~ 5.0" },
-    { value: "3-4", label: "3.0 ~ 4.0" },
-    { value: "2-3", label: "2.0 ~ 3.0" },
-    { value: "1-2", label: "1.0 ~ 2.0" },
+    { value: 0, label: "전체" },
+    { value: 4, label: "4.0 ~ 5.0" },
+    { value: 3, label: "3.0 ~ 4.0" },
+    { value: 2, label: "2.0 ~ 3.0" },
+    { value: 1, label: "1.0 ~ 2.0" },
   ];
 
   const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRatingFilter(event.target.value);
+    const { target } = event;
+    const { value } = target;
+
+    const numValue = parseInt(value, 10);
+    console.log(numValue);
+
+    if (numValue === 0) {
+      setRatingRange([numValue, 5]);
+      return;
+    }
+    setRatingRange([numValue, numValue + 1]);
   };
 
   return (
@@ -31,12 +42,12 @@ const StarRatingFiltering: React.FC = () => {
           <input
             type="radio"
             value={option.value}
-            checked={ratingFilter === option.value}
+            checked={ratingRange[0] === option.value}
             onChange={handleFilterChange}
             className="sr-only"
           />
           <span className="relative w-20 h-20 bg-grayscale-100 rounded-6 flex items-center justify-center group-hover:bg-gray-300">
-            {ratingFilter === option.value && (
+            {ratingRange[0] === option.value && (
               <span className="absolute w-10 h-10 bg-main rounded-3"></span>
             )}
           </span>
