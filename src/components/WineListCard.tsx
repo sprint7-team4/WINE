@@ -12,7 +12,12 @@ const WineListCard: React.FC<WineListCardProps> = ({ wine }) => {
     wine;
 
   return (
-    <div className="w-800 h-375 rounded-16 border border-grayscale-300 flex-col">
+    <div
+      className="w-800 h-375 mb-62 rounded-16 border border-grayscale-300 flex-col
+                transition duration-300 ease-in-out 
+                hover:shadow-xl hover:scale-[1.02] hover:border-main 
+                cursor-pointer"
+    >
       <div className="flex items-end h-248 border-b">
         <Image
           className="w-60 h-208 ml-60 mr-81"
@@ -44,16 +49,20 @@ const WineListCard: React.FC<WineListCardProps> = ({ wine }) => {
           </div>
         </div>
       </div>
-      {recentReview && (
-        <div className="w-680 h-128 ml-60 mt-19 mb-19">
-          <p className="font-semibold text-16 text-grayscale-800 mb-10">
-            최신 후기
-          </p>
+      <div className="w-680 h-128 ml-60 mt-19 mb-19">
+        <p className="font-semibold text-16 text-grayscale-800 mb-10">
+          최신 후기
+        </p>
+        {recentReview ? (
           <p className="text-16 text-grayscale-500 font-normal">
             {recentReview.content}
           </p>
-        </div>
-      )}
+        ) : (
+          <p className="text-16 text-grayscale-400 font-normal">
+            아직 리뷰가 없어요 ㅠ
+          </p>
+        )}
+      </div>
     </div>
   );
 };

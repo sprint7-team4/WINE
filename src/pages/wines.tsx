@@ -10,7 +10,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 const WineListPage: FC = () => {
   const { setDeviceType, isMobile, isTablet, isDesktop } = useLayoutStore();
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const debouncedWidth = useDebounce(windowWidth, 250);
+  const debouncedWidth = useDebounce(windowWidth, 50);
 
   const handleResize = useCallback(() => {
     setWindowWidth(window.innerWidth);
@@ -35,9 +35,11 @@ const WineListPage: FC = () => {
     <>
       <div className="pt-30">
         <div className="relative max-w-1140 h-300 mx-auto bg-grayscale-100 rounded-16 pl-30 pt-30">
-          <div className="flex-center absolute inset-0 rounded-20 w-100 h-300 bg-main">
-            <p className="text-24 font-bold text-yellow-100">Best</p>
-          </div>
+          {isDesktop && (
+            <div className="flex-center absolute inset-0 rounded-20 w-100 h-300 bg-main">
+              <p className="text-24 font-bold text-yellow-100">Best</p>
+            </div>
+          )}
           <p className="text-grayscale-800 text-16 font-bold mb-30 flex justify-center">
             이번 달 추천 와인
           </p>

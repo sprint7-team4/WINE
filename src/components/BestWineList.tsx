@@ -114,8 +114,8 @@ const BestWineList = () => {
                       }}
                     >
                       <div className="flex justify-between p-10">
-                        <div className="w-44 h-161 bg-gray-200 ml-20">
-                          <div className="w-44 h-161 bg-gray-200 ml-20">
+                        <div className="w-44 h-161 ml-10">
+                          <div className="w-44 h-161 ml-10">
                             <Image
                               src={wine.image === "string" ? wine2 : wine.image}
                               alt="와인 이미지"
