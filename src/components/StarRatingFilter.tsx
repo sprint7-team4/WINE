@@ -1,5 +1,4 @@
 import React from "react";
-import { useStarRatingStore } from "@/store/starRatingStore";
 import { useWineStore } from "@/store/filteringStore";
 
 interface FilterOption {
