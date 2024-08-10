@@ -18,7 +18,7 @@ export default function WineRegistrationModal() {
     name: "",
     price: 0,
     region: "",
-    image: "",
+    image: "string",
     type: "RED",
   });
   const [imgFile, setImgFile] = useState<File | null>(null);

@@ -20,6 +20,7 @@ const WineListPage: FC = () => {
 
   //   loadWines();
   // }, [wineType, minPrice, maxPrice, ratingRange, searchTerm, sortBy]);
+
   return (
     <>
       <div className="pt-30">

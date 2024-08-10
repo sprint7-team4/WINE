@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { login } from "@/lib/authApi";
 import useRedirectAuthenticated from "@/hooks/useRedirectAuthenticated";
+import { useAuthStore } from "@/store/authStore";
 
 interface FormValues {
   email: string;
@@ -11,6 +12,7 @@ interface FormValues {
 
 export default function LoginForm() {
   const router = useRouter();
+  const { setUser } = useAuthStore();
 
   const [loginError, setLoginError] = useState("");
 
@@ -25,7 +27,8 @@ export default function LoginForm() {
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     try {
-      await login({ ...data });
+      const response = await login({ ...data });
+      setUser(response.user);
       router.push("/");
     } catch (error: any) {
       console.error("로그인 오류:", error);

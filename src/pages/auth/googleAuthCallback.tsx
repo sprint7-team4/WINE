@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { loginWithSocial } from "@/lib/authApi";
 import { getHeaderStaticProps } from "@/utils/getHeaderStaticProps";
 import ClipLoader from "react-spinners/ClipLoader";
+import { useAuthStore } from "@/store/authStore";
 
 export const getStaticProps = async () => {
   return getHeaderStaticProps(false);
@@ -12,6 +13,7 @@ export const getStaticProps = async () => {
 export default function GoogleAuthCallback() {
   const router = useRouter();
   const { data: session, status } = useSession();
+  const { setUser } = useAuthStore();
 
   useEffect(() => {
     const storedProvider = localStorage.getItem("provider");
@@ -19,10 +21,11 @@ export default function GoogleAuthCallback() {
     if (status === "authenticated" && storedProvider === "google") {
       const performLoginWithSocial = async () => {
         try {
-          await loginWithSocial({
+          const response = await loginWithSocial({
             token: session.idToken,
             provider: storedProvider.toUpperCase(),
           });
+          setUser(response.user);
           router.push("/");
           localStorage.removeItem("provider");
         } catch (error) {
