@@ -1,24 +1,32 @@
 import { useState } from "react";
 import { PriceSlider } from "./PriceSlider";
 import StarRatingFilter from "./StarRatingFilter";
+import { useWineStore } from "@/store/filteringStore";
+
+type WineType = "RED" | "WHITE" | "SPARKLING" | null;
 import useModalStore from "@/store/modalStore";
 
 const SideFiltering = () => {
   const { openModal } = useModalStore();
-  const wineTypes = ["Red", "White", "Sparkling"];
-  const [selectedWineType, setSelectedWineType] = useState("");
 
-  const handleWineTypes = (type: string) => {
+  const wineTypes: WineType[] = ["RED", "WHITE", "SPARKLING"];
+  const [selectedWineType, setSelectedWineType] = useState<WineType>(null);
+
+  const { setWineType } = useWineStore();
+
+  const handleWineTypes = (type: WineType) => {
     setSelectedWineType(type);
+    setWineType(type);
   };
+
   return (
     <div className="w-284 h-628">
       <div>
         <p className="text-20 text-gray-800 font-bold mb-12">WINE TYPES</p>
         <div className="flex justify-between">
-          {wineTypes.map((wineType, index) => (
+          {wineTypes.map((wineType) => (
             <button
-              key={index}
+              key={wineType}
               className={`cursor-pointer h-42 px-18 text-16 font-medium rounded-100 border ${selectedWineType === wineType ? "text-white bg-main" : "text-gray-800 border-grayscale-300"}`}
               onClick={() => handleWineTypes(wineType)}
             >
