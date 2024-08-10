@@ -10,11 +10,15 @@ import { getElapsedTime } from "@/utils/wineDetailUtils";
 import { AROMA_TO_KR } from "@/constants/aroma";
 import { useEffect, useState } from "react";
 import { deleteReview, getAccessToken, getReviewId } from "@/lib/reviewApi";
-import { BalancedProfile, WineBalance } from "@/types/reviewTypes";
+import { BalancedProfile, REVIEW_MODE, WineBalance } from "@/types/reviewTypes";
 import ProfileSliders from "./ProfileSliders";
 import Dropdown from "../common/Dropdown";
 import { EDIT_MENU, MenuItem } from "@/constants/dropdown";
-import { useReviewRerenderStore } from "@/store/reviewStore";
+import {
+  useFormType,
+  useReviewRerenderStore,
+  useReviewStore,
+} from "@/store/reviewStore";
 import "react-toastify/dist/ReactToastify.css";
 import { showToast } from "../common/Toast";
 import useModalStore from "@/store/modalStore";
@@ -45,6 +49,9 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
     (state) => state.setReviewRerendered
   );
   const { openModal } = useModalStore();
+  const { setReviewId } = useReviewStore((state) => ({
+    setReviewId: state.setReviewId,
+  }));
   const {
     user: { nickname, image },
     createdAt,
@@ -53,6 +60,9 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
     rating,
   } = review;
   const userImage = image || defaultUserImg;
+  const { setFormType } = useFormType((state) => ({
+    setFormType: state.setFormType,
+  }));
 
   const fetchWineData = async (id: number) => {
     try {
@@ -90,11 +100,13 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
     const token = getAccessToken();
 
     if (!token) {
-      showToast("권한이 없습니다. 로그인을 해주세요.", "error");
+      showToast("권한이 없습니다. <br /> 로그인을 해주세요.", "error");
       return;
     }
 
     if (item === EDIT_MENU.EDIT) {
+      setReviewId(id);
+      setFormType(REVIEW_MODE.EDIT);
       openModal();
     } else if (item === EDIT_MENU.DELETE) {
       try {

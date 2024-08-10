@@ -8,32 +8,37 @@ import { balancedProfiles } from "@/constants/review";
 import ReviewTag from "./ReviewTag";
 import { AROMA_TO_KR, EN_AROMAS } from "@/constants/aroma";
 import InteractiveStarRating from "./InteractiveStarRating";
-import { createReview } from "@/lib/reviewApi";
+import { createReview, getReviewId } from "@/lib/reviewApi";
 import {
   useFormType,
   useReviewRerenderStore,
+  useReviewStore,
   useWineStore,
 } from "@/store/reviewStore";
 import useModalStore from "@/store/modalStore";
 import { showToast } from "../common/Toast";
 
-const INITIALRATING = 0;
+const INITIAL_RATING = 0;
 
-const ReviewForm = ({ mode, review }: ReviewFormProps) => {
+const INITIAL_REVIEW_DATA: SendReview = {
+  rating: 0,
+  aroma: [],
+  lightBold: 0,
+  smoothTannic: 0,
+  drySweet: 0,
+  softAcidic: 0,
+  content: "",
+  wineId: 0,
+};
+
+const ReviewForm = ({ mode }: ReviewFormProps) => {
   const [localBalancedProfiles, setLocalBalancedProfiles] = useState({
     ...balancedProfiles,
   });
   const [selectedAroma, setSelectedAroma] = useState<EN_AROMAS[]>([]);
-  const [reviewData, setReviewData] = useState<SendReview>({
-    rating: 0,
-    aroma: [],
-    lightBold: 0,
-    smoothTannic: 0,
-    drySweet: 0,
-    softAcidic: 0,
-    content: "",
-    wineId: 0,
-  });
+  const [reviewData, setReviewData] = useState(
+    mode === REVIEW_MODE.CREATE ? INITIAL_REVIEW_DATA : null
+  );
   const wineData = useWineStore((state) => state.wine);
   const setReviewSubmitted = useReviewRerenderStore(
     (state) => state.setReviewRerendered
@@ -42,17 +47,72 @@ const ReviewForm = ({ mode, review }: ReviewFormProps) => {
   const { setFormType } = useFormType((state) => ({
     setFormType: state.setFormType,
   }));
+  const { reviewId } = useReviewStore((state) => ({
+    reviewId: state.reviewId,
+  }));
+
+  const updateLocalBalancedProfiles = (reviewDetails: SendReview) => {
+    setLocalBalancedProfiles((prevProfiles) => {
+      const updatedProfiles = { ...prevProfiles };
+      Object.entries(updatedProfiles).forEach(([key, value]) => {
+        if (key in reviewDetails) {
+          updatedProfiles[key as keyof typeof updatedProfiles] = {
+            ...value,
+            scale: Number(reviewDetails[key as keyof SendReview]),
+          };
+        }
+      });
+      return updatedProfiles;
+    });
+  };
+
+  const resetForm = () => {
+    setReviewData({
+      rating: INITIAL_RATING,
+      aroma: [],
+      lightBold: 0,
+      smoothTannic: 0,
+      drySweet: 0,
+      softAcidic: 0,
+      content: "",
+      wineId: 0,
+    });
+    setSelectedAroma([]);
+    setLocalBalancedProfiles({ ...balancedProfiles });
+
+    setFormType(null);
+    closeModal();
+  };
 
   useEffect(() => {
-    if (mode === REVIEW_MODE.EDIT && review) {
+    if (mode === REVIEW_MODE.EDIT && reviewId) {
+      const fetchReviewData = async () => {
+        try {
+          const reviewDetails = await getReviewId(reviewId);
+          setReviewData({
+            ...reviewDetails,
+            wineId: wineData?.id || 0,
+          });
+          setSelectedAroma(reviewDetails.aroma);
+
+          updateLocalBalancedProfiles(reviewDetails);
+        } catch (error) {
+          console.error("Error fetching review details:", error);
+          showToast("리뷰 데이터를 불러오는 데 실패했습니다.", "error");
+        }
+      };
+
+      fetchReviewData();
     }
-    if (wineData) {
+
+    if (mode === REVIEW_MODE.CREATE && wineData) {
       setReviewData((prevData) => ({
-        ...prevData,
+        ...(prevData as SendReview),
         wineId: wineData.id,
       }));
     }
-  }, [mode, review, wineData]);
+  }, [mode, wineData, reviewId, localBalancedProfiles]);
+  console.log(localBalancedProfiles);
 
   const handleSliderValuesChange = (values: number[]) => {
     setLocalBalancedProfiles((prevProfiles) => {
@@ -68,7 +128,7 @@ const ReviewForm = ({ mode, review }: ReviewFormProps) => {
       });
 
       setReviewData((prevData) => ({
-        ...prevData,
+        ...(prevData as SendReview),
         lightBold: updatedProfiles.lightBold.scale,
         smoothTannic: updatedProfiles.smoothTannic.scale,
         drySweet: updatedProfiles.drySweet.scale,
@@ -86,7 +146,7 @@ const ReviewForm = ({ mode, review }: ReviewFormProps) => {
         : [...prev, tag];
 
       setReviewData((prevData) => ({
-        ...prevData,
+        ...(prevData as SendReview),
         aroma: newSelection,
       }));
 
@@ -97,21 +157,22 @@ const ReviewForm = ({ mode, review }: ReviewFormProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      if (mode === REVIEW_MODE.CREATE) {
+      if (mode === REVIEW_MODE.CREATE && reviewData) {
         await createReview(reviewData);
         setReviewSubmitted(true);
         showToast("리뷰 등록에 성공했습니다!", "success");
+      } else if (mode === REVIEW_MODE.EDIT && reviewId) {
+        console.log();
       }
     } catch (error) {
       console.error("Error submitting review:", error);
       showToast("유효한 로그인이 아닙니다. <br /> 로그인을 해주세요.", "error");
     } finally {
-      setFormType(REVIEW_MODE.EDIT);
-      closeModal();
+      resetForm();
     }
   };
 
-  if (!wineData) {
+  if (!wineData || !reviewData) {
     return <div>Loading...</div>;
   }
 
@@ -128,8 +189,7 @@ const ReviewForm = ({ mode, review }: ReviewFormProps) => {
           <button
             type="button"
             onClick={() => {
-              closeModal();
-              setFormType(REVIEW_MODE.EDIT);
+              resetForm();
             }}
           >
             <Image src={closeButton} alt="닫기 버튼" width={34} height={34} />
@@ -140,10 +200,10 @@ const ReviewForm = ({ mode, review }: ReviewFormProps) => {
           <div className="w-full flex flex-col gap-8 justify-between font-semibold-18">
             <h2>{wineData.name}</h2>
             <InteractiveStarRating
-              initialRating={INITIALRATING}
+              initialRating={reviewData.rating}
               onRatingChange={(rating) =>
                 setReviewData((prevData) => ({
-                  ...prevData,
+                  ...(prevData as SendReview),
                   rating,
                 }))
               }
@@ -156,7 +216,7 @@ const ReviewForm = ({ mode, review }: ReviewFormProps) => {
             value={reviewData.content}
             onChange={(e) =>
               setReviewData((prevData) => ({
-                ...prevData,
+                ...(prevData as SendReview),
                 content: e.target.value,
               }))
             }

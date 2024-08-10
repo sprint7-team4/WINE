@@ -35,7 +35,7 @@ const ProfileSliders: React.FC<ProfileSlidersProps> = ({
       {profilesArray.map((profile, index) => (
         <Slider
           mode={mode}
-          key={profile.name}
+          key={index}
           profile={profile}
           onChange={(value) => handleSliderChange(index, value)}
         />
