@@ -1,11 +1,11 @@
-export interface ProfileData {
+// myProfileTypes.ts
+
+import { REVIEW_MODE } from "./reviewTypes";
+
+export interface User {
   id: number;
   nickname: string;
-  // email?: string;
-  image: string;
-  teamId: string;
-  createdAt: string;
-  updatedAt: string;
+  image: string | null;
 }
 
 export interface Review {
@@ -19,11 +19,13 @@ export interface Review {
   content: string;
   createdAt: string;
   updatedAt: string;
-  user: {
-    id: number;
-    nickname: string;
-    image: string;
-  };
+  user: User;
+}
+
+export interface ReviewsResponse {
+  list: Review[];
+  totalCount: number;
+  nextCursor: string | null;
 }
 
 export interface Wine {
@@ -34,18 +36,21 @@ export interface Wine {
   price: number;
   avgRating: number;
   reviewCount: number;
-  recentReview: {
-    user: {
-      id: number;
-      nickname: string;
-      image: string;
-    };
-    updatedAt: string;
-    createdAt: string;
-    content: string;
-    aroma: string[];
-    rating: number;
-    id: number;
-  };
+  recentReview: Review;
   userId: number;
+}
+
+export interface WinesResponse {
+  totalCount: number;
+  nextCursor: number;
+  list: Wine[];
+}
+
+export interface ProfileData {
+  id: number;
+  nickname: string;
+  image?: string;
+  createdAt: string;
+  updatedAt: string;
+  teamId: string;
 }
