@@ -8,7 +8,12 @@ import { balancedProfiles } from "@/constants/review";
 import ReviewTag from "./ReviewTag";
 import { AROMA_TO_KR, EN_AROMAS } from "@/constants/aroma";
 import InteractiveStarRating from "./InteractiveStarRating";
-import { createReview, getReviewId, patchReview } from "@/lib/reviewApi";
+import {
+  createReview,
+  getReviewId,
+  getWineId,
+  patchReview,
+} from "@/lib/reviewApi";
 import {
   useFormType,
   useReviewRerenderStore,
@@ -17,6 +22,7 @@ import {
 } from "@/store/reviewStore";
 import useModalStore from "@/store/modalStore";
 import { showToast } from "../common/Toast";
+import { useRouter } from "next/router";
 
 const INITIAL_RATING = 0;
 
@@ -32,6 +38,8 @@ const INITIAL_REVIEW_DATA: SendReview = {
 };
 
 const ReviewForm = ({ mode }: ReviewFormProps) => {
+  const router = useRouter();
+  const { wineid } = router.query;
   const [localBalancedProfiles, setLocalBalancedProfiles] = useState({
     ...balancedProfiles,
   });
@@ -39,7 +47,7 @@ const ReviewForm = ({ mode }: ReviewFormProps) => {
   const [reviewData, setReviewData] = useState(
     mode === REVIEW_MODE.CREATE ? INITIAL_REVIEW_DATA : null
   );
-  const wineData = useWineStore((state) => state.wine);
+  const wineData = useWineStore((state) => state.wineData);
   const setReviewSubmitted = useReviewRerenderStore(
     (state) => state.setReviewRerendered
   );
@@ -52,6 +60,9 @@ const ReviewForm = ({ mode }: ReviewFormProps) => {
   }));
   const { setReviewCardRerendered } = useReviewRerenderStore((state) => ({
     setReviewCardRerendered: state.setReviewCardRerendered,
+  }));
+  const { setWine } = useWineStore((state) => ({
+    setWine: state.setWine,
   }));
 
   const updateLocalBalancedProfiles = (reviewDetails: SendReview) => {
@@ -144,8 +155,6 @@ const ReviewForm = ({ mode }: ReviewFormProps) => {
     });
   };
 
-  console.log(reviewData);
-
   const handleTagClick = (tag: EN_AROMAS) => {
     setSelectedAroma((prev) => {
       const newSelection = prev.includes(tag)
@@ -166,8 +175,11 @@ const ReviewForm = ({ mode }: ReviewFormProps) => {
     try {
       if (mode === REVIEW_MODE.CREATE && reviewData) {
         await createReview(reviewData);
+        const res = await getWineId(String(wineid));
+        setWine(res);
+        console.log(res);
+        if (res) showToast("리뷰 등록에 성공했습니다!", "success");
         setReviewSubmitted(true);
-        showToast("리뷰 등록에 성공했습니다!", "success");
       } else if (mode === REVIEW_MODE.EDIT && reviewId && reviewData) {
         await patchReview(reviewId, reviewData);
         setReviewCardRerendered(true);
