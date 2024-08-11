@@ -32,7 +32,10 @@ const StarRating: React.FC<StarRatingProps> = ({ rating, size = 18 }) => {
         {partialStar > 0 && (
           <div
             className="relative overflow-hidden"
-            style={{ width: `${size}px`, height: `${size}px` }}
+            style={{
+              width: size === 18 ? `${size}px` : `${size - 6}px`,
+              height: `${size}px`,
+            }}
           >
             <i
               className="fas fa-star absolute overflow-hidden top-0 left-0 text-main"

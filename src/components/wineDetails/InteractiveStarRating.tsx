@@ -32,7 +32,6 @@ const InteractiveStarRating: React.FC<InteractiveStarRatingProps> = ({
   };
 
   const effectiveRating = hoveredRating !== null ? hoveredRating : rating;
-
   return (
     <div className="flex items-center">
       {[...Array(MAX_STAR_COUNT)].map((_, index) => (

@@ -1,11 +1,14 @@
 import { Wine } from "@/types/wineTypes";
 import Image from "next/image";
+import noWineImg from "@/assets/img/noWine.svg";
 
 const WineHero = ({ wine: { image, name, price, region } }: { wine: Wine }) => {
+  const heroImage = image !== "string" && image ? image : noWineImg;
+
   return (
     <section className="mt-[42px] h-190 md:h-260 border border-grayscale-300 border-solid rounded-16 p-[33px_20px_0_20px] md:p-[52px_60px_0_60px] lg:p-[52px_100px_0_100px] flex gap-86 relative">
       <Image
-        src={image}
+        src={heroImage}
         alt="대표 와인"
         width={58}
         height={209}
@@ -18,7 +21,7 @@ const WineHero = ({ wine: { image, name, price, region } }: { wine: Wine }) => {
         <h2 className="font-regular-14 md:font-regular-16 text-grayscale-500 mb-[4.5px] md:mb-13">
           {region}
         </h2>
-        <span className="w-86 h-36 md:w-114 md:h-37 font-bold-14 md:font-bold-18 text-main rounded-12 p-[6px_10px] md:p-[8px_15px] bg-main-10 flex-center">
+        <span className="w-86 h-36 md:w-114 md:h-37 font-bold-14 md:font-bold-18 text-main rounded-12 p-[6px_10px] md:p-[8px_15px] bg-main-10 flex-center whitespace-nowrap">
           ₩ {Number(price).toLocaleString()}
         </span>
       </div>
