@@ -117,6 +117,7 @@ const BestWineList = () => {
                         <div className="w-44 h-161 ml-10">
                           <div className="w-44 h-161 ml-10">
                             <Image
+                              className="w-44 h-161 object-cover"
                               src={wine.image === "string" ? wine2 : wine.image}
                               alt="와인 이미지"
                               width={44}

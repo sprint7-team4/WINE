@@ -20,19 +20,19 @@ const WineListCard: React.FC<WineListCardProps> = ({ wine }) => {
     >
       <div className="flex items-end h-248 border-b">
         <Image
-          className="w-60 h-208 ml-60 mr-81"
-          src={wine1}
+          className="w-60 h-208 ml-60 mr-81 object-cover"
+          src={wine.image === "string" ? wine1 : wine.image}
           alt={`${name} 이미지`}
           width={60}
           height={208}
         />
         <div className="w-549 h-218 flex justify-between">
           <div className="flex flex-col w-300 h-208 justify-between">
-            <p className="text-32 text-grayscale-80 font-semibold">{name}</p>
-            <p className="text-16 text-grayscale-500 font-normal leading-2">
+            <p className="text-28 text-grayscale-80 font-semibold">{name}</p>
+            <p className="text-16 text-grayscale-500 font-normal leading-2 mb-10">
               {region}
             </p>
-            <div className="border rounded-12 bg-main-10 w-114 h-42 flex-center mb-14">
+            <div className="border rounded-12 bg-main-10 w-114 h-42 flex-center mb-12">
               <p className="text-18 text-main font-semibold">
                 &#8361; {price.toLocaleString()}
               </p>
