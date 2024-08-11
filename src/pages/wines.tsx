@@ -9,7 +9,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 
 const WineListPage: FC = () => {
   const { setDeviceType, isMobile, isTablet, isDesktop } = useLayoutStore();
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [windowWidth, setWindowWidth] = useState<number | null>(null);
   const debouncedWidth = useDebounce(windowWidth, 50);
 
   const handleResize = useCallback(() => {
@@ -17,17 +17,22 @@ const WineListPage: FC = () => {
   }, []);
 
   useEffect(() => {
+    // 초기 윈도우 너비 설정
+    setWindowWidth(window.innerWidth);
+
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, [handleResize]);
 
   useEffect(() => {
-    if (debouncedWidth < 768) {
-      setDeviceType("mobile");
-    } else if (debouncedWidth < 1024) {
-      setDeviceType("tablet");
-    } else {
-      setDeviceType("desktop");
+    if (debouncedWidth !== null) {
+      if (debouncedWidth < 768) {
+        setDeviceType("mobile");
+      } else if (debouncedWidth < 1024) {
+        setDeviceType("tablet");
+      } else {
+        setDeviceType("desktop");
+      }
     }
   }, [debouncedWidth, setDeviceType]);
 

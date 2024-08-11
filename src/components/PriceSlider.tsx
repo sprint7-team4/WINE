@@ -71,7 +71,7 @@ export const PriceSlider = () => {
         render={({ field: { value, onChange } }) => (
           <SliderComponent
             axis={"x"}
-            xmax={100000}
+            xmax={1000000}
             xmin={minPrice}
             xstep={1000}
             value={value}
