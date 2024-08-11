@@ -2,7 +2,7 @@ import Image from "next/image";
 import { balancedProfiles as initialBalancedProfiles } from "@/constants/review";
 import ReviewTag from "./ReviewTag";
 import defaultUserImg from "@/assets/img/profile-default.svg";
-import favoriteImg from "@/assets/img/like.svg";
+
 import menuImg from "@/assets/img/3dot-large.svg";
 import moreImg from "@/assets/img/more.svg";
 import { Review } from "@/types/wineTypes";
@@ -29,6 +29,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { showToast } from "../common/Toast";
 import useModalStore from "@/store/modalStore";
 import { useRouter } from "next/router";
+import LikeSelector from "./LikeSelector";
 
 const initialReview: Review = {
   id: 0,
@@ -50,7 +51,6 @@ const initialReview: Review = {
 };
 
 const ReviewCard = ({ review: { id } }: { review: Review }) => {
-  console.log("리뷰다잉");
   const router = useRouter();
   const { wineid } = router.query;
 
@@ -83,6 +83,7 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
   const { setWine } = useWineStore((state) => ({
     setWine: state.setWine,
   }));
+  const [isExpanded, setIsExpanded] = useState(true);
 
   const fetchWineData = async (id: number) => {
     try {
@@ -146,16 +147,20 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
     }
   };
 
+  const handleToggle = () => {
+    setIsExpanded((prevState) => !prevState);
+  };
+
   return (
     <section className="max-lg:w-full w-800 p-[16px_20px] md:p-[32px_40px_24px] lg:p-[16.5px_40px_20px] rounded-16 border border-grayscale-300 border-solid">
       <div className="flex justify-between mb-16 md:mb-20">
-        <button className="flex gap-16 items-center">
+        <div className="flex gap-16 items-center">
           <Image
             src={userImage}
             alt="유저 프로필"
             width={64}
             height={64}
-            className="w-42 h-42 md:w-64 md:h-64"
+            className="w-42 h-42 md:w-64 md:h-64 rounded-50 border border-grayscale-100"
           />
           <div className="flex flex-col gap-0 md:gap-4">
             <span className="font-semibold-16 md:font-semibold-18 text-grayscale-800">
@@ -165,15 +170,9 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
               {getElapsedTime(createdAt)}
             </span>
           </div>
-        </button>
+        </div>
         <div className="flex items-center gap-18 md:gap-24">
-          <Image
-            src={favoriteImg}
-            alt="즐겨찾기"
-            width={38}
-            height={38}
-            className="w-32 h-32 md:w-38 md:h-38"
-          />
+          <LikeSelector id={id} />
           <Dropdown
             trigger={
               <Image
@@ -195,27 +194,33 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
             <ReviewTag key={index} tag={AROMA_TO_KR[tag]} />
           ))}
         </div>
-        <div className="w-60 h-36 md:w-80 md:h-42 flex flex-center gap-3 p-[8px_10px] md:p-[8px_15px] bg-main-10 rounded-12">
+        <div className="w-60 h-36 md:w-80 md:h-42 flex flex-center gap-3 bg-main-10 rounded-12">
           <div className="fas fa-star text-main w-16 h-16 md:w-20 md:h-20 flex flex-center"></div>
-          <span className="font-bold-14 md:font-bold-18 text-main flex items-center">
+          <div className="font-bold-14 md:font-bold-18 text-main flex-center">
             {rating.toFixed(1)}
-          </span>
+          </div>
         </div>
       </div>
-      <p className="mt-16 md:mt-24 mb-16 md:mb-20 font-regular-14 md:font-regular-16">
-        {content}
-      </p>
-      <div className="flex flex-col gap-15 md:gap-18">
-        <ProfileSliders profilesArray={profilesArray} />
-      </div>
-      <div className="flex flex-center mt-16 md:mt-24">
-        <Image
-          className="rotate-180"
-          src={moreImg}
-          alt="확장/축소"
-          width={30}
-          height={30}
-        />
+      {isExpanded && (
+        <>
+          <p className="mt-16 md:mt-24 mb-16 md:mb-20 font-regular-14 md:font-regular-16">
+            {content}
+          </p>
+          <div className="flex flex-col gap-15 md:gap-18">
+            <ProfileSliders profilesArray={profilesArray} />
+          </div>
+        </>
+      )}
+      <div className="flex flex-center mt-16 md:mt-24 lg:mt-[6.5px]">
+        <button onClick={handleToggle}>
+          <Image
+            className={`transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
+            src={moreImg}
+            alt="확장/축소"
+            width={30}
+            height={30}
+          />
+        </button>
       </div>
     </section>
   );

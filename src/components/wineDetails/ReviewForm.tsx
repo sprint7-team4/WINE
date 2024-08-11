@@ -177,7 +177,6 @@ const ReviewForm = ({ mode }: ReviewFormProps) => {
         await createReview(reviewData);
         const res = await getWineId(String(wineid));
         setWine(res);
-        console.log(res);
         if (res) showToast("리뷰 등록에 성공했습니다!", "success");
         setReviewSubmitted(true);
       } else if (mode === REVIEW_MODE.EDIT && reviewId && reviewData) {
