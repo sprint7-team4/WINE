@@ -5,6 +5,7 @@ import ClipLoader from "react-spinners/ClipLoader";
 import black_logo from "@/assets/img/logo-black.svg";
 import LoginForm from "@/components/authentication/LoginForm";
 import SocialLogin from "@/components/authentication/SocialLogin";
+import GuestLogin from "@/components/authentication/guestLogin";
 import { getHeaderStaticProps } from "@/utils/getHeaderStaticProps";
 import { socialArray } from "@/constants/socialLogins";
 
@@ -42,6 +43,7 @@ export default function Login() {
           </button>
         </Link>
         <LoginForm />
+        <GuestLogin />
         <div className="flex flex-col gap-16 mb-24 md:mb-32 w-[100%]">
           <SocialLogin socialData={socialArray} setIsLoading={setIsLoading} />
         </div>

@@ -1,5 +1,6 @@
 import axios from "axios";
 import instance from "./axios";
+import Router from "next/router";
 
 type dataType = {
   email: string;
@@ -27,6 +28,16 @@ const fetchRequest = async (url: string, options: RequestOptions) => {
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
+      if (error.response.status === 401) {
+        try {
+          const newAccessToken = await refreshAccessToken();
+          options.headers.Authorization = `Bearer ${newAccessToken}`;
+          const retryResponse = await instance(url, options);
+          return retryResponse.data;
+        } catch (retryError) {
+          throw new Error("재인증에 실패했습니다.");
+        }
+      }
       throw new Error(error.response.data.message || "요청에 실패했습니다.");
     } else {
       throw new Error("요청에 실패했습니다.");
@@ -70,6 +81,7 @@ export const login = async ({ email, password }: dataType) => {
   };
   const data = await fetchRequest(url, options);
   localStorage.setItem("accessToken", data.accessToken);
+  localStorage.setItem("refreshToken", data.refreshToken);
   return data;
 };
 
@@ -93,7 +105,25 @@ export const loginWithSocial = async ({
   };
   const data = await fetchRequest(url, options);
   localStorage.setItem("accessToken", data.accessToken);
+  localStorage.setItem("refreshToken", data.refreshToken);
   return data;
+};
+
+const refreshAccessToken = async () => {
+  try {
+    const response = await instance.post("auth/refresh-token", {
+      refreshToken: localStorage.getItem("refreshToken"),
+    });
+    const { accessToken } = response.data;
+    localStorage.setItem("accessToken", accessToken);
+    return accessToken;
+  } catch (error) {
+    // 리프레시 토큰도 만료된 경우 로그인 페이지로 이동
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    Router.push("/login");
+    throw new Error("로그인이 필요합니다.");
+  }
 };
 
 export const getUser = async () => {

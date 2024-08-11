@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, ChangeEvent, MouseEvent } from "react";
+import { useState, useEffect, useRef, ChangeEvent } from "react";
 import { PostWine } from "@/types/wineTypes";
 import Modal from "./common/Modal";
 import Button from "./common/Button";
@@ -18,7 +18,7 @@ export default function WineRegistrationModal() {
     name: "",
     price: 0,
     region: "",
-    image: "string",
+    image: "",
     type: "RED",
   });
   const [imgFile, setImgFile] = useState<File | null>(null);
