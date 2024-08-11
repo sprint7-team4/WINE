@@ -15,7 +15,7 @@ const getAccessToken = () => {
 interface RequestOptions {
   method: string;
   headers: Record<string, string>;
-  data?: dataType | OauthDataType;
+  data?: dataType | OauthDataType | { nickname: string };
 }
 
 type OauthDataType = {
@@ -93,4 +93,25 @@ export const getWines = async (limit: number = 10): Promise<Wine[]> => {
 
   const data: WinesResponse = await fetchRequest(url, options);
   return data.list;
+};
+
+export const updateUser = async (data: {
+  nickname: string;
+}): Promise<ProfileData> => {
+  const token = getAccessToken();
+  if (!token) {
+    throw new Error("로그인이 필요합니다.");
+  }
+
+  const url = "/users/me";
+  const options: RequestOptions = {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    data,
+  };
+
+  return fetchRequest(url, options);
 };

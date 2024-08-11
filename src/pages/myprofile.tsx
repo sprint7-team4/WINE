@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Header from "@/components/common/Header";
 import { Review, ReviewsResponse, Wine } from "@/types/myProfileTypes";
-import { getReviews, getWines } from "@/lib/profileApi";
+import { getReviews, getWines, updateUser } from "@/lib/profileApi";
 import { getUser } from "@/lib/authApi";
 import Image from "next/image";
 import profileDefault from "@/assets/img/profile-default.svg";
@@ -11,11 +11,12 @@ import MyReviewCard from "@/components/myprofile/MyReviewCard";
 import MyWineCard from "@/components/myprofile/MyWineCard";
 import { REVIEW_MODE } from "@/types/reviewTypes";
 import Tabs from "@/components/myprofile/tab";
+import { showToast } from "@/components/common/Toast";
 
 export interface ProfileData {
   id: number;
   nickname: string;
-  image: string;
+  image?: string;
   createdAt: string;
   updatedAt: string;
   teamId: string;
@@ -24,6 +25,7 @@ export default function Myprofile() {
   const [reviews, setReview] = useState<ReviewsResponse | null>(null);
   const [wines, setWine] = useState<Wine[]>([]);
   const [profile, setProfile] = useState<ProfileData | null>(null);
+  const [newNickname, setNewNickname] = useState("");
   const [activeTab, setActiveTab] = useState<"reviews" | "wines">("reviews");
   const { user } = useAuthStore();
 
@@ -31,11 +33,29 @@ export default function Myprofile() {
     setActiveTab(tab);
   };
 
+  const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewNickname(e.target.value);
+  };
+
+  const handleUpdateNickname = async () => {
+    try {
+      const updatedProfile = await updateUser({ nickname: newNickname });
+      setProfile(updatedProfile);
+      showToast("닉네임이 성공적으로 변경되었습니다.", "success");
+    } catch (error) {
+      console.error("Failed to update nickname:", error);
+      showToast("닉네임 변경에 실패했습니다.", "error");
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const userProfile = await getUser();
-        if (userProfile) setProfile(userProfile);
+        if (userProfile) {
+          setProfile(userProfile);
+          setNewNickname(userProfile.nickname);
+        }
 
         const reviewsData = await getReviews(10);
         // const winesData = await getWines(10);
@@ -47,7 +67,7 @@ export default function Myprofile() {
       }
     };
     fetchData();
-    console.log(user);
+    console.log(profile);
   }, []);
 
   return (
@@ -108,10 +128,15 @@ export default function Myprofile() {
                     md:rounded-16 md:w-480
                     lg:w-240"
                     placeholder={profile?.nickname}
+                    onChange={handleNicknameChange}
                   />
                 </div>
                 <div className="flex justify-end">
-                  <Button title="변경하기" items="changeProfile" />
+                  <Button
+                    title="변경하기"
+                    items="changeProfile"
+                    onClick={handleUpdateNickname}
+                  />
                 </div>
               </form>
             </div>
