@@ -46,10 +46,11 @@ export const createReview = async (
 };
 
 export const deleteReview = async (id: number) => {
+  let res;
   try {
     const token = getAccessToken();
 
-    await axios.delete(`reviews/${id}`, {
+    res = await axios.delete(`reviews/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -59,6 +60,8 @@ export const deleteReview = async (id: number) => {
     console.error("Error deleting review:", error);
     throw error;
   }
+
+  return res.status === 200;
 };
 
 export const patchReview = async (id: number, reviewData: SendReview) => {

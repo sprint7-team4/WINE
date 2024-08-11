@@ -9,7 +9,12 @@ import { Review } from "@/types/wineTypes";
 import { getElapsedTime } from "@/utils/wineDetailUtils";
 import { AROMA_TO_KR } from "@/constants/aroma";
 import { useEffect, useState } from "react";
-import { deleteReview, getAccessToken, getReviewId } from "@/lib/reviewApi";
+import {
+  deleteReview,
+  getAccessToken,
+  getReviewId,
+  getWineId,
+} from "@/lib/reviewApi";
 import { BalancedProfile, REVIEW_MODE, WineBalance } from "@/types/reviewTypes";
 import ProfileSliders from "./ProfileSliders";
 import Dropdown from "../common/Dropdown";
@@ -18,10 +23,12 @@ import {
   useFormType,
   useReviewRerenderStore,
   useReviewStore,
+  useWineStore,
 } from "@/store/reviewStore";
 import "react-toastify/dist/ReactToastify.css";
 import { showToast } from "../common/Toast";
 import useModalStore from "@/store/modalStore";
+import { useRouter } from "next/router";
 
 const initialReview: Review = {
   id: 0,
@@ -43,6 +50,10 @@ const initialReview: Review = {
 };
 
 const ReviewCard = ({ review: { id } }: { review: Review }) => {
+  console.log("리뷰다잉");
+  const router = useRouter();
+  const { wineid } = router.query;
+
   const [review, setReview] = useState<Review>(initialReview);
   const [profilesArray, setProfilesArray] = useState<BalancedProfile[]>([]);
   const setReviewRerendered = useReviewRerenderStore(
@@ -68,6 +79,9 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
   const userImage = image || defaultUserImg;
   const { setFormType } = useFormType((state) => ({
     setFormType: state.setFormType,
+  }));
+  const { setWine } = useWineStore((state) => ({
+    setWine: state.setWine,
   }));
 
   const fetchWineData = async (id: number) => {
@@ -120,6 +134,9 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
     } else if (item === EDIT_MENU.DELETE) {
       try {
         await deleteReview(id);
+
+        const res = await getWineId(String(wineid));
+        setWine(res);
         setReviewRerendered(true);
         showToast("삭제되었습니다!", "success");
       } catch (error) {
