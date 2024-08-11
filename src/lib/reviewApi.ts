@@ -64,14 +64,14 @@ export const deleteReview = async (id: number) => {
   return res.status === 200;
 };
 
-export const patchReview = async (id: number, reviewData: SendReview) => {
+export const patchReview = async (reviewId: number, reviewData: SendReview) => {
   try {
     const token = getAccessToken();
 
     const { id, teamId, user, wineId, updatedAt, createdAt, ...dataToPatch } =
       reviewData;
 
-    await axios.patch(`reviews/${id}`, dataToPatch, {
+    await axios.patch(`reviews/${reviewId}`, dataToPatch, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",

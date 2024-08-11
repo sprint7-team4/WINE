@@ -1,11 +1,18 @@
 import { EN_AROMAS } from "@/constants/aroma";
 import { Review } from "./wineTypes";
 
+export enum WineBalanceEnum {
+  DRY_SWEET = "drySweet",
+  LIGHT_BOLD = "lightBold",
+  SMOOTH_TANNIC = "smoothTannic",
+  SOFT_ACIDIC = "softAcidic",
+}
+
 export interface WineBalance {
-  drySweet: number;
-  lightBold: number;
-  smoothTannic: number;
-  softAcidic: number;
+  [WineBalanceEnum.DRY_SWEET]: number;
+  [WineBalanceEnum.LIGHT_BOLD]: number;
+  [WineBalanceEnum.SMOOTH_TANNIC]: number;
+  [WineBalanceEnum.SOFT_ACIDIC]: number;
 }
 
 export interface BalancedProfile {
@@ -46,4 +53,33 @@ export interface SendReview {
   user?: User;
   teamId?: number;
   id?: number;
+}
+
+export enum ReviewFieldsEnum {
+  RATING = "rating",
+  AROMA = "aroma",
+  LIGHT_BOLD = "lightBold",
+  SMOOTH_TANNIC = "smoothTannic",
+  DRY_SWEET = "drySweet",
+  SOFT_ACIDIC = "softAcidic",
+  CONTENT = "content",
+  WINE_ID = "wineId",
+}
+
+export interface ReviewFields {
+  [ReviewFieldsEnum.RATING]: number;
+  [ReviewFieldsEnum.AROMA]: string;
+  [ReviewFieldsEnum.LIGHT_BOLD]: number;
+  [ReviewFieldsEnum.SMOOTH_TANNIC]: number;
+  [ReviewFieldsEnum.DRY_SWEET]: number;
+  [ReviewFieldsEnum.SOFT_ACIDIC]: number;
+  [ReviewFieldsEnum.CONTENT]: string;
+  [ReviewFieldsEnum.WINE_ID]: number;
+}
+
+export interface ProfileScales {
+  [WineBalanceEnum.DRY_SWEET]: { scale: number };
+  [WineBalanceEnum.LIGHT_BOLD]: { scale: number };
+  [WineBalanceEnum.SMOOTH_TANNIC]: { scale: number };
+  [WineBalanceEnum.SOFT_ACIDIC]: { scale: number };
 }

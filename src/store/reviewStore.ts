@@ -1,6 +1,6 @@
 import { REVIEW_MODE } from "@/types/reviewTypes";
 import { Wine, WineReview } from "@/types/wineTypes";
-import create from "zustand";
+import { create } from "zustand";
 
 interface WineStore {
   wineData: WineReview | null;
