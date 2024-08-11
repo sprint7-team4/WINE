@@ -5,24 +5,29 @@ import Button from "./common/Button";
 import useModalStore from "@/store/modalStore";
 import photo_icon from "@/assets/img/photo.svg";
 import { WineType } from "@/types/wineTypes";
-import { postWine } from "@/lib/wineApi";
+import { editWine } from "@/lib/wineApi";
 import { imageUpload } from "@/lib/imageApi";
 
 const wineType: WineType[] = ["RED", "WHITE", "SPARKLING"];
 
-export default function WineRegistrationModal() {
+interface Props {
+  wineData: PostWine;
+  wineId: string;
+}
+
+export default function WineEditModal({ wineData, wineId }: Props) {
   const imageRef = useRef<HTMLInputElement>(null);
   const { closeModal } = useModalStore();
 
   const [value, setValue] = useState<PostWine>({
-    name: "",
-    price: 0,
-    region: "",
-    image: "string",
-    type: "RED",
+    name: wineData.name,
+    price: wineData.price,
+    region: wineData.region,
+    image: wineData.image,
+    type: wineData.type,
   });
   const [imgFile, setImgFile] = useState<File | null>(null);
-  const [imgPreview, setImgPreview] = useState("");
+  const [imgPreview, setImgPreview] = useState(wineData.image);
 
   const handleTypeClick = (wineType: WineType) => {
     setValue((prev) => ({
@@ -60,33 +65,22 @@ export default function WineRegistrationModal() {
     }
   }, [imgFile]);
 
-  const handleRegisterClick = async () => {
+  const handleUpdateClick = async () => {
     try {
-      await postWine({ ...value });
+      await editWine(wineId, { ...value });
       handleCancelClick();
     } catch (error) {
-      console.error("와인 등록 중 오류 발생:", error);
+      console.error("와인 수정 중 오류 발생:", error);
     }
   };
 
   const handleCancelClick = () => {
-    setValue((prev) => ({
-      ...prev,
-      name: "",
-      price: 0,
-      region: "",
-      image: "",
-      type: "RED",
-    }));
-    setImgFile(null);
-    setImgPreview("");
-
     closeModal();
   };
 
   return (
     <Modal className="p-24 w-[100%] md:w-460 rounded-16 text-grayscale-800">
-      <h2 className="mb-32 md:mb-40 font-bold-20 md:font-bold-24">와인 등록</h2>
+      <h2 className="mb-32 md:mb-40 font-bold-20 md:font-bold-24">와인 수정</h2>
       <form className="flex flex-col">
         <div className="flex gap-10 mb-24">
           {wineType.map((type) => (
@@ -208,8 +202,8 @@ export default function WineRegistrationModal() {
         />
         <Button
           items="wineRegister"
-          title="와인 등록하기"
-          onClick={handleRegisterClick}
+          title="와인 수정하기"
+          onClick={handleUpdateClick}
         />
       </div>
     </Modal>
