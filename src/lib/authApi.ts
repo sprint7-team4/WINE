@@ -101,7 +101,7 @@ export const getUser = async () => {
 
   if (!token) return;
 
-  const url = "/users/me";
+  const url = "users/me";
   const options = {
     method: "GET",
     headers: {
