@@ -2,6 +2,8 @@ import { useEffect, useState, useRef } from "react";
 import { getRecommendedWines } from "@/lib/wineApi";
 import StarRating from "./StarRating";
 import { GetWinesParams, Wine } from "@/types/wineTypes";
+import Image from "next/image";
+import wine2 from "@/assets/img/wine2.png";
 
 const BestWineList = () => {
   const [wineList, setWineList] = useState<Wine[]>([]);
@@ -112,8 +114,15 @@ const BestWineList = () => {
                       }}
                     >
                       <div className="flex justify-between p-10">
-                        <div className="w-44 h-161 bg-gray-200 ml-20">
-                          이미지 불러오기
+                        <div className="w-44 h-161 ml-10">
+                          <div className="w-44 h-161 ml-10">
+                            <Image
+                              src={wine.image === "string" ? wine2 : wine.image}
+                              alt="와인 이미지"
+                              width={44}
+                              height={161}
+                            />
+                          </div>
                         </div>
                         <div className="w-100 h-125">
                           <p className="text-3xl font-extrabold mb-10">
