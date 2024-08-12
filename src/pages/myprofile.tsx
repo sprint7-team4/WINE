@@ -22,6 +22,7 @@ import MyWineCard from "@/components/myprofile/MyWineCard";
 import { REVIEW_MODE } from "@/types/reviewTypes";
 import { showToast } from "@/components/common/Toast";
 import ReviewModal from "@/components/wineDetails/ReviewModal";
+import useRedirectAuthenticated from "@/hooks/useRedirectAuthenticated";
 
 export interface ProfileData {
   id: number;
@@ -39,6 +40,8 @@ export default function Myprofile() {
   const [activeTab, setActiveTab] = useState<"reviews" | "wines">("reviews");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuthStore();
+
+  useRedirectAuthenticated();
 
   const handleImageClick = () => {
     fileInputRef.current?.click();
