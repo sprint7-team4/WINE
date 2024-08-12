@@ -27,13 +27,13 @@ import {
   useReviewRerenderStore,
   useReviewStore,
   useWineDataStore,
+  useWineNameStore,
 } from "@/store/reviewStore";
 import useModalStore from "@/store/modalStore";
 import { showToast } from "../common/Toast";
 import { useRouter } from "next/router";
 import { useForm, Controller } from "react-hook-form";
 
-const INITIAL_RATING = 0;
 const MAX_TAGS = 20;
 
 const INITIAL_REVIEW_DATA: SendReview = {
@@ -67,7 +67,10 @@ const ReviewForm = ({ mode, wineId }: ReviewFormProps) => {
       mode === REVIEW_MODE.CREATE ? INITIAL_REVIEW_DATA : INITIAL_REVIEW_DATA,
   });
 
-  const wineData = useWineDataStore((state) => state.wineData);
+  const { wineData, setWineData } = useWineDataStore((state) => ({
+    wineData: state.wineData,
+    setWineData: state.setWineData,
+  }));
   const setReviewSubmitted = useReviewRerenderStore(
     (state) => state.setReviewRerendered
   );
@@ -82,9 +85,11 @@ const ReviewForm = ({ mode, wineId }: ReviewFormProps) => {
   const { setReviewCardRerendered } = useReviewRerenderStore((state) => ({
     setReviewCardRerendered: state.setReviewCardRerendered,
   }));
-  const { setWine } = useWineDataStore((state) => ({
-    setWine: state.setWine,
+  const { wineName, setWineName } = useWineNameStore((state) => ({
+    wineName: state.wineName,
+    setWineName: state.setWineName,
   }));
+
   const [selectedAroma, setSelectedAroma] = useState<EN_AROMAS[]>([]);
 
   const updateLocalBalancedProfiles = (reviewDetails: SendReview) => {
@@ -108,6 +113,7 @@ const ReviewForm = ({ mode, wineId }: ReviewFormProps) => {
     setLocalBalancedProfiles({ ...balancedProfiles });
     setFormType(null);
     setReviewId(null);
+    setWineName("");
     closeModal();
   };
 
@@ -182,9 +188,9 @@ const ReviewForm = ({ mode, wineId }: ReviewFormProps) => {
       if (mode === REVIEW_MODE.CREATE) {
         await createReview(data);
         const res = await getWineId(String(wineid));
-        setWine(res);
-        if (res) showToast("리뷰 등록에 성공했습니다!", "success");
+        setWineData(res);
         setReviewSubmitted(true);
+        if (res) showToast("리뷰 등록에 성공했습니다!", "success");
       } else if (mode === REVIEW_MODE.EDIT && reviewId) {
         await patchReview(reviewId, data);
         setReviewCardRerendered(true);
@@ -212,7 +218,7 @@ const ReviewForm = ({ mode, wineId }: ReviewFormProps) => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col justify-between max-w-528 h-1006 p-[24px_24px] text-grayscale-800"
+      className="flex flex-col justify-between max-w-528 h-auto p-[24px_24px] text-grayscale-800"
     >
       <div>
         <div className="flex justify-between mb-48">
@@ -226,7 +232,7 @@ const ReviewForm = ({ mode, wineId }: ReviewFormProps) => {
         <div className="flex items-center gap-16">
           <Image src={wineIcon} alt="와인 아이콘" width={68} height={68} />
           <div className="w-full flex flex-col justify-between font-semibold-18">
-            {!isMyPage && <h2 className="mb-8">{wineData?.name}</h2>}
+            <h2 className="mb-8">{!isMyPage ? wineData?.name : wineName}</h2>
             <Controller
               name="rating"
               control={control}
@@ -259,7 +265,10 @@ const ReviewForm = ({ mode, wineId }: ReviewFormProps) => {
               <>
                 <textarea
                   {...field}
-                  onBlur={async () => {
+                  onBlur={async (e) => {
+                    const trimmedValue = e.target.value.trim();
+                    setValue("content", trimmedValue);
+                    field.onBlur();
                     await trigger("content");
                   }}
                   className={`mt-24 w-full h-120 p-[14px_20px] resize-none outline-none 
@@ -314,7 +323,7 @@ const ReviewForm = ({ mode, wineId }: ReviewFormProps) => {
         </div>
       </div>
       <div>
-        <button className="w-full font-bold-16 text-white p-[16px_36px] bg-main rounded-12">
+        <button className="w-full font-bold-16 text-white p-[16px_36px] bg-main rounded-12 mt-48">
           {mode === REVIEW_MODE.CREATE ? "리뷰 남기기" : "수정하기"}
         </button>
       </div>

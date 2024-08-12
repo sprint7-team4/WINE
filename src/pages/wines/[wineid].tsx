@@ -40,7 +40,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const WineDetailPage = ({ wine }: { wine: WineReview }) => {
   const { wineData, setWine } = useWineDataStore((state) => ({
-    setWine: state.setWine,
+    setWine: state.setWineData,
     wineData: state.wineData,
   }));
 
