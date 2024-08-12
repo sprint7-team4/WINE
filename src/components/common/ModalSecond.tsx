@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useRef } from "react";
-import useModalSecondStore from "@/store/ModalSecondStore";
+import useModalSecondStore from "@/store/modalSecondStore";
 
 interface Props {
   children: ReactNode;
