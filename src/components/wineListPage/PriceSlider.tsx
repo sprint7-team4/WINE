@@ -67,7 +67,7 @@ export const PriceSlider = () => {
       <Controller
         control={control}
         name="maxPrice"
-        defaultValue={minPrice}
+        defaultValue={1000000}
         render={({ field: { value, onChange } }) => (
           <SliderComponent
             axis={"x"}

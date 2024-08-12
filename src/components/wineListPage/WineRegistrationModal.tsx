@@ -3,7 +3,7 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { PostWine, WineType } from "@/types/wineTypes";
 import ModalSecond from "./common/ModalSecond";
 import Button from "./common/Button";
-import useModalSecondStore from "@/store/ModalSecondStore";
+import useModalSecondStore from "@/store/modalSecondStore";
 import photo_icon from "@/assets/img/photo.svg";
 import { postWine } from "@/lib/wineApi";
 import { imageUpload } from "@/lib/imageApi";
@@ -12,7 +12,7 @@ const wineType: WineType[] = ["RED", "WHITE", "SPARKLING"];
 
 export default function WineRegistrationModal() {
   const imageRef = useRef<HTMLInputElement>(null);
-  const { closeModal } = useModalSecondStore();
+  const { closeSecondModal } = useModalSecondStore();
   const {
     control,
     handleSubmit,
@@ -93,7 +93,7 @@ export default function WineRegistrationModal() {
     });
     setImgFile(null);
     setImgPreview("");
-    closeModal();
+    closeSecondModal("register");
   };
 
   return (
