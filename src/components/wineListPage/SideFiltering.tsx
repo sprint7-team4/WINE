@@ -2,13 +2,13 @@ import { useState } from "react";
 import { PriceSlider } from "./PriceSlider";
 import StarRatingFilter from "./StarRatingFilter";
 import { useWineStore } from "@/store/filteringStore";
+import useModalSecondStore from "@/store/ModalSecondStore";
 
 type WineType = "RED" | "WHITE" | "SPARKLING" | null;
 import useModalStore from "@/store/modalStore";
 
 const SideFiltering = ({ hideButton = false }) => {
-  const { openModal, closeModal } = useModalStore();
-
+  const { openSecondModal } = useModalSecondStore();
   const wineTypes: WineType[] = ["RED", "WHITE", "SPARKLING"];
   const [selectedWineType, setSelectedWineType] = useState<WineType>(null);
 
@@ -49,7 +49,7 @@ const SideFiltering = ({ hideButton = false }) => {
           <button
             className="cursor-pointer mt-60 w-full h-50 rounded-16 bg-main text-16 text-white font-bold backdrop-blur-sm
               transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg hover:brightness-110"
-            onClick={openModal}
+            onClick={() => openSecondModal("register")}
           >
             와인 등록하기
           </button>
