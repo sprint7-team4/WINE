@@ -1,5 +1,5 @@
 import InstantRatingBar from "./InstantRatingBar";
-import StarRating from "../StarRating";
+import StarRating from "../wineListPage/StarRating";
 import { WineReview } from "@/types/wineTypes";
 import useModalStore from "@/store/modalStore";
 import { useFormType } from "@/store/reviewStore";

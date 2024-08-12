@@ -1,18 +1,22 @@
 import { useState, useEffect, useRef, ChangeEvent, MouseEvent } from "react";
 import { PostWine } from "@/types/wineTypes";
-import Modal from "./common/Modal";
-import Button from "./common/Button";
+import Modal from "../common/Modal";
+import Button from "../common/Button";
 import useModalStore from "@/store/modalStore";
 import photo_icon from "@/assets/img/photo.svg";
 import { WineType } from "@/types/wineTypes";
 import { postWine } from "@/lib/wineApi";
 import { imageUpload } from "@/lib/imageApi";
+import useModalTypeStore from "@/store/ModalTypeStore";
 
 const wineType: WineType[] = ["RED", "WHITE", "SPARKLING"];
 
 export default function WineRegistrationModal() {
   const imageRef = useRef<HTMLInputElement>(null);
   const { closeModal } = useModalStore();
+
+  const { modalType } = useModalTypeStore();
+  if (modalType !== "wineRegistration") return null;
 
   const [value, setValue] = useState<PostWine>({
     name: "",
