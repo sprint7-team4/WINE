@@ -17,7 +17,7 @@ export default function WineRegistrationModal() {
 
   // const { modalType } = useModalTypeStore();
   // if (modalType !== "wineRegistration") return null;
-
+  //
   const [value, setValue] = useState<PostWine>({
     name: "",
     price: 0,
