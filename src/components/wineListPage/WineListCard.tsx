@@ -8,8 +8,16 @@ interface WineListCardProps {
 }
 
 const WineListCard: React.FC<WineListCardProps> = ({ wine }) => {
-  const { image, region, name, price, avgRating, reviewCount, recentReview } =
-    wine;
+  const {
+    id,
+    image,
+    region,
+    name,
+    price,
+    avgRating,
+    reviewCount,
+    recentReview,
+  } = wine;
 
   return (
     <div

@@ -1,13 +1,12 @@
 import { FC, ChangeEvent } from "react";
 import BestWineList from "@/components/wineListPage/BestWineList";
-import SideFiltering from "@/components/wineListPage/SideFiltering";
 import WineListCardList from "@/components/wineListPage/WineListCardList";
-import WineRegistrationModal from "@/components/wineListPage/WineRegistrationModal";
 import { searchIcon, filter } from "@/assets/img/index";
 import Image from "next/image";
 import { useWineStore } from "@/store/filteringStore";
-import useModalStore from "@/store/modalStore";
 import WineFilterModal from "../wineListPage/WineFilterModal";
+import useModalSecondStore from "@/store/modalSecondStore";
+import WineRegistrationModal from "../wineListPage/WineRegistrationModal";
 
 type FilterValue =
   | "latest"
@@ -23,7 +22,7 @@ interface FilterOption {
 
 const MobilePage: FC = () => {
   const { searchTerm, setSearchTerm, sortBy, setSortBy } = useWineStore();
-  const { openModal } = useModalStore();
+  const { openSecondModal } = useModalSecondStore();
 
   const filterList: FilterOption[] = [
     { value: "recommended", label: "추천순" },
@@ -66,7 +65,7 @@ const MobilePage: FC = () => {
       <div className="max-w-767 h-38 mt-20 flex justify-between">
         <button
           className="w-38 h-38 flex-center rounded-8 border border-grayscale-300"
-          onClick={openModal}
+          onClick={() => openSecondModal("filter")}
         >
           <Image width={22} height={22} src={filter} alt="filterIcon" />
         </button>
@@ -88,13 +87,13 @@ const MobilePage: FC = () => {
           <WineListCardList />
         </div>
       </div>
-      {/* <WineRegistrationModal /> */}
-      <WineFilterModal />
+      <WineFilterModal id={"filter"} />
+      <WineRegistrationModal />
       <div className="h-75 fixed bottom-30 left-0 right-0 mx-4 p-20 rounded-16 bg-transport bg-opacity-80 shadow-lg">
         <button
           className="w-full cursor-pointer h-48 rounded-16 bg-main text-16 text-white font-bold
        transition duration-300 ease-in-out transform hover:scale-105 hover:brightness-110"
-          onClick={() => openModal()}
+          onClick={() => openSecondModal("register")}
         >
           와인 등록하기
         </button>
