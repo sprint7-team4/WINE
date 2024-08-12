@@ -1,5 +1,5 @@
-// src/store/authStore.ts
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 type UserType = {
   id: number;
@@ -14,17 +14,38 @@ type UserType = {
 interface AuthState {
   user: UserType;
   setUser: (user: UserType) => void;
+  logout: () => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-  user: {
-    id: 0,
-    email: "",
-    nickname: "",
-    teamId: "",
-    updatedAt: "",
-    createdAt: "",
-    image: "",
-  },
-  setUser: (user) => set({ user }),
-}));
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      user: {
+        id: 0,
+        email: "",
+        nickname: "",
+        teamId: "",
+        updatedAt: "",
+        createdAt: "",
+        image: "",
+      },
+      setUser: (user) => set({ user }),
+      logout: () =>
+        set({
+          user: {
+            id: 0,
+            email: "",
+            nickname: "",
+            teamId: "",
+            updatedAt: "",
+            createdAt: "",
+            image: "",
+          },
+        }),
+    }),
+    {
+      name: "auth-storage", // 로컬 스토리지에 저장될 키 이름
+      partialize: (state) => ({ user: state.user }), // 저장할 상태만 선택
+    }
+  )
+);
