@@ -25,7 +25,7 @@ const itemVariants = {
     "lg:px-18 lg:h-42",
   changeProfile:
     "flex-center w-auto h-42 px-20 py-16 font-bold-16 bg-main text-white rounded-12 " +
-    "md:h-48 md:px-30 " +
+    "md:h-48 md:px-30 md:py-16 md:gap-10 " +
     "lg:h-42",
 
   delete:

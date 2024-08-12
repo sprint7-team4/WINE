@@ -15,11 +15,12 @@
     "next-auth": "^4.24.7",
     "react": "^18",
     "react-dom": "^18",
-    "react-hook-form": "^7.52.1",
+    "react-hook-form": "^7.52.2",
     "react-input-slider": "^6.0.1",
     "react-range-slider-input": "^3.0.7",
     "react-spinners": "^0.14.1",
     "react-toastify": "^10.0.5",
+    "react-tooltip": "^5.28.0",
     "zustand": "^4.5.4"
   },
   "devDependencies": {

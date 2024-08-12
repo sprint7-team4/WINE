@@ -1,15 +1,15 @@
 import { REVIEW_MODE } from "@/types/reviewTypes";
-import { Wine } from "@/types/wineTypes";
-import create from "zustand";
+import { Wine, WineReview } from "@/types/wineTypes";
+import { create } from "zustand";
 
-interface WineStore {
-  wine: Wine | null;
-  setWine: (wine: Wine) => void;
+interface WineDataStore {
+  wineData: WineReview | null;
+  setWine: (wineData: WineReview) => void;
 }
 
-export const useWineStore = create<WineStore>((set) => ({
-  wine: null,
-  setWine: (wine) => set({ wine }),
+export const useWineDataStore = create<WineDataStore>((set) => ({
+  wineData: null,
+  setWine: (wineData) => set({ wineData }),
 }));
 
 interface ReviewRerenderStore {
