@@ -87,7 +87,7 @@ const TabletPage: FC = () => {
         </div>
       </div>
       <div className="mt-62 w-full flex justify-between">
-        <div>
+        <div className="mx-auto">
           <WineListCardList />
         </div>
       </div>

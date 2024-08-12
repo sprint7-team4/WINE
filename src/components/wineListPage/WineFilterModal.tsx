@@ -23,12 +23,12 @@ const WineFilterModal = () => {
           >
             필터
           </span>
-          <button type="button" className="w-24 h-24" onClick={handleClose}>
+          <div className="w-24 h-24" onClick={handleClose}>
             <Image src={close} alt="closeImage" width={24} height={24} />
-          </button>
+          </div>
         </div>
         <div className="overflow-y-hidden h-500">
-          <SideFiltering hideButton={true} />
+          <SideFiltering />
         </div>
       </div>
     </Modal>
