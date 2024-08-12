@@ -4,12 +4,22 @@ import { create } from "zustand";
 
 interface WineDataStore {
   wineData: WineReview | null;
-  setWine: (wineData: WineReview) => void;
+  setWineData: (wineData: WineReview) => void;
 }
 
 export const useWineDataStore = create<WineDataStore>((set) => ({
   wineData: null,
-  setWine: (wineData) => set({ wineData }),
+  setWineData: (wineData) => set({ wineData }),
+}));
+
+interface WineNameStore {
+  wineName: string;
+  setWineName: (wineName: string) => void;
+}
+
+export const useWineNameStore = create<WineNameStore>((set) => ({
+  wineName: "",
+  setWineName: (wineName: string) => set({ wineName }),
 }));
 
 interface ReviewRerenderStore {
