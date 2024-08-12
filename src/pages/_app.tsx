@@ -5,6 +5,7 @@ import Header from "@/components/common/Header";
 import { useRouter } from "next/router";
 import { SessionProvider } from "next-auth/react";
 import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function App({
   Component,

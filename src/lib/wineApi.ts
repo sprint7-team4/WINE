@@ -81,3 +81,22 @@ export const deleteWine = async (id: number) => {
 
   return res.status === 200;
 };
+
+export const editWine = async (
+  id: string,
+  wineData: Partial<PostWine>
+): Promise<PostWine> => {
+  const token = localStorage.getItem("accessToken");
+
+  try {
+    const res = await axios.patch<PostWine>(`wines/${id}`, wineData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res.data;
+  } catch (error) {
+    console.error("와인 수정에 실패했습니다.", error);
+    throw error;
+  }
+};
