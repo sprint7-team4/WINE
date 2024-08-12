@@ -16,6 +16,7 @@ import MyReviewCard from "@/components/myprofile/MyReviewCard";
 import MyWineCard from "@/components/myprofile/MyWineCard";
 import { REVIEW_MODE } from "@/types/reviewTypes";
 import { showToast } from "@/components/common/Toast";
+import ReviewModal from "@/components/wineDetails/ReviewModal";
 
 export interface ProfileData {
   id: number;
@@ -63,17 +64,7 @@ export default function Myprofile() {
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewNickname(e.target.value);
-  };
-
-  const handleUpdateNickname = async () => {
-    try {
-      const updatedProfile = await updateUser({ nickname: newNickname });
-      setProfile(updatedProfile);
-      showToast("닉네임이 성공적으로 변경되었습니다.", "success");
-    } catch (error) {
-      console.error("Failed to update nickname:", error);
-      showToast("닉네임 변경에 실패했습니다.", "error");
-    }
+    console.log(newNickname);
   };
 
   useEffect(() => {
@@ -86,17 +77,28 @@ export default function Myprofile() {
         }
 
         const reviewsData = await getReviews(10);
-        // const winesData = await getWines(10);
+        const winesData = await getWines(10);
 
         setReview(reviewsData);
-        // setWine(winesData);
+        setWine(winesData);
       } catch (error) {
         console.error("Failed to fetch data:", error);
       }
     };
     fetchData();
   }, []);
-  console.log(profile);
+
+  const handleUpdateNickname = async () => {
+    try {
+      const updatedProfile = await updateUser({ nickname: newNickname });
+      setProfile(updatedProfile);
+      showToast("닉네임이 성공적으로 변경되었습니다.", "success");
+    } catch (error) {
+      console.error("Failed to update nickname:", error);
+      showToast("닉네임 변경에 실패했습니다.", "error");
+    }
+  };
+
   return (
     <>
       <Header />
@@ -165,6 +167,7 @@ export default function Myprofile() {
                     md:rounded-16 md:w-480
                     lg:w-240"
                     placeholder={profile?.nickname}
+                    value={newNickname}
                     onChange={handleNicknameChange}
                   />
                 </div>
@@ -208,12 +211,11 @@ export default function Myprofile() {
                   mode={REVIEW_MODE.EDIT}
                 />
               ))}
-            {activeTab === "wines" && (
-              // wines.map((wine) => <MyWineCard key={wine.id} wine={wine} />)}
-              <MyWineCard />
-            )}
+            {activeTab === "wines" &&
+              wines.map((wine) => <MyWineCard key={wine.id} wine={wine} />)}
           </div>
         </div>
+        <ReviewModal mode={REVIEW_MODE.EDIT} />
       </div>
     </>
   );

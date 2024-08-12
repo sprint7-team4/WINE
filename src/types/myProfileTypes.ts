@@ -20,6 +20,7 @@ export interface Review {
   createdAt: string;
   updatedAt: string;
   user: User;
+  wine: Wine;
 }
 
 export interface ReviewsResponse {

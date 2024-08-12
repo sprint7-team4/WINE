@@ -7,7 +7,7 @@ import { REVIEW_MODE } from "@/types/reviewTypes";
 import Dropdown from "../common/Dropdown";
 import menuImg from "@/assets/img/3dot-large.svg";
 import { EDIT_MENU, MenuItem } from "@/constants/dropdown";
-import { useReviewRerenderStore } from "@/store/reviewStore";
+import { useReviewRerenderStore, useReviewStore } from "@/store/reviewStore";
 import { showToast } from "../common/Toast";
 import useModalStore from "@/store/modalStore";
 import { deleteReview } from "@/lib/reviewApi";
@@ -22,6 +22,9 @@ const MyReviewCard: React.FC<MyReviewCardProps> = ({ review, mode }) => {
   const setReviewRerendered = useReviewRerenderStore(
     (state) => state.setReviewRerendered
   );
+  const { setReviewId } = useReviewStore((state) => ({
+    setReviewId: state.setReviewId,
+  }));
   const { openModal } = useModalStore();
 
   const handleSelect = async (item: MenuItem) => {
@@ -32,6 +35,7 @@ const MyReviewCard: React.FC<MyReviewCardProps> = ({ review, mode }) => {
       return;
     }
     if (item === EDIT_MENU.EDIT) {
+      setReviewId(review.id);
       openModal();
     } else if (item === EDIT_MENU.DELETE) {
       try {
@@ -68,7 +72,7 @@ const MyReviewCard: React.FC<MyReviewCardProps> = ({ review, mode }) => {
         ></Dropdown>
       </div>
       <div className="flex flex-col gap-10">
-        <p className="font-medium-16 text-grayscale-500">와인 이름</p>
+        <p className="font-medium-16 text-grayscale-500">{review.wine.name}</p>
         <p className="font-regular-16">{review.content}</p>
       </div>
     </div>
