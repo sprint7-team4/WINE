@@ -24,7 +24,7 @@ const DesktopPage: FC = () => {
           <WineListCardList />
         </div>
       </div>
-      {/* <WineRegistrationModal /> */}
+      <WineRegistrationModal />
     </div>
   );
 };

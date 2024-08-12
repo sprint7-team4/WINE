@@ -7,7 +7,7 @@ import photo_icon from "@/assets/img/photo.svg";
 import { WineType } from "@/types/wineTypes";
 import { postWine } from "@/lib/wineApi";
 import { imageUpload } from "@/lib/imageApi";
-import useModalTypeStore from "@/store/ModalTypeStore";
+import useModalTypeStore from "@/store/modalTypeStore";
 
 const wineType: WineType[] = ["RED", "WHITE", "SPARKLING"];
 
@@ -15,8 +15,8 @@ export default function WineRegistrationModal() {
   const imageRef = useRef<HTMLInputElement>(null);
   const { closeModal } = useModalStore();
 
-  const { modalType } = useModalTypeStore();
-  if (modalType !== "wineRegistration") return null;
+  // const { modalType } = useModalTypeStore();
+  // if (modalType !== "wineRegistration") return null;
 
   const [value, setValue] = useState<PostWine>({
     name: "",
