@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import {
   useFormType,
   useReviewRerenderStore,
-  useWineStore,
+  useWineDataStore,
 } from "@/store/reviewStore";
 import ReviewModal from "@/components/wineDetails/ReviewModal";
 import NoReview from "@/components/wineDetails/NoReview";
@@ -39,7 +39,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 const WineDetailPage = ({ wine }: { wine: WineReview }) => {
-  const { wineData, setWine } = useWineStore((state) => ({
+  const { wineData, setWine } = useWineDataStore((state) => ({
     setWine: state.setWine,
     wineData: state.wineData,
   }));
