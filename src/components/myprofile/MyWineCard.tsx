@@ -7,7 +7,7 @@ import { EDIT_MENU, MenuItem } from "@/constants/dropdown";
 import { showToast } from "../common/Toast";
 import useModalStore from "@/store/modalStore";
 import { useReviewRerenderStore } from "@/store/reviewStore";
-import { deleteReview } from "@/lib/reviewApi";
+import { deleteWine } from "@/lib/wineApi";
 
 interface myWineCardProps {
   wine: Wine;
@@ -37,7 +37,7 @@ function MyWineCard({ wine }: myWineCardProps) {
       openModal();
     } else if (item === EDIT_MENU.DELETE) {
       try {
-        await deleteReview(wine.id);
+        await deleteWine(wine.id);
         setReviewRerendered(true);
         showToast("삭제되었습니다!", "success");
       } catch (error) {
