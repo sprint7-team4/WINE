@@ -15,7 +15,6 @@ import { useAuthStore } from "@/store/authStore";
 import MyReviewCard from "@/components/myprofile/MyReviewCard";
 import MyWineCard from "@/components/myprofile/MyWineCard";
 import { REVIEW_MODE } from "@/types/reviewTypes";
-import Tabs from "@/components/myprofile/tab";
 import { showToast } from "@/components/common/Toast";
 
 export interface ProfileData {
