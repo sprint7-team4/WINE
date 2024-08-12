@@ -1,7 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Header from "@/components/common/Header";
 import { Review, ReviewsResponse, Wine } from "@/types/myProfileTypes";
-import { getReviews, getWines, updateUser } from "@/lib/profileApi";
+import {
+  getReviews,
+  getWines,
+  updateUser,
+  uploadImage,
+} from "@/lib/profileApi";
 import { getUser } from "@/lib/authApi";
 import Image from "next/image";
 import profileDefault from "@/assets/img/profile-default.svg";
@@ -27,10 +32,34 @@ export default function Myprofile() {
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [newNickname, setNewNickname] = useState("");
   const [activeTab, setActiveTab] = useState<"reviews" | "wines">("reviews");
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuthStore();
 
-  const handleTabChange = (tab: "reviews" | "wines") => {
-    setActiveTab(tab);
+  const handleImageClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      try {
+        // 파일 크기 체크 (5MB 제한)
+        if (file.size > 5 * 1024 * 1024) {
+          showToast("파일 크기는 5MB를 초과할 수 없습니다.", "error");
+          return;
+        }
+
+        const imageUrl = await uploadImage(file);
+        const updatedProfile = await updateUser({ image: imageUrl });
+        setProfile(updatedProfile);
+        showToast("프로필 이미지가 성공적으로 업데이트되었습니다.", "success");
+      } catch (error) {
+        console.error("Failed to update profile image:", error);
+        showToast("프로필 이미지 업데이트에 실패했습니다.", "error");
+      }
+    }
   };
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -67,9 +96,8 @@ export default function Myprofile() {
       }
     };
     fetchData();
-    console.log(profile);
   }, []);
-
+  console.log(profile);
   return (
     <>
       <Header />
@@ -81,7 +109,8 @@ export default function Myprofile() {
         >
           <div
             className=" flex flex-col gap-20 
-              md:gap-30"
+              md:gap-30
+              lg:gap-48"
           >
             <div
               className="flex gap-16 
@@ -92,13 +121,22 @@ export default function Myprofile() {
                 className="relative w-60 h-60 rounded-full border border-color-gray-300 overflow-hidden
               md:w-80 md:h-80
               lg:w-164 lg:h-164
+              cursor-pointer
               "
+                onClick={handleImageClick}
               >
                 <Image
                   src={profile?.image || profileDefault}
                   alt="프로필 사진"
                   layout="fill"
                   objectFit="cover"
+                />
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  className="hidden"
+                  accept="image/*"
                 />
               </div>
               <div

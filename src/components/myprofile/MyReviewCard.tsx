@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Review, Wine } from "@/types/myProfileTypes";
 import Image from "next/image";
-import star from "@/assets/img/star.svg";
+import star from "@/assets/img/colorStar.svg";
 import { getElapsedTime } from "@/utils/wineDetailUtils";
 import { REVIEW_MODE } from "@/types/reviewTypes";
 import Dropdown from "../common/Dropdown";
@@ -48,10 +48,14 @@ const MyReviewCard: React.FC<MyReviewCardProps> = ({ review, mode }) => {
   return (
     <div className="w-auto flex flex-col gap-17 px-20 py-16 rounded-16 border border-color-grayscale-300">
       <div className="flex justify-between w-auto">
-        <div className="flex justify-between items-center gap-10">
-          <div className="h-32 flex-center gap-2 rounded-12 px-10 py-6 bg-main-10">
-            <Image src={star} alt="별점" className="w-16 h-16" />
-            <p className="font-bold-14 text-main">{review.rating}</p>
+        <div className="flex justify-between items-center gap-15">
+          <div className="w-auto h-32 flex-center gap-2 rounded-12 px-10 py-6 bg-main-10 md:px-15 md:py-8">
+            <Image
+              src={star}
+              alt="별점"
+              className="w-16 h-16 md:w-20 md:h-20"
+            />
+            <p className="font-bold-14 text-main">{review.rating}.0</p>
           </div>
           <p className="font-regular-16 text-grayscale-500">
             {getElapsedTime(review.createdAt)}

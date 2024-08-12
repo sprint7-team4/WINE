@@ -15,7 +15,7 @@ const getAccessToken = () => {
 interface RequestOptions {
   method: string;
   headers: Record<string, string>;
-  data?: dataType | OauthDataType | { nickname: string };
+  data?: dataType | OauthDataType | UpdateUserData | FormData;
 }
 
 type OauthDataType = {
@@ -30,6 +30,11 @@ type dataType = {
   nickname?: string;
   password: string;
   passwordConfirmation?: string;
+};
+
+type UpdateUserData = {
+  nickname?: string;
+  image?: string;
 };
 
 const fetchRequest = async (url: string, options: RequestOptions) => {
@@ -95,9 +100,9 @@ export const getWines = async (limit: number = 10): Promise<Wine[]> => {
   return data.list;
 };
 
-export const updateUser = async (data: {
-  nickname: string;
-}): Promise<ProfileData> => {
+export const updateUser = async (
+  data: UpdateUserData
+): Promise<ProfileData> => {
   const token = getAccessToken();
   if (!token) {
     throw new Error("로그인이 필요합니다.");
@@ -114,4 +119,26 @@ export const updateUser = async (data: {
   };
 
   return fetchRequest(url, options);
+};
+
+export const uploadImage = async (file: File): Promise<string> => {
+  const token = getAccessToken();
+  if (!token) {
+    throw new Error("로그인이 필요합니다.");
+  }
+
+  const formData = new FormData();
+  formData.append("image", file);
+
+  const url = "/images/upload";
+  const options: RequestOptions = {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    data: formData,
+  };
+
+  const response = await fetchRequest(url, options);
+  return response.url;
 };
