@@ -7,7 +7,7 @@ import { EDIT_MENU, MenuItem } from "@/constants/dropdown";
 import { showToast } from "../common/Toast";
 import useModalStore from "@/store/modalStore";
 import { useReviewRerenderStore } from "@/store/reviewStore";
-import { deleteReview } from "@/lib/reviewApi";
+import { deleteWine } from "@/lib/wineApi";
 
 interface myWineCardProps {
   wine: Wine;
@@ -19,7 +19,7 @@ interface myWineCardProps {
 
 // export default MyWineCard;
 
-function MyWineCard({ wine }: any) {
+function MyWineCard({ wine }: myWineCardProps) {
   const { openModal } = useModalStore();
 
   const setReviewRerendered = useReviewRerenderStore(
@@ -37,7 +37,7 @@ function MyWineCard({ wine }: any) {
       openModal();
     } else if (item === EDIT_MENU.DELETE) {
       try {
-        await deleteReview(wine.id);
+        await deleteWine(wine.id);
         setReviewRerendered(true);
         showToast("삭제되었습니다!", "success");
       } catch (error) {
@@ -51,18 +51,19 @@ function MyWineCard({ wine }: any) {
       <div className="flex items-center gap-20 h-full">
         <div className="relative w-53 h-full">
           <img
-            src="https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/Wine/user/8/1722402160581/wine1.png"
-            className="absolute bottom-0 h-185 w-53 object-bottom"
+            src={wine.image}
+            alt="wine_img"
+            className="absolute bottom-0 h-185 w-53 object-cover"
           />
         </div>
         <div className="flex flex-col gap-15">
-          <p className="font-bold-20 w-187">
-            Sentinel Carbernet Sauvignon 2016
-          </p>
+          <p className="font-bold-20 w-187">{wine.name}</p>
           <div className="flex flex-col gap-4.5">
-            <p className="font-medium-14 text-grayscale-500">와인 지역</p>
+            <p className="font-medium-14 text-grayscale-500">{wine.region}</p>
             <div className="w-fit h-full rounded-10 px-10 py-6 bg-main-10">
-              <p className="flex-center font-bold-14 text-main">₩ 64,950</p>
+              <p className="flex-center font-bold-14 text-main">
+                ₩ {wine.price}
+              </p>
             </div>
           </div>
         </div>

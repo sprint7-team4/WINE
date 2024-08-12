@@ -80,8 +80,8 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
   const { setFormType } = useFormType((state) => ({
     setFormType: state.setFormType,
   }));
-  const { setWine } = useWineDataStore((state) => ({
-    setWine: state.setWine,
+  const { setWineData } = useWineDataStore((state) => ({
+    setWineData: state.setWineData,
   }));
   const [isExpanded, setIsExpanded] = useState(true);
 
@@ -137,7 +137,7 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
         await deleteReview(id);
 
         const res = await getWineId(String(wineid));
-        setWine(res);
+        setWineData(res);
         setReviewRerendered(true);
         showToast("삭제되었습니다!", "success");
       } catch (error) {

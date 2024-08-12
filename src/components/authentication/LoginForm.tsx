@@ -32,10 +32,8 @@ export default function LoginForm() {
       router.push("/");
     } catch (error: any) {
       console.error("로그인 오류:", error);
-      if (error.message === "Validation Failed") {
-        setLoginError(
-          "이메일 또는 비밀번호가 잘못 되었습니다. 이메일과 비밀번호를 정확히 입력해 주세요."
-        );
+      if (error.message === "비밀번호가 일치하지 않습니다.") {
+        setLoginError(error.message);
       }
     }
   };
@@ -101,6 +99,10 @@ export default function LoginForm() {
         defaultValue=""
         rules={{
           required: "비밀번호는 필수 입력입니다.",
+          minLength: {
+            value: 8,
+            message: "비밀번호를 8자 이상 입력해주세요",
+          },
         }}
         render={({ field }) => (
           <>

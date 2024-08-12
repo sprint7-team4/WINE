@@ -8,6 +8,7 @@ import profile_img from "@/assets/img/profile-default.svg";
 import Dropdown from "./Dropdown";
 import { HEADER_MENU, MenuItem } from "@/constants/dropdown";
 import { useRouter } from "next/router";
+import { useAuthStore } from "@/store/authStore";
 
 export default function Header() {
   const [isClient, setIsClient] = useState(false);
@@ -15,6 +16,7 @@ export default function Header() {
     image: null,
   });
   const router = useRouter();
+  const { logout } = useAuthStore();
 
   useEffect(() => {
     setIsClient(true);
@@ -42,6 +44,7 @@ export default function Header() {
 
   const handleLogoutClick = () => {
     signOut({ callbackUrl: "/login" });
+    logout();
     localStorage.removeItem("accessToken");
   };
 

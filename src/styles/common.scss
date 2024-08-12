@@ -15,6 +15,10 @@ input[type="range"]::-webkit-slider-thumb {
   border-radius: 50px;
 }
 
+input[type="range"].readOnly::-webkit-slider-thumb {
+  cursor: default;
+}
+
 input[type="range"]#taste-slider::-webkit-slider-thumb {
   width: 12px;
   height: 12px;

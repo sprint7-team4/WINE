@@ -1,37 +1,35 @@
-import { useState, useEffect, useRef, ChangeEvent, MouseEvent } from "react";
+import { useState, useEffect, useRef, ChangeEvent } from "react";
 import { PostWine } from "@/types/wineTypes";
-import Modal from "../common/Modal";
-import Button from "../common/Button";
+import Modal from "./common/Modal";
+import Button from "./common/Button";
 import useModalStore from "@/store/modalStore";
 import photo_icon from "@/assets/img/photo.svg";
 import { WineType } from "@/types/wineTypes";
-import { postWine } from "@/lib/wineApi";
+import { editWine } from "@/lib/wineApi";
 import { imageUpload } from "@/lib/imageApi";
-import useModalTypeStore from "@/store/modalTypeStore";
 
 const wineType: WineType[] = ["RED", "WHITE", "SPARKLING"];
 
-export default function WineRegistrationModal() {
+interface Props {
+  wineData: PostWine;
+  wineId: string;
+}
+
+export default function WineEditModal({ wineData, wineId }: Props) {
   const imageRef = useRef<HTMLInputElement>(null);
   const { closeModal } = useModalStore();
 
-  // const { modalType } = useModalTypeStore();
-  // if (modalType !== "wineRegistration") return null;
-
   const [value, setValue] = useState<PostWine>({
-    name: "",
-    price: 0,
-    region: "",
-    image: "string",
-    type: "RED",
+    name: wineData.name,
+    price: wineData.price,
+    region: wineData.region,
+    image: wineData.image,
+    type: wineData.type,
   });
   const [imgFile, setImgFile] = useState<File | null>(null);
-  const [imgPreview, setImgPreview] = useState("");
+  const [imgPreview, setImgPreview] = useState(wineData.image);
 
-  const handleTypeClick = (
-    e: MouseEvent<HTMLButtonElement>,
-    wineType: WineType
-  ) => {
+  const handleTypeClick = (wineType: WineType) => {
     setValue((prev) => ({
       ...prev,
       type: wineType,
@@ -67,33 +65,24 @@ export default function WineRegistrationModal() {
     }
   }, [imgFile]);
 
-  const handleRegisterClick = async () => {
+  const handleUpdateClick = async () => {
     try {
-      await postWine({ ...value });
+      await editWine(wineId, { ...value });
       handleCancelClick();
     } catch (error) {
-      console.error("와인 등록 중 오류 발생:", error);
+      console.error("와인 수정 중 오류 발생:", error);
     }
   };
 
   const handleCancelClick = () => {
-    setValue((prev) => ({
-      ...prev,
-      name: "",
-      price: 0,
-      region: "",
-      image: "",
-      type: "RED",
-    }));
-    setImgFile(null);
-    setImgPreview("");
-
     closeModal();
   };
-  console.log(value);
+
   return (
     <Modal className="p-24 w-[100%] md:w-460 rounded-16 text-grayscale-800">
-      <h2 className="mb-32 md:mb-40 font-bold-20 md:font-bold-24">와인 등록</h2>
+      <h2 className="mb-32 md:mb-40 font-bold-20 md:font-bold-24">
+        내가 등록한 와인
+      </h2>
       <form className="flex flex-col">
         <div className="flex gap-10 mb-24">
           {wineType.map((type) => (
@@ -101,7 +90,7 @@ export default function WineRegistrationModal() {
               key={type}
               type="button"
               title={type}
-              onClick={(e) => handleTypeClick(e, type)}
+              onClick={() => handleTypeClick(type)}
               className={`h-42 px-18 border-1 border-solid border-grayscale-300 rounded-100 font-medium-16  ${value.type === type ? "bg-main text-white" : "text-grayscale-800"}`}
             >
               {type}
@@ -185,7 +174,6 @@ export default function WineRegistrationModal() {
           name="image"
           className="hidden"
           ref={imageRef}
-          accept="image/*"
           onChange={handleImgFileChange}
         />
         <div className="flex gap-10">
@@ -216,8 +204,8 @@ export default function WineRegistrationModal() {
         />
         <Button
           items="wineRegister"
-          title="와인 등록하기"
-          onClick={handleRegisterClick}
+          title="와인 수정하기"
+          onClick={handleUpdateClick}
         />
       </div>
     </Modal>
