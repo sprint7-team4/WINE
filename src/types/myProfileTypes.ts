@@ -20,6 +20,7 @@ export interface Review {
   createdAt: string;
   updatedAt: string;
   user: User;
+  wine: Wine;
 }
 
 export interface ReviewsResponse {
@@ -38,11 +39,12 @@ export interface Wine {
   reviewCount: number;
   recentReview: Review;
   userId: number;
+  totalCount: number;
 }
 
 export interface WinesResponse {
   totalCount: number;
-  nextCursor: number;
+  nextCursor: string | null;
   list: Wine[];
 }
 

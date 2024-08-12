@@ -19,7 +19,7 @@ interface myWineCardProps {
 
 // export default MyWineCard;
 
-function MyWineCard({ wine }: any) {
+function MyWineCard({ wine }: myWineCardProps) {
   const { openModal } = useModalStore();
 
   const setReviewRerendered = useReviewRerenderStore(
@@ -51,18 +51,18 @@ function MyWineCard({ wine }: any) {
       <div className="flex items-center gap-20 h-full">
         <div className="relative w-53 h-full">
           <img
-            src="https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/Wine/user/8/1722402160581/wine1.png"
+            src={wine.image}
             className="absolute bottom-0 h-185 w-53 object-bottom"
           />
         </div>
         <div className="flex flex-col gap-15">
-          <p className="font-bold-20 w-187">
-            Sentinel Carbernet Sauvignon 2016
-          </p>
+          <p className="font-bold-20 w-187">{wine.name}</p>
           <div className="flex flex-col gap-4.5">
-            <p className="font-medium-14 text-grayscale-500">와인 지역</p>
+            <p className="font-medium-14 text-grayscale-500">{wine.region}</p>
             <div className="w-fit h-full rounded-10 px-10 py-6 bg-main-10">
-              <p className="flex-center font-bold-14 text-main">₩ 64,950</p>
+              <p className="flex-center font-bold-14 text-main">
+                ₩ {wine.price}
+              </p>
             </div>
           </div>
         </div>

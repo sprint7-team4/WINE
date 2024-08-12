@@ -1,6 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import Header from "@/components/common/Header";
-import { Review, ReviewsResponse, Wine } from "@/types/myProfileTypes";
+import {
+  Review,
+  ReviewsResponse,
+  Wine,
+  WinesResponse,
+} from "@/types/myProfileTypes";
 import {
   getReviews,
   getWines,
@@ -16,6 +21,7 @@ import MyReviewCard from "@/components/myprofile/MyReviewCard";
 import MyWineCard from "@/components/myprofile/MyWineCard";
 import { REVIEW_MODE } from "@/types/reviewTypes";
 import { showToast } from "@/components/common/Toast";
+import ReviewModal from "@/components/wineDetails/ReviewModal";
 
 export interface ProfileData {
   id: number;
@@ -27,7 +33,7 @@ export interface ProfileData {
 }
 export default function Myprofile() {
   const [reviews, setReview] = useState<ReviewsResponse | null>(null);
-  const [wines, setWine] = useState<Wine[]>([]);
+  const [wines, setWine] = useState<WinesResponse | null>(null);
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [newNickname, setNewNickname] = useState("");
   const [activeTab, setActiveTab] = useState<"reviews" | "wines">("reviews");
@@ -63,17 +69,7 @@ export default function Myprofile() {
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewNickname(e.target.value);
-  };
-
-  const handleUpdateNickname = async () => {
-    try {
-      const updatedProfile = await updateUser({ nickname: newNickname });
-      setProfile(updatedProfile);
-      showToast("닉네임이 성공적으로 변경되었습니다.", "success");
-    } catch (error) {
-      console.error("Failed to update nickname:", error);
-      showToast("닉네임 변경에 실패했습니다.", "error");
-    }
+    console.log(newNickname);
   };
 
   useEffect(() => {
@@ -86,17 +82,32 @@ export default function Myprofile() {
         }
 
         const reviewsData = await getReviews(10);
-        // const winesData = await getWines(10);
+        const winesList: Wine[] = await getWines(10);
 
         setReview(reviewsData);
-        // setWine(winesData);
+        setWine({
+          totalCount: winesList.length,
+          nextCursor: null, // 적절한 값으로 대체
+          list: winesList,
+        });
       } catch (error) {
         console.error("Failed to fetch data:", error);
       }
     };
     fetchData();
   }, []);
-  console.log(profile);
+
+  const handleUpdateNickname = async () => {
+    try {
+      const updatedProfile = await updateUser({ nickname: newNickname });
+      setProfile(updatedProfile);
+      showToast("닉네임이 성공적으로 변경되었습니다.", "success");
+    } catch (error) {
+      console.error("Failed to update nickname:", error);
+      showToast("닉네임 변경에 실패했습니다.", "error");
+    }
+  };
+
   return (
     <>
       <Header />
@@ -165,6 +176,7 @@ export default function Myprofile() {
                     md:rounded-16 md:w-480
                     lg:w-240"
                     placeholder={profile?.nickname}
+                    value={newNickname}
                     onChange={handleNicknameChange}
                   />
                 </div>
@@ -196,7 +208,11 @@ export default function Myprofile() {
               </button>
             </div>
             <p className="font-regular-12 text-main flex-center">
-              총 {reviews?.totalCount}개
+              총{" "}
+              {activeTab === "reviews"
+                ? reviews?.totalCount
+                : wines?.totalCount}
+              개
             </p>
           </div>
           <div className="flex flex-col gap-16">
@@ -208,12 +224,13 @@ export default function Myprofile() {
                   mode={REVIEW_MODE.EDIT}
                 />
               ))}
-            {activeTab === "wines" && (
-              // wines.map((wine) => <MyWineCard key={wine.id} wine={wine} />)}
-              <MyWineCard />
-            )}
+            {activeTab === "wines" &&
+              wines?.list.map((wine) => (
+                <MyWineCard key={wine.id} wine={wine} />
+              ))}
           </div>
         </div>
+        <ReviewModal mode={REVIEW_MODE.EDIT} />
       </div>
     </>
   );
