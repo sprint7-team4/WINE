@@ -32,7 +32,7 @@ export default function Header() {
     };
 
     getUserApi();
-  }, []);
+  }, [user]);
 
   if (!isClient) {
     return null; // 서버 사이드 렌더링 시에는 아무것도 렌더링하지 않는다.
