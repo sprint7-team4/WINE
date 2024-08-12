@@ -5,7 +5,8 @@ import { searchIcon, filter } from "@/assets/img/index";
 import Image from "next/image";
 import { useWineStore } from "@/store/filteringStore";
 import WineFilterModal from "../wineListPage/WineFilterModal";
-import useModalSecondStore from "@/store/ModalSecondStore";
+import useModalSecondStore from "@/store/modalSecondStore";
+import WineRegistrationModal from "../wineListPage/WineRegistrationModal";
 
 type FilterValue =
   | "latest"
@@ -87,6 +88,7 @@ const MobilePage: FC = () => {
         </div>
       </div>
       <WineFilterModal id={"filter"} />
+      <WineRegistrationModal />
       <div className="h-75 fixed bottom-30 left-0 right-0 mx-4 p-20 rounded-16 bg-transport bg-opacity-80 shadow-lg">
         <button
           className="w-full cursor-pointer h-48 rounded-16 bg-main text-16 text-white font-bold
