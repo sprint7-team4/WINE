@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef, ChangeEvent } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { PostWine, WineType } from "@/types/wineTypes";
-import ModalSecond from "./common/ModalSecond";
-import Button from "./common/Button";
+import ModalSecond from "@/components/common/ModalSecond";
+import Button from "@/components/common/Button";
 import useModalSecondStore from "@/store/modalSecondStore";
 import photo_icon from "@/assets/img/photo.svg";
 import { postWine } from "@/lib/wineApi";

@@ -5,7 +5,7 @@ import { useWineStore } from "@/store/filteringStore";
 import useModalSecondStore from "@/store/modalSecondStore";
 
 type WineType = "RED" | "WHITE" | "SPARKLING" | null;
-import useModalStore from "@/store/modalStore";
+// import useModalStore from "@/store/modalStore";
 
 const SideFiltering = ({ hideButton = false }) => {
   const { openSecondModal } = useModalSecondStore();

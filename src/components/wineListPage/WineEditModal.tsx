@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, ChangeEvent } from "react";
 import { PostWine } from "@/types/wineTypes";
-import Modal from "./common/Modal";
-import Button from "./common/Button";
+import Modal from "../common/Modal";
+import Button from "../common/Button";
 import useModalStore from "@/store/modalStore";
 import photo_icon from "@/assets/img/photo.svg";
 import { WineType } from "@/types/wineTypes";
