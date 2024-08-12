@@ -52,7 +52,8 @@ function MyWineCard({ wine }: myWineCardProps) {
         <div className="relative w-53 h-full">
           <img
             src={wine.image}
-            className="absolute bottom-0 h-185 w-53 object-bottom"
+            alt="wine_img"
+            className="absolute bottom-0 h-185 w-53 object-cover"
           />
         </div>
         <div className="flex flex-col gap-15">

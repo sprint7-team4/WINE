@@ -178,6 +178,7 @@ export default function WineRegistrationModal() {
           name="image"
           className="hidden"
           ref={imageRef}
+          accept="image/*"
           onChange={handleImgFileChange}
         />
         <div className="flex gap-10">

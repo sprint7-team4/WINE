@@ -147,6 +147,7 @@ export default function Myprofile() {
                   onChange={handleFileChange}
                   className="hidden"
                   accept="image/*"
+                  title="파일 선택"
                 />
               </div>
               <div
@@ -163,7 +164,7 @@ export default function Myprofile() {
               </div>
             </div>
             <div className="w-full">
-              <div className="w-full flex flex-col gap-8 md:flex-row md:items-end md:justify-between md:gap-24 lg:flex-col lg:gap-8">
+              <form className="w-full flex flex-col gap-8 md:flex-row md:items-end md:justify-between md:gap-24 lg:flex-col lg:gap-8">
                 <div
                   className="flex flex-col gap-8  
                               md:gap-10  "
@@ -187,7 +188,7 @@ export default function Myprofile() {
                     onClick={handleUpdateNickname}
                   />
                 </div>
-              </div>
+              </form>
             </div>
           </div>
         </div>
