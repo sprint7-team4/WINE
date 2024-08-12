@@ -23,7 +23,7 @@ import {
   useFormType,
   useReviewRerenderStore,
   useReviewStore,
-  useWineStore,
+  useWineDataStore,
 } from "@/store/reviewStore";
 import "react-toastify/dist/ReactToastify.css";
 import { showToast } from "../common/Toast";
@@ -80,7 +80,7 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
   const { setFormType } = useFormType((state) => ({
     setFormType: state.setFormType,
   }));
-  const { setWine } = useWineStore((state) => ({
+  const { setWine } = useWineDataStore((state) => ({
     setWine: state.setWine,
   }));
   const [isExpanded, setIsExpanded] = useState(true);
@@ -189,12 +189,12 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
         </div>
       </div>
       <div className="flex justify-between">
-        <div className="flex gap-4 md:gap-10">
+        <div className="flex flex-wrap gap-4 md:gap-10">
           {aroma.map((tag, index) => (
             <ReviewTag key={index} tag={AROMA_TO_KR[tag]} />
           ))}
         </div>
-        <div className="w-60 h-36 md:w-80 md:h-42 flex flex-center gap-3 bg-main-10 rounded-12">
+        <div className="w-60 h-36 flex-shrink-0 md:w-80 md:h-42 flex flex-center gap-3 bg-main-10 rounded-12">
           <div className="fas fa-star text-main w-16 h-16 md:w-20 md:h-20 flex flex-center"></div>
           <div className="font-bold-14 md:font-bold-18 text-main flex-center">
             {rating.toFixed(1)}

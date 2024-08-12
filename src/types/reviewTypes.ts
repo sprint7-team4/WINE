@@ -31,6 +31,7 @@ export enum REVIEW_MODE {
 export interface ReviewFormProps {
   mode: REVIEW_MODE;
   review?: Review;
+  wineId?: number;
 }
 
 export interface User {

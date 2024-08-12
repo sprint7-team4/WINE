@@ -26,7 +26,7 @@ import {
   useFormType,
   useReviewRerenderStore,
   useReviewStore,
-  useWineStore,
+  useWineDataStore,
 } from "@/store/reviewStore";
 import useModalStore from "@/store/modalStore";
 import { showToast } from "../common/Toast";
@@ -34,6 +34,7 @@ import { useRouter } from "next/router";
 import { useForm, Controller } from "react-hook-form";
 
 const INITIAL_RATING = 0;
+const MAX_TAGS = 20;
 
 const INITIAL_REVIEW_DATA: SendReview = {
   rating: 0,
@@ -46,9 +47,11 @@ const INITIAL_REVIEW_DATA: SendReview = {
   wineId: 0,
 };
 
-const ReviewForm = ({ mode }: ReviewFormProps) => {
+const ReviewForm = ({ mode, wineId }: ReviewFormProps) => {
   const router = useRouter();
   const { wineid } = router.query;
+  const isMyPage = router.pathname === "/myprofile";
+
   const [localBalancedProfiles, setLocalBalancedProfiles] = useState({
     ...balancedProfiles,
   });
@@ -64,7 +67,7 @@ const ReviewForm = ({ mode }: ReviewFormProps) => {
       mode === REVIEW_MODE.CREATE ? INITIAL_REVIEW_DATA : INITIAL_REVIEW_DATA,
   });
 
-  const wineData = useWineStore((state) => state.wineData);
+  const wineData = useWineDataStore((state) => state.wineData);
   const setReviewSubmitted = useReviewRerenderStore(
     (state) => state.setReviewRerendered
   );
@@ -72,13 +75,14 @@ const ReviewForm = ({ mode }: ReviewFormProps) => {
   const { setFormType } = useFormType((state) => ({
     setFormType: state.setFormType,
   }));
-  const { reviewId } = useReviewStore((state) => ({
+  const { reviewId, setReviewId } = useReviewStore((state) => ({
     reviewId: state.reviewId,
+    setReviewId: state.setReviewId,
   }));
   const { setReviewCardRerendered } = useReviewRerenderStore((state) => ({
     setReviewCardRerendered: state.setReviewCardRerendered,
   }));
-  const { setWine } = useWineStore((state) => ({
+  const { setWine } = useWineDataStore((state) => ({
     setWine: state.setWine,
   }));
   const [selectedAroma, setSelectedAroma] = useState<EN_AROMAS[]>([]);
@@ -103,6 +107,7 @@ const ReviewForm = ({ mode }: ReviewFormProps) => {
     reset(INITIAL_REVIEW_DATA);
     setLocalBalancedProfiles({ ...balancedProfiles });
     setFormType(null);
+    setReviewId(null);
     closeModal();
   };
 
@@ -157,7 +162,13 @@ const ReviewForm = ({ mode }: ReviewFormProps) => {
 
   const handleTagClick = (tag: EN_AROMAS) => {
     setSelectedAroma((prev) => {
-      const newSelection = prev.includes(tag)
+      const isTagSelected = prev.includes(tag);
+      if (!isTagSelected && prev.length >= MAX_TAGS) {
+        alert(`최대 ${MAX_TAGS}개의 태그만 선택할 수 있습니다.`);
+        return prev;
+      }
+
+      const newSelection = isTagSelected
         ? prev.filter((item) => item !== tag)
         : [...prev, tag];
 
@@ -187,7 +198,7 @@ const ReviewForm = ({ mode }: ReviewFormProps) => {
     }
   };
 
-  if (!wineData) {
+  if (!wineData && !isMyPage) {
     return <div>Loading...</div>;
   }
 
@@ -215,7 +226,7 @@ const ReviewForm = ({ mode }: ReviewFormProps) => {
         <div className="flex items-center gap-16">
           <Image src={wineIcon} alt="와인 아이콘" width={68} height={68} />
           <div className="w-full flex flex-col justify-between font-semibold-18">
-            <h2 className="mb-8">{wineData.name}</h2>
+            {!isMyPage && <h2 className="mb-8">{wineData?.name}</h2>}
             <Controller
               name="rating"
               control={control}
@@ -287,7 +298,7 @@ const ReviewForm = ({ mode }: ReviewFormProps) => {
             </div>
             <div>
               <h3 className="font-bold-20 mb-24">기억에 남는 향이 있나요?</h3>
-              <div className="flex gap-4 md:gap-10 flex-wrap">
+              <div className="flex flex-wrap gap-4 md:gap-10 ">
                 {Object.entries(AROMA_TO_KR).map(([aroma, korean]) => (
                   <ReviewTag
                     mode={mode}
