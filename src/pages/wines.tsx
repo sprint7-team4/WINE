@@ -52,7 +52,7 @@ const WineListPage: FC = () => {
         </div>
         <TopFiltering />
         <div className="mt-62 w-full flex justify-between">
-          <SideFiltering hideButton={false} />
+          <SideFiltering />
           <div>
             <WineListCardList />
           </div>

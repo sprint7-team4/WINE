@@ -2,10 +2,9 @@ import { useState } from "react";
 import { PriceSlider } from "./PriceSlider";
 import StarRatingFilter from "./StarRatingFilter";
 import { useWineStore } from "@/store/filteringStore";
-import useModalSecondStore from "@/store/ModalSecondStore";
+import useModalSecondStore from "@/store/modalSecondStore";
 
 type WineType = "RED" | "WHITE" | "SPARKLING" | null;
-import useModalStore from "@/store/modalStore";
 
 const SideFiltering = ({ hideButton = false }) => {
   const { openSecondModal } = useModalSecondStore();
