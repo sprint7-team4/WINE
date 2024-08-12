@@ -78,7 +78,7 @@ const Slider: React.FC<SliderProps> = ({ profile, mode, onChange }) => {
           <input
             ref={sliderRef}
             className={`w-full border border-gray-300 transition-opacity duration-150 ease-in-out ${
-              mode === REVIEW_MODE.REVIEW ? "cursor-default" : ""
+              mode === REVIEW_MODE.REVIEW ? "cursor-default readOnly" : ""
             }`}
             id="taste-slider"
             type="range"
