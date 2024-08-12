@@ -6,7 +6,7 @@ import { useWineStore } from "@/store/filteringStore";
 type WineType = "RED" | "WHITE" | "SPARKLING" | null;
 import useModalStore from "@/store/modalStore";
 
-const SideFiltering = () => {
+const SideFiltering = ({ hideButton = false }) => {
   const { openModal, closeModal } = useModalStore();
 
   const wineTypes: WineType[] = ["RED", "WHITE", "SPARKLING"];
@@ -45,13 +45,15 @@ const SideFiltering = () => {
           <StarRatingFilter />
         </div>
 
-        <button
-          className="cursor-pointer mt-60 w-full h-50 rounded-16 bg-main text-16 text-white font-bold backdrop-blur-sm
-             transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg hover:brightness-110"
-          onClick={openModal}
-        >
-          와인 등록하기
-        </button>
+        {!hideButton && (
+          <button
+            className="cursor-pointer mt-60 w-full h-50 rounded-16 bg-main text-16 text-white font-bold backdrop-blur-sm
+              transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg hover:brightness-110"
+            onClick={openModal}
+          >
+            와인 등록하기
+          </button>
+        )}
       </div>
     </div>
   );

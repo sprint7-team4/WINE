@@ -1,18 +1,22 @@
-import { useState, useEffect, useRef, ChangeEvent } from "react";
+import { useState, useEffect, useRef, ChangeEvent, MouseEvent } from "react";
 import { PostWine } from "@/types/wineTypes";
-import Modal from "./common/Modal";
-import Button from "./common/Button";
+import Modal from "../common/Modal";
+import Button from "../common/Button";
 import useModalStore from "@/store/modalStore";
 import photo_icon from "@/assets/img/photo.svg";
 import { WineType } from "@/types/wineTypes";
 import { postWine } from "@/lib/wineApi";
 import { imageUpload } from "@/lib/imageApi";
+import useModalTypeStore from "@/store/modalTypeStore";
 
 const wineType: WineType[] = ["RED", "WHITE", "SPARKLING"];
 
 export default function WineRegistrationModal() {
   const imageRef = useRef<HTMLInputElement>(null);
   const { closeModal } = useModalStore();
+
+  const { modalType } = useModalTypeStore();
+  if (modalType !== "wineRegistration") return null;
 
   const [value, setValue] = useState<PostWine>({
     name: "",
@@ -24,7 +28,10 @@ export default function WineRegistrationModal() {
   const [imgFile, setImgFile] = useState<File | null>(null);
   const [imgPreview, setImgPreview] = useState("");
 
-  const handleTypeClick = (wineType: WineType) => {
+  const handleTypeClick = (
+    e: MouseEvent<HTMLButtonElement>,
+    wineType: WineType
+  ) => {
     setValue((prev) => ({
       ...prev,
       type: wineType,
@@ -83,7 +90,7 @@ export default function WineRegistrationModal() {
 
     closeModal();
   };
-
+  console.log(value);
   return (
     <Modal className="p-24 w-[100%] md:w-460 rounded-16 text-grayscale-800">
       <h2 className="mb-32 md:mb-40 font-bold-20 md:font-bold-24">와인 등록</h2>
@@ -94,7 +101,7 @@ export default function WineRegistrationModal() {
               key={type}
               type="button"
               title={type}
-              onClick={() => handleTypeClick(type)}
+              onClick={(e) => handleTypeClick(e, type)}
               className={`h-42 px-18 border-1 border-solid border-grayscale-300 rounded-100 font-medium-16  ${value.type === type ? "bg-main text-white" : "text-grayscale-800"}`}
             >
               {type}
