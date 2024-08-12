@@ -63,3 +63,21 @@ export const postWine = async ({
     throw error;
   }
 };
+
+export const deleteWine = async (id: number) => {
+  let res;
+  try {
+    const token = localStorage.getItem("accessToken");
+    res = await axios.delete(`wines/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error) {
+    console.error("Error deleting review:", error);
+    throw error;
+  }
+
+  return res.status === 200;
+};
