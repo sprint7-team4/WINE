@@ -51,7 +51,7 @@ function MyWineCard({ wine }: myWineCardProps) {
       <div className="flex items-center gap-20 h-full">
         <div className="relative w-53 h-full">
           <img
-            src="https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/Wine/user/8/1722402160581/wine1.png"
+            src={wine.image}
             className="absolute bottom-0 h-185 w-53 object-bottom"
           />
         </div>

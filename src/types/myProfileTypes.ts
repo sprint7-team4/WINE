@@ -39,6 +39,7 @@ export interface Wine {
   reviewCount: number;
   recentReview: Review;
   userId: number;
+  totalCount: number;
 }
 
 export interface WinesResponse {
