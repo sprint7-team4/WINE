@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef, ChangeEvent } from "react";
-import { PostWine } from "@/types/wineTypes";
-import Modal from "./common/Modal";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import { PostWine, WineType } from "@/types/wineTypes";
+import ModalSecond from "./common/ModalSecond";
 import Button from "./common/Button";
-import useModalStore from "@/store/modalStore";
+import useModalSecondStore from "@/store/ModalSecondStore";
 import photo_icon from "@/assets/img/photo.svg";
-import { WineType } from "@/types/wineTypes";
 import { postWine } from "@/lib/wineApi";
 import { imageUpload } from "@/lib/imageApi";
 
@@ -12,44 +12,28 @@ const wineType: WineType[] = ["RED", "WHITE", "SPARKLING"];
 
 export default function WineRegistrationModal() {
   const imageRef = useRef<HTMLInputElement>(null);
-  const { closeModal } = useModalStore();
-
-  const [value, setValue] = useState<PostWine>({
-    name: "",
-    price: 0,
-    region: "",
-    image: "string",
-    type: "RED",
+  const { closeModal } = useModalSecondStore();
+  const {
+    control,
+    handleSubmit,
+    watch,
+    setValue,
+    reset,
+    formState: { errors, isValid },
+    trigger,
+  } = useForm<PostWine>({
+    mode: "onChange",
+    defaultValues: {
+      name: "",
+      price: 1000,
+      region: "",
+      image: "",
+      type: "RED",
+    },
   });
+
   const [imgFile, setImgFile] = useState<File | null>(null);
   const [imgPreview, setImgPreview] = useState("");
-
-  const handleTypeClick = (wineType: WineType) => {
-    setValue((prev) => ({
-      ...prev,
-      type: wineType,
-    }));
-  };
-
-  const handleImgBtnClick = () => {
-    imageRef.current?.click();
-  };
-
-  const handleImgFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-
-    if (file) {
-      const formData = new FormData();
-      formData.append("image", file);
-
-      const response = await imageUpload(formData);
-      setValue((prev) => ({
-        ...prev,
-        image: response,
-      }));
-      setImgFile(file);
-    }
-  };
 
   useEffect(() => {
     if (imgFile) {
@@ -60,9 +44,39 @@ export default function WineRegistrationModal() {
     }
   }, [imgFile]);
 
-  const handleRegisterClick = async () => {
+  const handleTypeClick = (wineType: WineType) => {
+    setValue("type", wineType);
+  };
+
+  const handleImgBtnClick = () => {
+    imageRef.current?.click();
+  };
+
+  const handleImgFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (file) {
+      if (!file.type.startsWith("image/")) {
+        alert("이미지 파일만 업로드할 수 있습니다.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("image", file);
+
+      try {
+        const response = await imageUpload(formData);
+        setValue("image", response, { shouldValidate: true });
+        setImgFile(file);
+      } catch (error) {
+        console.error("이미지 업로드 중 오류 발생:", error);
+      }
+    }
+  };
+
+  const onSubmit: SubmitHandler<PostWine> = async (data) => {
     try {
-      await postWine({ ...value });
+      await postWine(data);
       handleCancelClick();
     } catch (error) {
       console.error("와인 등록 중 오류 발생:", error);
@@ -70,24 +84,25 @@ export default function WineRegistrationModal() {
   };
 
   const handleCancelClick = () => {
-    setValue((prev) => ({
-      ...prev,
+    reset({
       name: "",
-      price: 0,
+      price: 1000,
       region: "",
       image: "",
       type: "RED",
-    }));
+    });
     setImgFile(null);
     setImgPreview("");
-
     closeModal();
   };
 
   return (
-    <Modal className="p-24 w-[100%] md:w-460 rounded-16 text-grayscale-800">
+    <ModalSecond
+      id="register"
+      className="p-24 w-[100%] md:w-460 rounded-16 text-grayscale-800"
+    >
       <h2 className="mb-32 md:mb-40 font-bold-20 md:font-bold-24">와인 등록</h2>
-      <form className="flex flex-col">
+      <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
         <div className="flex gap-10 mb-24">
           {wineType.map((type) => (
             <button
@@ -95,77 +110,133 @@ export default function WineRegistrationModal() {
               type="button"
               title={type}
               onClick={() => handleTypeClick(type)}
-              className={`h-42 px-18 border-1 border-solid border-grayscale-300 rounded-100 font-medium-16  ${value.type === type ? "bg-main text-white" : "text-grayscale-800"}`}
+              className={`h-42 px-18 border-1 border-solid border-grayscale-300 rounded-100 font-medium-16 ${watch("type") === type ? "bg-main text-white" : "text-grayscale-800"}`}
             >
               {type}
             </button>
           ))}
         </div>
+
         <label
           htmlFor="name"
           className="mb-14 md:mb-16 font-medium-14 md:font-medium-16"
         >
           와인 이름
         </label>
-        <input
-          type="text"
-          id="name"
+        <Controller
           name="name"
-          value={value.name}
-          placeholder="와인 이름 입력"
-          onChange={(e) =>
-            setValue((prev) => ({
-              ...prev,
-              name: e.target.value,
-            }))
-          }
-          className="mb-24 md:mb-32 px-20 h-42 md:h-48 border-1 border-solid border-grayscale-300 rounded-12 md:rounded-16"
+          control={control}
+          rules={{
+            required: "와인 이름을 입력해주세요",
+            maxLength: {
+              value: 30,
+              message: "와인 이름은 30자 이하로 입력해주세요",
+            },
+            validate: (value) => !!value.trim() || "공백만 입력할 수 없습니다.",
+          }}
+          render={({ field }) => (
+            <>
+              <input
+                {...field}
+                id="name"
+                placeholder="와인 이름 입력"
+                className={`mb-24 md:mb-32 px-20 h-42 md:h-48 border-1 border-solid ${errors.name ? "border-red-500" : "border-grayscale-300"} rounded-12 md:rounded-16`}
+                onBlur={async () => {
+                  await trigger("name");
+                  field.onBlur();
+                }}
+                onChange={(e) => {
+                  field.onChange(e);
+                }}
+              />
+              {errors.name && (
+                <span className="text-red-500 relative top-[-15px] md:top-[-23px]">
+                  {errors.name.message}
+                </span>
+              )}
+            </>
+          )}
         />
+
         <label
           htmlFor="price"
           className="mb-14 md:mb-16 font-medium-14 md:font-medium-16"
         >
           가격
         </label>
-        <input
-          type="text"
-          id="price"
+        <Controller
           name="price"
-          value={value.price}
-          placeholder="가격 입력"
-          onChange={(e) => {
-            const newValue = e.target.value;
-
-            const numericValue = Number(newValue);
-            if (!isNaN(numericValue)) {
-              setValue((prev) => ({
-                ...prev,
-                price: numericValue,
-              }));
-            }
+          control={control}
+          rules={{
+            required: "가격을 입력해주세요",
+            min: {
+              value: 1000,
+              message: "가격은 최소 1,000원이어야 합니다.",
+            },
+            max: {
+              value: 1000000,
+              message: "가격은 1,000,000원 이하로 입력해주세요",
+            },
+            validate: (value) =>
+              !!value.toString().trim() || "공백만 입력할 수 없습니다.",
           }}
-          className="mb-24 md:mb-32 px-20 h-42 md:h-48 border-1 border-solid border-grayscale-300 rounded-12 md:rounded-16"
+          render={({ field }) => (
+            <input
+              {...field}
+              type="number"
+              id="price"
+              placeholder="가격 입력"
+              className={`mb-24 md:mb-32 px-20 h-42 md:h-48 border-1 border-solid ${errors.price ? "border-red-500" : "border-grayscale-300"} rounded-12 md:rounded-16`}
+            />
+          )}
         />
+        {errors.price && (
+          <span className="text-red-500 relative top-[-15px] md:top-[-23px]">
+            {errors.price.message}
+          </span>
+        )}
+
         <label
           htmlFor="region"
           className="mb-14 md:mb-16 font-medium-14 md:font-medium-16"
         >
           원산지
         </label>
-        <input
-          type="text"
-          id="region"
+        <Controller
           name="region"
-          value={value.region}
-          placeholder="원산지 입력"
-          onChange={(e) =>
-            setValue((prev) => ({
-              ...prev,
-              region: e.target.value,
-            }))
-          }
-          className="mb-24 md:mb-32 px-20 h-42 md:h-48 border-1 border-solid border-grayscale-300 rounded-12 md:rounded-16"
+          control={control}
+          rules={{
+            required: "원산지를 입력해주세요",
+            maxLength: {
+              value: 15,
+              message: "원산지는 15자 이하로 입력해주세요",
+            },
+            validate: (value) => !!value.trim() || "공백만 입력할 수 없습니다.",
+          }}
+          render={({ field }) => (
+            <>
+              <input
+                {...field}
+                id="region"
+                placeholder="원산지 입력"
+                className={`mb-24 md:mb-32 px-20 h-42 md:h-48 border-1 border-solid ${errors.region ? "border-red-500" : "border-grayscale-300"} rounded-12 md:rounded-16`}
+                onBlur={async () => {
+                  await trigger("region");
+                  field.onBlur();
+                }}
+                onChange={(e) => {
+                  field.onChange(e);
+                }}
+              />
+              {errors.region && (
+                <span className="text-red-500 relative top-[-15px] md:top-[-23px]">
+                  {errors.region.message}
+                </span>
+              )}
+            </>
+          )}
         />
+
         <label
           htmlFor="image"
           className="mb-14 md:mb-16 font-medium-14 md:font-medium-16"
@@ -200,19 +271,23 @@ export default function WineRegistrationModal() {
             </div>
           )}
         </div>
+
+        <div className="flex-center gap-8 md:gap-10">
+          <Button
+            items="wineRegisterCancel"
+            title="취소"
+            onClick={handleCancelClick}
+          />
+          <button
+            className={`w-[70%] md:w-294 h-54 ${isValid && imgFile ? "bg-main" : "bg-gray-300"} font-bold-16 text-white rounded-12 whitespace-nowrap`}
+            title="와인 등록하기"
+            onClick={handleSubmit(onSubmit)}
+            disabled={!isValid || !imgFile}
+          >
+            와인 등록하기
+          </button>
+        </div>
       </form>
-      <div className="flex-center gap-8 md:gap-10">
-        <Button
-          items="wineRegisterCancel"
-          title="취소"
-          onClick={handleCancelClick}
-        />
-        <Button
-          items="wineRegister"
-          title="와인 등록하기"
-          onClick={handleRegisterClick}
-        />
-      </div>
-    </Modal>
+    </ModalSecond>
   );
 }
