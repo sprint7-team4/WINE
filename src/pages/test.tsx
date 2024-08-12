@@ -4,7 +4,6 @@ import { useDeviceTypeDetector } from "@/hooks/useDeviceTypeDetector";
 import DesktopPage from "@/components/ListPageDeviceType/DeskPage";
 import TabletPage from "@/components/ListPageDeviceType/TabletPage";
 import MobilePage from "@/components/ListPageDeviceType/MobilePage";
-import WineRegistrationModal from "@/components/wineListPage/WineRegistrationModal";
 
 const WineListPage: FC = () => {
   const { isMobile, isTablet, isDesktop } = useLayoutStore();
