@@ -176,7 +176,11 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
   };
 
   return (
-    <section className="max-lg:w-full w-800 p-[16px_20px] md:p-[32px_40px_24px] lg:p-[16.5px_40px_20px] rounded-16 border border-grayscale-300 border-solid">
+    <section
+      className="max-lg:w-full w-800 p-[16px_20px] md:p-[32px_40px_24px] 
+    lg:p-[16.5px_40px_20px] rounded-16 border border-grayscale-300 border-solid 
+    transition duration-300 ease-in-out transform hover:shadow-lg hover:brightness-10 hover:border-main "
+    >
       <div className="flex justify-between mb-16 md:mb-20">
         <div className="flex gap-16 items-center">
           <Image
@@ -205,7 +209,7 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
                   alt="메뉴"
                   width={38}
                   height={38}
-                  className="w-32 h-32 md:w-38 md:h-38"
+                  className="w-32 h-32 md:w-38 md:h-38 hover:bg-main-10 rounded-12"
                 />
               }
               items={[EDIT_MENU.EDIT, EDIT_MENU.DELETE]}
@@ -227,16 +231,17 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
           </div>
         </div>
       </div>
-      {isExpanded && (
-        <>
-          <p className="mt-16 md:mt-24 mb-16 md:mb-20 font-regular-14 md:font-regular-16">
-            {content}
-          </p>
-          <div className="flex flex-col gap-15 md:gap-18">
-            <ProfileSliders profilesArray={profilesArray} />
-          </div>
-        </>
-      )}
+      <p
+        className={`mt-16 md:mt-24 mb-16 md:mb-20 font-regular-14 md:font-regular-16 
+          transition-all duration-300 overflow-hidden ${
+            isExpanded ? "max-h-[800px]" : "max-h-0"
+          }`}
+      >
+        {content}
+        <div className="flex flex-col gap-15 md:gap-18 mt-20">
+          <ProfileSliders profilesArray={profilesArray} />
+        </div>
+      </p>
       <div className="flex flex-center mt-16 md:mt-24 lg:mt-[6.5px]">
         <button onClick={handleToggle}>
           <Image
