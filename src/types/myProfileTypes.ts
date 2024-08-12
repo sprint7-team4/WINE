@@ -40,6 +40,7 @@ export interface Wine {
   recentReview: Review;
   userId: number;
   totalCount: number;
+  type: "RED" | "WHITE" | "SPARKLING";
 }
 
 export interface WinesResponse {
