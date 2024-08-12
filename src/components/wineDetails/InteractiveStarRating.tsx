@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const MAX_STAR_COUNT = 5;
 
@@ -16,6 +16,10 @@ const InteractiveStarRating: React.FC<InteractiveStarRatingProps> = ({
   const [rating, setRating] = useState(initialRating);
   const [hoveredRating, setHoveredRating] = useState<number | null>(null);
 
+  useEffect(() => {
+    setRating(initialRating);
+  }, [initialRating]);
+
   const handleClick = (newRating: number) => {
     setRating(newRating);
     if (onRatingChange) {
@@ -32,6 +36,7 @@ const InteractiveStarRating: React.FC<InteractiveStarRatingProps> = ({
   };
 
   const effectiveRating = hoveredRating !== null ? hoveredRating : rating;
+
   return (
     <div className="flex items-center">
       {[...Array(MAX_STAR_COUNT)].map((_, index) => (

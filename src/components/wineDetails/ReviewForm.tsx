@@ -1,4 +1,12 @@
-import { REVIEW_MODE, ReviewFormProps, SendReview } from "@/types/reviewTypes";
+import {
+  ProfileScales,
+  REVIEW_MODE,
+  ReviewFields,
+  ReviewFieldsEnum,
+  ReviewFormProps,
+  SendReview,
+  WineBalanceEnum,
+} from "@/types/reviewTypes";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import closeButton from "@/assets/img/close.svg";
@@ -18,13 +26,15 @@ import {
   useFormType,
   useReviewRerenderStore,
   useReviewStore,
-  useWineStore,
+  useWineDataStore,
 } from "@/store/reviewStore";
 import useModalStore from "@/store/modalStore";
 import { showToast } from "../common/Toast";
 import { useRouter } from "next/router";
+import { useForm, Controller } from "react-hook-form";
 
 const INITIAL_RATING = 0;
+const MAX_TAGS = 20;
 
 const INITIAL_REVIEW_DATA: SendReview = {
   rating: 0,
@@ -37,17 +47,27 @@ const INITIAL_REVIEW_DATA: SendReview = {
   wineId: 0,
 };
 
-const ReviewForm = ({ mode }: ReviewFormProps) => {
+const ReviewForm = ({ mode, wineId }: ReviewFormProps) => {
   const router = useRouter();
   const { wineid } = router.query;
+  const isMyPage = router.pathname === "/myprofile";
+
   const [localBalancedProfiles, setLocalBalancedProfiles] = useState({
     ...balancedProfiles,
   });
-  const [selectedAroma, setSelectedAroma] = useState<EN_AROMAS[]>([]);
-  const [reviewData, setReviewData] = useState(
-    mode === REVIEW_MODE.CREATE ? INITIAL_REVIEW_DATA : null
-  );
-  const wineData = useWineStore((state) => state.wineData);
+  const {
+    handleSubmit,
+    control,
+    setValue,
+    reset,
+    formState: { errors },
+    trigger,
+  } = useForm<SendReview>({
+    defaultValues:
+      mode === REVIEW_MODE.CREATE ? INITIAL_REVIEW_DATA : INITIAL_REVIEW_DATA,
+  });
+
+  const wineData = useWineDataStore((state) => state.wineData);
   const setReviewSubmitted = useReviewRerenderStore(
     (state) => state.setReviewRerendered
   );
@@ -55,15 +75,17 @@ const ReviewForm = ({ mode }: ReviewFormProps) => {
   const { setFormType } = useFormType((state) => ({
     setFormType: state.setFormType,
   }));
-  const { reviewId } = useReviewStore((state) => ({
+  const { reviewId, setReviewId } = useReviewStore((state) => ({
     reviewId: state.reviewId,
+    setReviewId: state.setReviewId,
   }));
   const { setReviewCardRerendered } = useReviewRerenderStore((state) => ({
     setReviewCardRerendered: state.setReviewCardRerendered,
   }));
-  const { setWine } = useWineStore((state) => ({
+  const { setWine } = useWineDataStore((state) => ({
     setWine: state.setWine,
   }));
+  const [selectedAroma, setSelectedAroma] = useState<EN_AROMAS[]>([]);
 
   const updateLocalBalancedProfiles = (reviewDetails: SendReview) => {
     setLocalBalancedProfiles((prevProfiles) => {
@@ -81,20 +103,11 @@ const ReviewForm = ({ mode }: ReviewFormProps) => {
   };
 
   const resetForm = () => {
-    setReviewData({
-      rating: INITIAL_RATING,
-      aroma: [],
-      lightBold: 0,
-      smoothTannic: 0,
-      drySweet: 0,
-      softAcidic: 0,
-      content: "",
-      wineId: 0,
-    });
     setSelectedAroma([]);
+    reset(INITIAL_REVIEW_DATA);
     setLocalBalancedProfiles({ ...balancedProfiles });
-
     setFormType(null);
+    setReviewId(null);
     closeModal();
   };
 
@@ -103,10 +116,10 @@ const ReviewForm = ({ mode }: ReviewFormProps) => {
       const fetchReviewData = async () => {
         try {
           const reviewDetails = await getReviewId(reviewId);
-          setReviewData({
-            ...reviewDetails,
-            wineId: wineData?.id || 0,
+          Object.values(ReviewFieldsEnum).forEach((field) => {
+            setValue(field, reviewDetails[field as keyof ReviewFields]);
           });
+
           setSelectedAroma(reviewDetails.aroma);
           updateLocalBalancedProfiles(reviewDetails);
         } catch (error) {
@@ -119,12 +132,9 @@ const ReviewForm = ({ mode }: ReviewFormProps) => {
     }
 
     if (mode === REVIEW_MODE.CREATE && wineData) {
-      setReviewData((prevData) => ({
-        ...(prevData as SendReview),
-        wineId: wineData.id,
-      }));
+      setValue("wineId", wineData.id);
     }
-  }, [mode, wineData, reviewId]);
+  }, [mode, wineData, reviewId, setValue]);
 
   const handleSliderValuesChange = (values: number[]) => {
     setLocalBalancedProfiles((prevProfiles) => {
@@ -136,20 +146,15 @@ const ReviewForm = ({ mode }: ReviewFormProps) => {
             ...value,
             scale: values[index],
           };
-        } else if (
-          index < values.length &&
-          updatedProfiles[key as keyof typeof updatedProfiles].scale === 0
-        ) {
         }
       });
 
-      setReviewData((prevData) => ({
-        ...(prevData as SendReview),
-        lightBold: updatedProfiles.lightBold.scale || 0,
-        smoothTannic: updatedProfiles.smoothTannic.scale || 0,
-        drySweet: updatedProfiles.drySweet.scale || 0,
-        softAcidic: updatedProfiles.softAcidic.scale || 0,
-      }));
+      Object.values(WineBalanceEnum).forEach((field) => {
+        setValue(
+          field,
+          updatedProfiles[field as keyof ProfileScales].scale || 0
+        );
+      });
 
       return updatedProfiles;
     });
@@ -157,31 +162,31 @@ const ReviewForm = ({ mode }: ReviewFormProps) => {
 
   const handleTagClick = (tag: EN_AROMAS) => {
     setSelectedAroma((prev) => {
-      const newSelection = prev.includes(tag)
+      const isTagSelected = prev.includes(tag);
+      if (!isTagSelected && prev.length >= MAX_TAGS) {
+        alert(`최대 ${MAX_TAGS}개의 태그만 선택할 수 있습니다.`);
+        return prev;
+      }
+
+      const newSelection = isTagSelected
         ? prev.filter((item) => item !== tag)
         : [...prev, tag];
 
-      setReviewData((prevData) => ({
-        ...(prevData as SendReview),
-        aroma: newSelection,
-      }));
-
+      setValue("aroma", newSelection);
       return newSelection;
     });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (data: SendReview) => {
     try {
-      if (mode === REVIEW_MODE.CREATE && reviewData) {
-        await createReview(reviewData);
+      if (mode === REVIEW_MODE.CREATE) {
+        await createReview(data);
         const res = await getWineId(String(wineid));
         setWine(res);
-        console.log(res);
         if (res) showToast("리뷰 등록에 성공했습니다!", "success");
         setReviewSubmitted(true);
-      } else if (mode === REVIEW_MODE.EDIT && reviewId && reviewData) {
-        await patchReview(reviewId, reviewData);
+      } else if (mode === REVIEW_MODE.EDIT && reviewId) {
+        await patchReview(reviewId, data);
         setReviewCardRerendered(true);
         showToast("리뷰 수정에 성공했습니다!", "success");
       }
@@ -193,13 +198,20 @@ const ReviewForm = ({ mode }: ReviewFormProps) => {
     }
   };
 
-  if (!wineData || !reviewData) {
+  if (!wineData && !isMyPage) {
     return <div>Loading...</div>;
   }
 
+  const validateRating = (value: number) => {
+    if (value <= 0) {
+      return "별점을 선택해 주세요";
+    }
+    return true;
+  };
+
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col justify-between max-w-528 h-1006 p-[24px_24px] text-grayscale-800"
     >
       <div>
@@ -207,56 +219,86 @@ const ReviewForm = ({ mode }: ReviewFormProps) => {
           <h1 className="font-bold-32">
             {mode === REVIEW_MODE.CREATE ? "리뷰 등록" : "수정하기"}
           </h1>
-          <button
-            type="button"
-            onClick={() => {
-              resetForm();
-            }}
-          >
+          <button type="button" onClick={resetForm}>
             <Image src={closeButton} alt="닫기 버튼" width={34} height={34} />
           </button>
         </div>
         <div className="flex items-center gap-16">
           <Image src={wineIcon} alt="와인 아이콘" width={68} height={68} />
-          <div className="w-full flex flex-col gap-8 justify-between font-semibold-18">
-            <h2>{wineData.name}</h2>
-            <InteractiveStarRating
-              initialRating={reviewData.rating}
-              onRatingChange={(rating) =>
-                setReviewData((prevData) => ({
-                  ...(prevData as SendReview),
-                  rating,
-                }))
-              }
+          <div className="w-full flex flex-col justify-between font-semibold-18">
+            {!isMyPage && <h2 className="mb-8">{wineData?.name}</h2>}
+            <Controller
+              name="rating"
+              control={control}
+              rules={{ validate: validateRating }}
+              render={({ field }) => (
+                <div className="flex flex-col">
+                  <InteractiveStarRating
+                    initialRating={field.value}
+                    onRatingChange={(rating) => {
+                      setValue("rating", rating, { shouldValidate: true });
+                      trigger("rating");
+                    }}
+                  />
+                  {errors.rating && (
+                    <p className="text-red-500 mt-4 font-medium-16">
+                      {errors.rating.message}
+                    </p>
+                  )}
+                </div>
+              )}
             />
           </div>
         </div>
-        <div className="flex flex-col gap-40">
-          <textarea
-            className="mt-24 w-full h-120 p-[14px_20px] resize-none outline-none placeholder-font-medium-16 placeholder-grayscale-500 border border-gray-300 rounded-16"
-            value={reviewData.content}
-            onChange={(e) =>
-              setReviewData((prevData) => ({
-                ...(prevData as SendReview),
-                content: e.target.value,
-              }))
-            }
-            placeholder="후기를 작성해 주세요"
+        <div className="flex flex-col">
+          <Controller
+            name="content"
+            control={control}
+            rules={{ required: "후기를 작성해 주세요" }}
+            render={({ field }) => (
+              <>
+                <textarea
+                  {...field}
+                  onBlur={async () => {
+                    await trigger("content");
+                  }}
+                  className={`mt-24 w-full h-120 p-[14px_20px] resize-none outline-none 
+                  placeholder-font-medium-16 placeholder-grayscale-500 rounded-16 
+                  border-2 border-solid ${
+                    errors.content
+                      ? "border-red-500"
+                      : "border-grayscale-300 focus:border-main"
+                  }`}
+                  placeholder="후기를 작성해 주세요"
+                />
+                {errors.content && (
+                  <p className="text-red-500 mt-4 font-medium-16">
+                    {errors.content.message}
+                  </p>
+                )}
+              </>
+            )}
           />
-          <div className="flex flex-col gap-40">
+          <div className="flex flex-col gap-40 mt-40">
             <div>
               <h3 className="font-bold-20 mb-24">와인의 맛은 어땠나요?</h3>
               <div className="flex flex-col gap-18">
-                <ProfileSliders
-                  mode={mode}
-                  profilesArray={Object.values(localBalancedProfiles)}
-                  onSliderValuesChange={handleSliderValuesChange}
+                <Controller
+                  name="lightBold"
+                  control={control}
+                  render={({ field }) => (
+                    <ProfileSliders
+                      mode={mode}
+                      profilesArray={Object.values(localBalancedProfiles)}
+                      onSliderValuesChange={handleSliderValuesChange}
+                    />
+                  )}
                 />
               </div>
             </div>
             <div>
               <h3 className="font-bold-20 mb-24">기억에 남는 향이 있나요?</h3>
-              <div className="flex gap-4 md:gap-10 flex-wrap">
+              <div className="flex flex-wrap gap-4 md:gap-10 ">
                 {Object.entries(AROMA_TO_KR).map(([aroma, korean]) => (
                   <ReviewTag
                     mode={mode}

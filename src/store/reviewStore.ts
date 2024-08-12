@@ -1,13 +1,13 @@
 import { REVIEW_MODE } from "@/types/reviewTypes";
 import { Wine, WineReview } from "@/types/wineTypes";
-import create from "zustand";
+import { create } from "zustand";
 
-interface WineStore {
+interface WineDataStore {
   wineData: WineReview | null;
   setWine: (wineData: WineReview) => void;
 }
 
-export const useWineStore = create<WineStore>((set) => ({
+export const useWineDataStore = create<WineDataStore>((set) => ({
   wineData: null,
   setWine: (wineData) => set({ wineData }),
 }));

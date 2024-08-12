@@ -14,8 +14,6 @@ const NoReview = () => {
     openModal();
   };
 
-  console.log("노리뷰");
-
   return (
     <>
       <h2 className="font-bold-20 text-grayscale-800 lg:hidden">리뷰 목록</h2>

@@ -15,7 +15,7 @@ const ReviewTag: React.FC<ReviewTagProps> = ({
 }) => {
   return (
     <h3
-      className={`flex flex-center rounded-100 p-[6px_10px] md:p-[8px_15px] font-medium-16 ${
+      className={`flex flex-center flex-shrink-0 rounded-100 p-[6px_10px] md:p-[8px_15px] font-medium-16 ${
         isSelected
           ? "text-white bg-main border-main"
           : "text-grayscale-800 border-grayscale-300"
