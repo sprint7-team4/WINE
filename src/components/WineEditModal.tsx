@@ -80,7 +80,9 @@ export default function WineEditModal({ wineData, wineId }: Props) {
 
   return (
     <Modal className="p-24 w-[100%] md:w-460 rounded-16 text-grayscale-800">
-      <h2 className="mb-32 md:mb-40 font-bold-20 md:font-bold-24">와인 수정</h2>
+      <h2 className="mb-32 md:mb-40 font-bold-20 md:font-bold-24">
+        내가 등록한 와인
+      </h2>
       <form className="flex flex-col">
         <div className="flex gap-10 mb-24">
           {wineType.map((type) => (
