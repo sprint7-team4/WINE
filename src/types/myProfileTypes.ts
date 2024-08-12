@@ -43,7 +43,7 @@ export interface Wine {
 
 export interface WinesResponse {
   totalCount: number;
-  nextCursor: number;
+  nextCursor: string | null;
   list: Wine[];
 }
 
