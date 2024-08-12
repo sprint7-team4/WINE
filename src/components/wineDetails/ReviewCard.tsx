@@ -14,6 +14,7 @@ import {
   getAccessToken,
   getReviewId,
   getWineId,
+  patchReview,
 } from "@/lib/reviewApi";
 import { BalancedProfile, REVIEW_MODE, WineBalance } from "@/types/reviewTypes";
 import ProfileSliders from "./ProfileSliders";
@@ -30,6 +31,8 @@ import { showToast } from "../common/Toast";
 import useModalStore from "@/store/modalStore";
 import { useRouter } from "next/router";
 import LikeSelector from "./LikeSelector";
+import { useAuthStore } from "@/store/authStore";
+import ConfirmPopup from "../common/ConfirmPopup";
 
 const initialReview: Review = {
   id: 0,
@@ -84,6 +87,10 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
     setWineData: state.setWineData,
   }));
   const [isExpanded, setIsExpanded] = useState(true);
+  const userId = useAuthStore((state) => state.user.id);
+  const isReviewer = review.user.id === userId;
+  const isLogin = getAccessToken();
+  const [isConfirmVisible, setIsConfirmVisible] = useState(false);
 
   const fetchWineData = async (id: number) => {
     try {
@@ -131,24 +138,41 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
     if (item === EDIT_MENU.EDIT) {
       setReviewId(id);
       setFormType(REVIEW_MODE.EDIT);
-      openModal();
-    } else if (item === EDIT_MENU.DELETE) {
       try {
-        await deleteReview(id);
-
-        const res = await getWineId(String(wineid));
-        setWineData(res);
-        setReviewRerendered(true);
-        showToast("삭제되었습니다!", "success");
+        if (isReviewer) {
+          openModal();
+        } else {
+          showToast("유효한 로그인이 아니거나 수정 권한이 없습니다.", "error");
+        }
       } catch (error) {
         console.error("Failed to delete review:", error);
-        showToast("유효한 로그인이 아니거나 삭제 권한이 없습니다.", "error");
+        showToast("유효한 로그인이 아니거나 수정 권한이 없습니다.", "error");
       }
+    } else if (item === EDIT_MENU.DELETE) {
+      setIsConfirmVisible(true);
     }
   };
 
   const handleToggle = () => {
     setIsExpanded((prevState) => !prevState);
+  };
+
+  const handleDeleteConfirm = async () => {
+    try {
+      await deleteReview(id);
+      const res = await getWineId(String(wineid));
+      setWineData(res);
+      setReviewRerendered(true);
+      showToast("삭제되었습니다!", "success");
+      setIsConfirmVisible(false);
+    } catch (error) {
+      console.error("Failed to delete review:", error);
+      showToast("유효한 로그인이 아니거나 삭제 권한이 없습니다.", "error");
+    }
+  };
+
+  const handleCancel = () => {
+    setIsConfirmVisible(false);
   };
 
   return (
@@ -172,20 +196,22 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
           </div>
         </div>
         <div className="flex items-center gap-18 md:gap-24">
-          <LikeSelector id={id} />
-          <Dropdown
-            trigger={
-              <Image
-                src={menuImg}
-                alt="메뉴"
-                width={38}
-                height={38}
-                className="w-32 h-32 md:w-38 md:h-38"
-              />
-            }
-            items={[EDIT_MENU.EDIT, EDIT_MENU.DELETE]}
-            onSelect={handleSelect}
-          />
+          {isLogin && !isReviewer && <LikeSelector id={id} />}
+          {isReviewer && (
+            <Dropdown
+              trigger={
+                <Image
+                  src={menuImg}
+                  alt="메뉴"
+                  width={38}
+                  height={38}
+                  className="w-32 h-32 md:w-38 md:h-38"
+                />
+              }
+              items={[EDIT_MENU.EDIT, EDIT_MENU.DELETE]}
+              onSelect={handleSelect}
+            />
+          )}
         </div>
       </div>
       <div className="flex justify-between">
@@ -222,6 +248,15 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
           />
         </button>
       </div>
+      {isConfirmVisible && (
+        <ConfirmPopup
+          message="정말로 삭제하시겠습니까?"
+          onConfirm={handleDeleteConfirm}
+          onCancel={handleCancel}
+          confirmButtonText="삭제"
+          cancelButtonText="취소"
+        />
+      )}
     </section>
   );
 };
