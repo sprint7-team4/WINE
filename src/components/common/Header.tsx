@@ -47,7 +47,7 @@ export default function Header() {
 
   const handleSelect = (item: MenuItem) => {
     if (item === HEADER_MENU.MY_PAGE) {
-      router.push("/mypage");
+      router.push("/myprofile");
     } else if (item === HEADER_MENU.LOGOUT) {
       handleLogoutClick();
     }
