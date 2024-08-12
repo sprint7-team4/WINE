@@ -74,7 +74,7 @@ const WineDetailPage = ({ wine }: { wine: WineReview }) => {
   }
 
   return (
-    <div className="max-w-1140 mx-auto pt-[20px]">
+    <div className="max-w-1140 mx-auto pt-[20px] mb-100">
       <WineHero wine={wineData} />
       <div className="flex flex-col mt-60">
         <h2 className="font-bold-20 text-grayscale-800 max-lg:hidden">
