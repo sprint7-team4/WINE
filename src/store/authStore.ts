@@ -14,6 +14,7 @@ type UserType = {
 interface AuthState {
   user: UserType;
   setUser: (user: UserType) => void;
+  logout: () => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -29,6 +30,18 @@ export const useAuthStore = create<AuthState>()(
         image: "",
       },
       setUser: (user) => set({ user }),
+      logout: () =>
+        set({
+          user: {
+            id: 0,
+            email: "",
+            nickname: "",
+            teamId: "",
+            updatedAt: "",
+            createdAt: "",
+            image: "",
+          },
+        }),
     }),
     {
       name: "auth-storage", // 로컬 스토리지에 저장될 키 이름
