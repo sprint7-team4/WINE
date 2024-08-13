@@ -4,6 +4,7 @@ interface ButtonProps {
   items: keyof typeof itemVariants;
   isModal?: boolean;
   onClick?: () => void;
+  onKeyDown?: (e: any) => void;
 }
 
 const itemVariants = {

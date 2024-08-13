@@ -1,7 +1,8 @@
-// WineListCardList.tsx
 import { useWineStore } from "@/store/filteringStore";
-import { useEffect, useState } from "react";
+import { useLayoutStore } from "@/store/layoutStore";
+import { useEffect } from "react";
 import WineListCard from "./WineListCard";
+import MobileWineListCard from "@/components/wineListPage/MobileWineCard";
 import { useWineFilter } from "@/hooks/useWineFilter";
 import { useWineRerenderStore } from "@/store/wineStore";
 
@@ -10,6 +11,7 @@ const WineListCardList = () => {
   const { wineType, minPrice, maxPrice, ratingRange, searchTerm, sortBy } =
     useWineStore();
   const { isWineRerendered, setWineRerendered } = useWineRerenderStore();
+  const { isMobile } = useLayoutStore();
 
   useEffect(() => {
     const loadWines = async () => {
@@ -27,12 +29,18 @@ const WineListCardList = () => {
     searchTerm,
     sortBy,
     isWineRerendered,
+    fetchWines,
   ]);
+
   return (
     <>
-      {filteredWines.map((wine) => (
-        <WineListCard key={wine.id} wine={wine} />
-      ))}
+      {filteredWines.map((wine) =>
+        isMobile ? (
+          <MobileWineListCard key={wine.id} wine={wine} />
+        ) : (
+          <WineListCard key={wine.id} wine={wine} />
+        )
+      )}
     </>
   );
 };

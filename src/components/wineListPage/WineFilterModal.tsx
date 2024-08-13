@@ -25,7 +25,7 @@ const WineFilterModal: React.FC<WineFilterModalProps> = () => {
       <div className="w-327 h-800 pt-20 mx-auto">
         <div className="w-full flex justify-between mb-32">
           <span className="text-20 font-bold text-grayscale-800">필터</span>
-          <div className="w-24 h-24" onClick={handleClose}>
+          <div className="w-24 h-24 cursor-pointer" onClick={handleClose}>
             <Image src={close} alt="closeImage" width={24} height={24} />
           </div>
         </div>
