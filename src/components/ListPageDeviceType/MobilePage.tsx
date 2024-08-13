@@ -7,6 +7,7 @@ import { useWineStore } from "@/store/filteringStore";
 import WineFilterModal from "../wineListPage/WineFilterModal";
 import useModalSecondStore from "@/store/newModalStore";
 import WineRegistrationModal from "../wineListPage/WineRegistrationModal";
+import MobileWineCard from "@/components/wineListPage/MobileWineCard";
 
 type FilterValue =
   | "latest"
@@ -49,7 +50,7 @@ const MobilePage: FC = () => {
       <div className="max-w-767 h-38 mt-20 mb-20">
         <div className="relative">
           <Image
-            className="absolute inset-y-11 left-21"
+            className="absolute inset-y-8 left-21"
             src={searchIcon}
             alt="SearchIcon"
           />
