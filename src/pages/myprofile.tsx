@@ -151,7 +151,7 @@ export default function Myprofile() {
   return (
     <>
       <Header />
-      <div className="lg:flex lg:gap-60 lg:pt-37 ">
+      <div className=" lg:flex lg:gap-60 lg:pt-37 lg:px-30">
         <div
           className="w-343 h-241 p-20 mt-90 mb-30 mx-auto rounded-16 border border-color-gray-300
             md:w-704 md:mt-117 md:h-247 md:mb-37 md:px-40 md:py-23 
