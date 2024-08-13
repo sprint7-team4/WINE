@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { getRecommendedWines } from "@/lib/wineApi";
 import StarRating from "./StarRating";
 import { GetWinesParams, Wine } from "@/types/wineTypes";
@@ -10,10 +10,8 @@ const BestWineList = () => {
   const [wineList, setWineList] = useState<Wine[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const containerRef = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [direction, setDirection] = useState<"left" | "right" | null>(null);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const slideIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const params: GetWinesParams = {
     limit: 10,
@@ -36,55 +34,24 @@ const BestWineList = () => {
     fetchBestWineList();
   }, []);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!containerRef.current) return;
-    const { width } = containerRef.current.getBoundingClientRect();
-    const x = e.clientX - containerRef.current.offsetLeft;
-
-    if (x < width / 2) {
-      setDirection("left");
-    } else {
-      setDirection("right");
-    }
-  };
-
-  const handleMouseLeave = () => {
-    setDirection(null);
-  };
-
-  const moveSlide = (dir: "left" | "right") => {
-    setCurrentIndex((prevIndex) => {
-      if (dir === "left") {
-        return prevIndex === 0 ? wineList.length - 1 : prevIndex - 1;
-      } else {
-        return prevIndex === wineList.length - 1 ? 0 : prevIndex + 1;
-      }
-    });
-  };
+  const moveSlide = useCallback(() => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === wineList.length - 1 ? 0 : prevIndex + 1
+    );
+  }, [wineList.length]);
 
   useEffect(() => {
-    if (direction) {
-      intervalRef.current = setInterval(() => moveSlide(direction), 2000);
-    } else {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    }
+    slideIntervalRef.current = setInterval(moveSlide, 3000);
 
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
+      if (slideIntervalRef.current) {
+        clearInterval(slideIntervalRef.current);
       }
     };
-  }, [direction]);
+  }, [moveSlide]);
 
   return (
-    <div
-      className="relative w-full h-190 perspective-500 cursor-pointer overflow-hidden"
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      ref={containerRef}
-    >
+    <div className="relative w-full h-190 perspective-500 overflow-hidden">
       {loading ? (
         <p className="text-center">로딩중...</p>
       ) : (
