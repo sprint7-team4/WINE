@@ -22,6 +22,9 @@ import MyWineCard from "@/components/myprofile/MyWineCard";
 import { REVIEW_MODE } from "@/types/reviewTypes";
 import { showToast } from "@/components/common/Toast";
 import ReviewModal from "@/components/wineDetails/ReviewModal";
+
+import { useReviewRerenderStore } from "@/store/reviewStore";
+
 import WineEditModal from "@/components/wineListPage/WineEditModal";
 import useRedirectAuthenticated from "@/hooks/useRedirectAuthenticated";
 
@@ -41,6 +44,18 @@ export default function Myprofile() {
   const [activeTab, setActiveTab] = useState<"reviews" | "wines">("reviews");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuthStore();
+
+  const { isReviewRerendered, setReviewRerendered } = useReviewRerenderStore(
+    (state) => ({
+      isReviewRerendered: state.isReviewRerendered,
+      setReviewRerendered: state.setReviewRerendered,
+    })
+  );
+  const { isReviewCardRerendered, setReviewCardRerendered } =
+    useReviewRerenderStore((state) => ({
+      isReviewCardRerendered: state.isReviewCardRerendered,
+      setReviewCardRerendered: state.setReviewCardRerendered,
+    }));
 
   useRedirectAuthenticated();
 
@@ -72,11 +87,15 @@ export default function Myprofile() {
   };
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewNickname(e.target.value);
-    console.log(newNickname);
+    setNewNickname(e.target.value.trim());
+    newNickname.trim();
   };
 
   useEffect(() => {
+    if (isReviewCardRerendered) {
+      setReviewCardRerendered(false);
+    }
+
     const fetchData = async () => {
       try {
         const userProfile = await getUser();
@@ -98,13 +117,23 @@ export default function Myprofile() {
         console.error("Failed to fetch data:", error);
       }
     };
+
     fetchData();
-  }, []);
+  }, [isReviewRerendered, isReviewCardRerendered, setReviewCardRerendered]);
 
   const handleUpdateNickname = async () => {
+    if (newNickname === profile?.nickname) {
+      return; // 닉네임이 변경되지 않았다면 함수 실행을 중단
+    }
+
+    if (newNickname.length > 10) {
+      return showToast("10글자를 초과할 수 없습니다.", "error");
+    }
+
     try {
       const updatedProfile = await updateUser({ nickname: newNickname });
       setProfile(updatedProfile);
+
       showToast("닉네임이 성공적으로 변경되었습니다.", "success");
     } catch (error) {
       console.error("Failed to update nickname:", error);
@@ -112,10 +141,17 @@ export default function Myprofile() {
     }
   };
 
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && !e.nativeEvent.isComposing) {
+      e.preventDefault(); // 기본 동작(버튼 클릭 등)을 막음
+      handleUpdateNickname();
+    }
+  };
+
   return (
     <>
       <Header />
-      <div className="lg:flex lg:gap-60 lg:pt-37 ">
+      <div className=" lg:flex lg:gap-60 lg:pt-37 lg:px-30">
         <div
           className="w-343 h-241 p-20 mt-90 mb-30 mx-auto rounded-16 border border-color-gray-300
             md:w-704 md:mt-117 md:h-247 md:mb-37 md:px-40 md:py-23 
@@ -181,8 +217,8 @@ export default function Myprofile() {
                     md:rounded-16 md:w-480
                     lg:w-240"
                     placeholder={profile?.nickname}
-                    value={newNickname}
                     onChange={handleNicknameChange}
+                    onKeyDown={handleKeyPress}
                   />
                 </div>
                 <div className="flex justify-end">

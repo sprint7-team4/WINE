@@ -7,7 +7,11 @@ import { REVIEW_MODE } from "@/types/reviewTypes";
 import Dropdown from "../common/Dropdown";
 import menuImg from "@/assets/img/3dot-large.svg";
 import { EDIT_MENU, MenuItem } from "@/constants/dropdown";
-import { useReviewRerenderStore, useReviewStore } from "@/store/reviewStore";
+import {
+  useReviewRerenderStore,
+  useReviewStore,
+  useWineNameStore,
+} from "@/store/reviewStore";
 import { showToast } from "../common/Toast";
 import useModalStore from "@/store/modalStore";
 import { deleteReview } from "@/lib/reviewApi";
@@ -18,7 +22,6 @@ interface MyReviewCardProps {
 }
 
 const MyReviewCard: React.FC<MyReviewCardProps> = ({ review, mode }) => {
-  const [myReview, setMyReview] = useState<Review>();
   const setReviewRerendered = useReviewRerenderStore(
     (state) => state.setReviewRerendered
   );
@@ -26,6 +29,11 @@ const MyReviewCard: React.FC<MyReviewCardProps> = ({ review, mode }) => {
     setReviewId: state.setReviewId,
   }));
   const { openModal } = useModalStore();
+
+  const { wineName, setWineName } = useWineNameStore((state) => ({
+    wineName: state.wineName,
+    setWineName: state.setWineName,
+  }));
 
   const handleSelect = async (item: MenuItem) => {
     const token = localStorage.getItem("accessToken");
@@ -36,6 +44,7 @@ const MyReviewCard: React.FC<MyReviewCardProps> = ({ review, mode }) => {
     }
     if (item === EDIT_MENU.EDIT) {
       setReviewId(review.id);
+      setWineName(review.wine.name);
       openModal();
     } else if (item === EDIT_MENU.DELETE) {
       try {

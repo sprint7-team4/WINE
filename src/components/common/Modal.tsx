@@ -7,18 +7,32 @@ interface Props {
 }
 
 export default function Modal({ children, ...rest }: Props) {
-  const { isOpen } = useModalStore();
+  const { isOpen, closeModal } = useModalStore();
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
-    if (dialogRef.current) {
+    const dialogElement = dialogRef.current;
+
+    // handleClose 함수 정의
+    const handleClose = () => {
+      closeModal(); // 모달이 닫힐 때 스토어의 상태를 업데이트
+    };
+
+    if (dialogElement) {
+      dialogElement.addEventListener("close", handleClose);
+
       if (isOpen) {
-        dialogRef.current.showModal();
+        dialogElement.showModal();
       } else {
-        dialogRef.current.close();
+        dialogElement.close();
       }
+
+      // 컴포넌트가 언마운트될 때 이벤트 리스너 제거
+      return () => {
+        dialogElement.removeEventListener("close", handleClose);
+      };
     }
-  }, [isOpen]);
+  }, [isOpen, closeModal]);
 
   return (
     <dialog ref={dialogRef} {...rest}>
@@ -26,7 +40,6 @@ export default function Modal({ children, ...rest }: Props) {
     </dialog>
   );
 }
-
 // Modal 컴포넌트 사용법 예시
 
 // import useModalStore from "@/store/modalStore";
