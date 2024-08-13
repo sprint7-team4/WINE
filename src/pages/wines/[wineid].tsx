@@ -99,25 +99,26 @@ const WineDetailPage = ({ wine }: { wine: WineReview }) => {
         <h2 className="font-bold-20 text-grayscale-800 max-lg:hidden">
           리뷰 목록
         </h2>
-        <InfiniteScroll
-          dataLength={visibleReviews.length}
-          next={fetchMoreReviews}
-          hasMore={hasMore}
-          loader={<h4>Loading...</h4>}
-          endMessage={<p className="mt-20">마지막 리뷰입니다.</p>}
-        >
-          <div className="flex flex-col lg:flex-row gap-20 md:gap-36 lg:gap-60">
-            <div className="order-2 lg:order-none flex flex-col gap-16 md:gap-24 lg:gap-20 mt-0 lg:mt-22">
-              {visibleReviews.map((review) => (
-                <ReviewCard key={review.id} review={review} />
-              ))}
-            </div>
-            <div className="flex-shrink-0 order-1 lg:order-none">
+        {visibleReviews.length > 0 ? (
+          <InfiniteScroll
+            dataLength={visibleReviews.length}
+            next={fetchMoreReviews}
+            hasMore={hasMore}
+            loader={<h4>Loading...</h4>}
+            endMessage={<p>마지막 리뷰입니다.</p>}
+          >
+            <div className="flex flex-col lg:flex-row gap-20">
+              <div className="flex flex-col gap-16">
+                {visibleReviews.map((review) => (
+                  <ReviewCard key={review.id} review={review} />
+                ))}
+              </div>
               <StarRatingSection wine={wineData} />
             </div>
-          </div>
-        </InfiniteScroll>
-        {visibleReviews.length === 0 && <NoReview />}
+          </InfiniteScroll>
+        ) : (
+          <NoReview />
+        )}
       </div>
       {formType && <ReviewModal mode={formType} />}
     </div>
