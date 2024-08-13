@@ -105,16 +105,25 @@ const WineDetailPage = ({ wine }: { wine: WineReview }) => {
             next={fetchMoreReviews}
             hasMore={hasMore}
             loader={<h4>Loading...</h4>}
-            endMessage={<p>마지막 리뷰입니다.</p>}
+            endMessage={
+              <p
+                className="mt-20 text-gray-800 border boder-gray-300 rounded-16 w-200 
+              p-[10px_20px] text-center"
+              >
+                마지막 리뷰입니다.
+              </p>
+            }
             style={{ overflow: "hidden" }}
           >
-            <div className="flex flex-col lg:flex-row gap-20">
-              <div className="flex flex-col gap-16">
+            <div className="flex flex-col lg:flex-row gap-20 md:gap-36 lg:gap-60">
+              <div className="order-2 lg:order-none flex flex-col gap-16 md:gap-24 lg:gap-20 mt-0 lg:mt-22">
                 {visibleReviews.map((review) => (
                   <ReviewCard key={review.id} review={review} />
                 ))}
               </div>
-              <StarRatingSection wine={wineData} />
+              <div className="flex-shrink-0 order-1 lg:order-none">
+                <StarRatingSection wine={wineData} />
+              </div>
             </div>
           </InfiniteScroll>
         ) : (
