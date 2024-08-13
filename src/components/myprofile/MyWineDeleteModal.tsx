@@ -1,6 +1,5 @@
 import useModalSecondStore from "@/store/newModalStore";
 import ModalSecond from "@/components/common/ModalSecond";
-import { feachWine } from "@/types/myProfileTypes";
 import { deleteWine } from "@/lib/wineApi";
 import { showToast } from "../common/Toast";
 import { useWineRerenderStore } from "@/store/wineStore";
@@ -18,6 +17,7 @@ export default function MyWineDeleteModal({ wineId }: Props) {
       await deleteWine(wineId);
 
       setMyWineRerendered(true);
+      handleCancleClick();
       showToast("삭제되었습니다!", "success");
     } catch (error) {
       console.error("Failed to delete review", error);
