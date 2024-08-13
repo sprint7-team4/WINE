@@ -174,3 +174,7 @@ body {
     @apply flex justify-center items-center;
   }
 }
+
+header {
+  z-index: 999;
+}
