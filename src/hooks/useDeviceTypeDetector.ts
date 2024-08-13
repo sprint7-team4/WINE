@@ -25,9 +25,9 @@ export const useDeviceTypeDetector = () => {
 
   useEffect(() => {
     if (debouncedWidth !== null) {
-      if (debouncedWidth < 768) {
+      if (debouncedWidth < 767) {
         setDeviceType("mobile");
-      } else if (debouncedWidth < 1024) {
+      } else if (debouncedWidth < 1040) {
         setDeviceType("tablet");
       } else {
         setDeviceType("desktop");

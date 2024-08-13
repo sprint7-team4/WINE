@@ -8,6 +8,7 @@ import { useWineRerenderStore } from "@/store/wineStore";
 
 const WineListCardList = () => {
   const { fetchWines, filteredWines } = useWineFilter();
+
   const { wineType, minPrice, maxPrice, ratingRange, searchTerm, sortBy } =
     useWineStore();
   const { isWineRerendered, setWineRerendered } = useWineRerenderStore();
@@ -22,6 +23,7 @@ const WineListCardList = () => {
     }
     loadWines();
   }, [
+    nextCursor,
     wineType,
     minPrice,
     maxPrice,
