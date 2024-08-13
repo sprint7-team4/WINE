@@ -7,6 +7,7 @@ import Image from "next/image";
 import { searchIcon, filter } from "@/assets/img/index";
 import WineFilterModal from "../wineListPage/WineFilterModal";
 import useModalSecondStore from "@/store/newModalStore";
+import { useState } from "react";
 
 type FilterValue =
   | "latest"
@@ -23,6 +24,9 @@ interface FilterOption {
 const TabletPage: FC = () => {
   const { searchTerm, setSearchTerm, sortBy, setSortBy } = useWineStore();
   const { openSecondModal } = useModalSecondStore();
+
+  const [isHovered, setIsHovered] = useState(false);
+  const [hoveredFilter, setHoveredFilter] = useState<FilterValue | null>(null);
 
   const filterList: FilterOption[] = [
     { value: "recommended", label: "추천순" },
@@ -48,15 +52,41 @@ const TabletPage: FC = () => {
         <BestWineList />
       </div>
       <div className="max-w-1140 h-48 mx-auto mb-40 mt-40 flex justify-between">
-        <button className="w-48 h-48 flex-center rounded-8 border border-grayscale-300">
-          <Image
-            width={26}
-            height={26}
-            src={filter}
-            alt="filterIcon"
-            onClick={() => openSecondModal("filter")}
+        <div className="relative">
+          {/* 보라빛 배경 효과 */}
+          <div
+            className={`absolute inset-0 bg-main-10 rounded-lg transition-all duration-300 ${isHovered ? "scale-125" : "scale-0"}`}
           />
-        </button>
+
+          {/* 메인 버튼 */}
+          <button
+            className="relative w-48 h-48 flex items-center justify-center rounded-lg border border-gray-300 bg-white overflow-hidden transition-all duration-300 hover:shadow-lg"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            onClick={() => openSecondModal("filter")}
+          >
+            {/* 회전 효과를 위한 배경 */}
+            <div
+              className={`absolute inset-0 bg-white transition-all duration-300 ${isHovered ? "rotate-45 scale-150" : ""}`}
+            />
+
+            {/* 아이콘 */}
+            <Image
+              width={26}
+              height={26}
+              src={filter}
+              alt="filterIcon"
+              className={`relative z-10 transition-all duration-300 ${isHovered ? "scale-110 filter drop-shadow" : ""}`}
+            />
+
+            {/* 텍스트 */}
+            <span
+              className={`absolute bottom-0 left-0 right-0 text-center text-xs text-purple-500 transition-all duration-300 ${isHovered ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"}`}
+            >
+              와인필터
+            </span>
+          </button>
+        </div>
 
         <button
           className="cursor-pointer w-220 h-48 rounded-16 bg-main text-16 text-white font-bold backdrop-blur-sm
@@ -83,13 +113,36 @@ const TabletPage: FC = () => {
         </div>
         <div className="w-298 h-48 flex justify-between">
           {filterList.map((filterName) => (
-            <span
-              className={`cursor-pointer h-48 text-16 font-medium flex items-center ${sortBy === filterName.value ? "text-main" : "text-grayscale-500"}`}
+            <div
               key={filterName.value}
-              onClick={() => handleSelectFiltering(filterName.value)}
+              className="relative"
+              onMouseEnter={() => setHoveredFilter(filterName.value)}
+              onMouseLeave={() => setHoveredFilter(null)}
             >
-              {filterName.label}
-            </span>
+              {/* 보라빛 배경 효과 */}
+              <div
+                className={`absolute inset-0 h-30 bg-white rounded-lg transition-all duration-300 ${
+                  hoveredFilter === filterName.value ||
+                  sortBy === filterName.value
+                    ? "opacity-100 scale-125"
+                    : "opacity-0 scale-0"
+                }`}
+              />
+
+              {/* 필터 텍스트 */}
+              <span
+                className={`cursor-pointer h-30 text-16 font-medium flex items-center justify-center relative z-10 px-3 rounded-lg transition-all duration-300 ${
+                  sortBy === filterName.value
+                    ? "text-main transform scale-110 shadow-md"
+                    : hoveredFilter === filterName.value
+                      ? "text-main"
+                      : "text-grayscale-500"
+                }`}
+                onClick={() => handleSelectFiltering(filterName.value)}
+              >
+                {filterName.label}
+              </span>
+            </div>
           ))}
         </div>
       </div>
