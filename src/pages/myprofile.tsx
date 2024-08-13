@@ -124,7 +124,12 @@ export default function Myprofile() {
     }
 
     fetchData();
-  }, [isReviewRerendered, isReviewCardRerendered, setReviewCardRerendered]);
+  }, [
+    isMyWineRerendered,
+    isReviewRerendered,
+    isReviewCardRerendered,
+    setReviewCardRerendered,
+  ]);
 
   const handleUpdateNickname = async () => {
     if (newNickname === profile?.nickname) {

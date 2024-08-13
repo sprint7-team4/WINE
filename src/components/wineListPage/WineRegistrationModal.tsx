@@ -59,17 +59,6 @@ export default function WineRegistrationModal() {
     const file = e.target.files?.[0];
 
     if (file) {
-      if (!file.type.startsWith("image/")) {
-        showToast("이미지 파일만 업로드할 수 있습니다.", "error");
-        return;
-      }
-
-      // 5MB 크기 제한 확인 (5MB = 5 * 1024 * 1024 바이트)
-      if (file.size > 5 * 1024 * 1024) {
-        showToast("5MB 이하의 이미지 파일만 업로드할 수 있습니다.", "error");
-        return;
-      }
-
       const formData = new FormData();
       formData.append("image", file);
 
@@ -93,7 +82,6 @@ export default function WineRegistrationModal() {
       handleCancelClick();
     } catch (error) {
       console.error("와인 등록 중 오류 발생:", error);
-      showToast("정확한 값을 입력해주세요", "error");
     }
   };
 
@@ -286,6 +274,10 @@ export default function WineRegistrationModal() {
             </div>
           )}
         </div>
+
+        <span className="text-grayscale-500 relative top-[-32px] md:top-[-32px]">
+          이미지 파일명은 영문이나 숫자만 가능합니다
+        </span>
 
         <div className="flex-center gap-8 md:gap-10">
           <button
