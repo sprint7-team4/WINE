@@ -3,7 +3,7 @@ import Image from "next/image";
 import Modal from "@/components/common/ModalSecond";
 import SideFiltering from "./SideFiltering";
 import close from "@/assets/img/close.png";
-import useModalSecondStore from "@/store/modalSecondStore";
+import useModalSecondStore from "@/store/newModalStore";
 
 interface WineFilterModalProps {
   id: string;
@@ -18,7 +18,10 @@ const WineFilterModal: React.FC<WineFilterModalProps> = () => {
   };
 
   return (
-    <Modal id={"filter"} className="w-full pt-20 rounded-16">
+    <Modal
+      id={"filter"}
+      className="w-400 h-650 pt-20 rounded-16 overflow-y-hidden"
+    >
       <div className="w-327 h-800 pt-20 mx-auto">
         <div className="w-full flex justify-between mb-32">
           <span className="text-20 font-bold text-grayscale-800">필터</span>

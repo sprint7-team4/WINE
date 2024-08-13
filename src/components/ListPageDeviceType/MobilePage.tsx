@@ -5,7 +5,7 @@ import { searchIcon, filter } from "@/assets/img/index";
 import Image from "next/image";
 import { useWineStore } from "@/store/filteringStore";
 import WineFilterModal from "../wineListPage/WineFilterModal";
-import useModalSecondStore from "@/store/modalSecondStore";
+import useModalSecondStore from "@/store/newModalStore";
 import WineRegistrationModal from "../wineListPage/WineRegistrationModal";
 
 type FilterValue =

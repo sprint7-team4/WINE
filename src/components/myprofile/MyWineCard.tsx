@@ -5,7 +5,7 @@ import Dropdown from "../common/Dropdown";
 import menuImg from "@/assets/img/3dot-large.svg";
 import { EDIT_MENU, MenuItem } from "@/constants/dropdown";
 import { showToast } from "../common/Toast";
-import useModalSecondStore from "@/store/modalSecondStore";
+import useModalSecondStore from "@/store/newModalStore";
 import { useReviewRerenderStore } from "@/store/reviewStore";
 import { deleteWine } from "@/lib/wineApi";
 import WineEditModal from "../wineListPage/WineEditModal";
