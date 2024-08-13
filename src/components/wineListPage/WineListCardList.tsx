@@ -9,8 +9,15 @@ import { useWineRerenderStore } from "@/store/wineStore";
 const WineListCardList = () => {
   const { fetchWines, filteredWines } = useWineFilter();
 
-  const { wineType, minPrice, maxPrice, ratingRange, searchTerm, sortBy } =
-    useWineStore();
+  const {
+    nextCursor,
+    wineType,
+    minPrice,
+    maxPrice,
+    ratingRange,
+    searchTerm,
+    sortBy,
+  } = useWineStore();
   const { isWineRerendered, setWineRerendered } = useWineRerenderStore();
   const { isMobile } = useLayoutStore();
 
