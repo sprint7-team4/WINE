@@ -4,18 +4,22 @@ import { useEffect } from "react";
 import WineListCard from "./WineListCard";
 import MobileWineListCard from "@/components/wineListPage/MobileWineCard";
 import { useWineFilter } from "@/hooks/useWineFilter";
+import { useWineRerenderStore } from "@/store/wineStore";
 
 const WineListCardList = () => {
   const { fetchWines, filteredWines } = useWineFilter();
   const { wineType, minPrice, maxPrice, ratingRange, searchTerm, sortBy } =
     useWineStore();
+  const { isWineRerendered, setWineRerendered } = useWineRerenderStore();
   const { isMobile } = useLayoutStore();
 
   useEffect(() => {
     const loadWines = async () => {
       await fetchWines();
     };
-
+    if (isWineRerendered) {
+      setWineRerendered(false);
+    }
     loadWines();
   }, [
     wineType,
@@ -24,6 +28,7 @@ const WineListCardList = () => {
     ratingRange,
     searchTerm,
     sortBy,
+    isWineRerendered,
     fetchWines,
   ]);
 

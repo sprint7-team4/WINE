@@ -25,8 +25,8 @@ import ReviewModal from "@/components/wineDetails/ReviewModal";
 
 import { useReviewRerenderStore } from "@/store/reviewStore";
 
-import WineEditModal from "@/components/wineListPage/WineEditModal";
 import useRedirectAuthenticated from "@/hooks/useRedirectAuthenticated";
+import { useWineRerenderStore } from "@/store/wineStore";
 
 export interface ProfileData {
   id: number;
@@ -44,6 +44,7 @@ export default function Myprofile() {
   const [activeTab, setActiveTab] = useState<"reviews" | "wines">("reviews");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuthStore();
+  const { isMyWineRerendered, setMyWineRerendered } = useWineRerenderStore();
 
   const { isReviewRerendered, setReviewRerendered } = useReviewRerenderStore(
     (state) => ({
@@ -117,6 +118,10 @@ export default function Myprofile() {
         console.error("Failed to fetch data:", error);
       }
     };
+
+    if (isMyWineRerendered) {
+      setMyWineRerendered(false);
+    }
 
     fetchData();
   }, [isReviewRerendered, isReviewCardRerendered, setReviewCardRerendered]);

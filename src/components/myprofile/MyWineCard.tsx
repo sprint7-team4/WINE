@@ -6,9 +6,8 @@ import menuImg from "@/assets/img/3dot-large.svg";
 import { EDIT_MENU, MenuItem } from "@/constants/dropdown";
 import { showToast } from "../common/Toast";
 import useModalSecondStore from "@/store/newModalStore";
-import { useReviewRerenderStore } from "@/store/reviewStore";
-import { deleteWine } from "@/lib/wineApi";
 import WineEditModal from "../wineListPage/WineEditModal";
+import MyWineDeleteModal from "./MyWineDeleteModal";
 import Link from "next/link";
 
 interface myWineCardProps {
@@ -17,10 +16,6 @@ interface myWineCardProps {
 
 function MyWineCard({ wine }: myWineCardProps) {
   const { openSecondModal } = useModalSecondStore();
-
-  const setReviewRerendered = useReviewRerenderStore(
-    (state) => state.setReviewRerendered
-  );
 
   const handleSelect = async (item: MenuItem) => {
     const token = localStorage.getItem("accessToken");
@@ -32,14 +27,7 @@ function MyWineCard({ wine }: myWineCardProps) {
     if (item === EDIT_MENU.EDIT) {
       openSecondModal(`${wine.id}`);
     } else if (item === EDIT_MENU.DELETE) {
-      try {
-        await deleteWine(wine.id);
-        setReviewRerendered(true);
-        showToast("삭제되었습니다!", "success");
-      } catch (error) {
-        console.error("Failed to delete review", error);
-        showToast("유효한 로그인이 아니거나, 삭제 권한이 없습니다.", "error");
-      }
+      openSecondModal(`${wine.id}delete`);
     }
   };
   return (
@@ -74,6 +62,7 @@ function MyWineCard({ wine }: myWineCardProps) {
         ></Dropdown>
       </div>
       <WineEditModal wineId={wine.id} wineData={wine} />
+      <MyWineDeleteModal wineId={wine.id} />
     </div>
   );
 }
