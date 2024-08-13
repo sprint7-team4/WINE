@@ -5,7 +5,8 @@ import WineRegistrationModal from "@/components/wineListPage/WineRegistrationMod
 import { useWineStore } from "@/store/filteringStore";
 import Image from "next/image";
 import { searchIcon, filter } from "@/assets/img/index";
-import useModalStore from "@/store/modalStore";
+import WineFilterModal from "../wineListPage/WineFilterModal";
+import useModalSecondStore from "@/store/newModalStore";
 
 type FilterValue =
   | "latest"
@@ -21,7 +22,7 @@ interface FilterOption {
 
 const TabletPage: FC = () => {
   const { searchTerm, setSearchTerm, sortBy, setSortBy } = useWineStore();
-  const { openModal } = useModalStore();
+  const { openSecondModal } = useModalSecondStore();
 
   const filterList: FilterOption[] = [
     { value: "recommended", label: "추천순" },
@@ -48,13 +49,19 @@ const TabletPage: FC = () => {
       </div>
       <div className="max-w-1140 h-48 mx-auto mb-40 mt-40 flex justify-between">
         <button className="w-48 h-48 flex-center rounded-8 border border-grayscale-300">
-          <Image width={26} height={26} src={filter} alt="filterIcon" />
+          <Image
+            width={26}
+            height={26}
+            src={filter}
+            alt="filterIcon"
+            onClick={() => openSecondModal("filter")}
+          />
         </button>
 
         <button
           className="cursor-pointer w-220 h-48 rounded-16 bg-main text-16 text-white font-bold backdrop-blur-sm
              transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg hover:brightness-110"
-          onClick={openModal}
+          onClick={() => openSecondModal("register")}
         >
           와인 등록하기
         </button>
@@ -91,6 +98,7 @@ const TabletPage: FC = () => {
           <WineListCardList />
         </div>
       </div>
+      <WineFilterModal id={"filter"} />
       <WineRegistrationModal />
     </div>
   );

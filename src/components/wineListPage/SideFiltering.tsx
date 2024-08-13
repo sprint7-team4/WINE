@@ -2,7 +2,7 @@ import { useState } from "react";
 import { PriceSlider } from "./PriceSlider";
 import StarRatingFilter from "./StarRatingFilter";
 import { useWineStore } from "@/store/filteringStore";
-import useModalSecondStore from "@/store/modalSecondStore";
+import useModalSecondStore from "@/store/newModalStore";
 
 type WineType = "RED" | "WHITE" | "SPARKLING" | null;
 

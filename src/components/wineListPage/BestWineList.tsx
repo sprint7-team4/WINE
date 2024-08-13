@@ -4,6 +4,7 @@ import StarRating from "./StarRating";
 import { GetWinesParams, Wine } from "@/types/wineTypes";
 import Image from "next/image";
 import wine2 from "@/assets/img/wine2.png";
+import Link from "next/link";
 
 const BestWineList = () => {
   const [wineList, setWineList] = useState<Wine[]>([]);
@@ -79,7 +80,7 @@ const BestWineList = () => {
 
   return (
     <div
-      className="relative w-full h-185 perspective-500 cursor-pointer overflow-hidden"
+      className="relative w-full h-190 perspective-500 cursor-pointer overflow-hidden"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       ref={containerRef}
@@ -89,7 +90,7 @@ const BestWineList = () => {
       ) : (
         <>
           {wineList.length > 0 ? (
-            <div className="flex items-center justify-center h-180">
+            <div className="flex items-center justify-center h-185">
               {wineList.map((wine, index) => {
                 const offset =
                   (index - currentIndex + wineList.length) % wineList.length;
@@ -98,8 +99,9 @@ const BestWineList = () => {
                   Math.abs(offset - wineList.length) <= 2;
                 return (
                   isVisible && (
-                    <div
+                    <Link
                       key={wine.id}
+                      href={`/wines/${wine.id}`}
                       className={`absolute w-232 h-185 pt-10 rounded-16 bg-white shadow-lg transition-all duration-300 ease-out ${
                         offset === 0
                           ? "z-5 scale-100 opacity-100"
@@ -107,23 +109,21 @@ const BestWineList = () => {
                       }`}
                       style={{
                         transform: `
-                        translateX(${(offset === wineList.length - 1 ? -1 : offset) * 130}%)
-                        translateZ(${Math.abs(offset) === 0 ? 0 : -100 - Math.abs(offset) * 50}px)
-                        rotateY(${-offset * 5}deg)
-                      `,
+                          translateX(${(offset === wineList.length - 1 ? -1 : offset) * 130}%)
+                          translateZ(${Math.abs(offset) === 0 ? 0 : -100 - Math.abs(offset) * 50}px)
+                          rotateY(${-offset * 5}deg)
+                        `,
                       }}
                     >
                       <div className="flex justify-between p-10">
                         <div className="w-44 h-161 ml-10">
-                          <div className="w-44 h-161 ml-10">
-                            <Image
-                              className="w-44 h-161 object-cover"
-                              src={wine.image === "string" ? wine2 : wine.image}
-                              alt="와인 이미지"
-                              width={44}
-                              height={161}
-                            />
-                          </div>
+                          <Image
+                            className="w-44 h-161 object-cover"
+                            src={wine.image === "string" ? wine2 : wine.image}
+                            alt="와인 이미지"
+                            width={44}
+                            height={161}
+                          />
                         </div>
                         <div className="w-100 h-125">
                           <p className="text-3xl font-extrabold mb-10">
@@ -135,7 +135,7 @@ const BestWineList = () => {
                           </p>
                         </div>
                       </div>
-                    </div>
+                    </Link>
                   )
                 );
               })}
