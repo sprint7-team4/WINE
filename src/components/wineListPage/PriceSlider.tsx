@@ -23,7 +23,7 @@ const sliderStyles = {
 
 function SliderComponent({ axis, xmax, xmin, xstep, value, onChange }: any) {
   const { setMaxPrice } = useWineStore();
-  const [showValue, setShowValue] = useState("0");
+  const [showValue, setShowValue] = useState("1,000,000");
   const debouncedValue = useDebounce(value, 500);
 
   useEffect(() => {

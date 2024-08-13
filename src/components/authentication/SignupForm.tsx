@@ -105,6 +105,10 @@ export default function SignupForm() {
             value: 10,
             message: "닉네임은 최대 10자까지 가능합니다.",
           },
+          validate: {
+            noWhitespace: (value) =>
+              !!value.trim() || "공백만 입력할 수 없습니다.",
+          },
         }}
         render={({ field }) => (
           <>

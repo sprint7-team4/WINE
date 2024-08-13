@@ -3,7 +3,7 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { WineType } from "@/types/wineTypes";
 import { feachWine, Wine } from "@/types/myProfileTypes";
 import ModalSecond from "@/components/common/ModalSecond";
-import useModalSecondStore from "@/store/modalSecondStore";
+import useModalSecondStore from "@/store/newModalStore";
 import photo_icon from "@/assets/img/photo.svg";
 import { editWine } from "@/lib/wineApi";
 import { imageUpload } from "@/lib/imageApi";
