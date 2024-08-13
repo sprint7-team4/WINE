@@ -15,6 +15,7 @@ import {
 import { showToast } from "../common/Toast";
 import useModalStore from "@/store/modalStore";
 import { deleteReview } from "@/lib/reviewApi";
+import Link from "next/link";
 
 interface MyReviewCardProps {
   review: Review;
@@ -80,10 +81,14 @@ const MyReviewCard: React.FC<MyReviewCardProps> = ({ review, mode }) => {
           onSelect={handleSelect}
         ></Dropdown>
       </div>
-      <div className="flex flex-col gap-10">
-        <p className="font-medium-16 text-grayscale-500">{review.wine.name}</p>
-        <p className="font-regular-16">{review.content}</p>
-      </div>
+      <Link href={`/wines/${review.wine.id}`}>
+        <div className="flex flex-col gap-10">
+          <p className="font-medium-16 text-grayscale-500">
+            {review.wine.name}
+          </p>
+          <p className="font-regular-16">{review.content}</p>
+        </div>
+      </Link>
     </div>
   );
 };
