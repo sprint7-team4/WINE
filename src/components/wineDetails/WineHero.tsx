@@ -12,7 +12,7 @@ const WineHero = ({ wine: { image, name, price, region } }: { wine: Wine }) => {
         alt="대표 와인"
         width={58}
         height={209}
-        quality={100}
+        unoptimized
         className="object-cover w-58 h-209 md:w-84 md:h-302 lg:w-58 lg:h-209 max-lg:absolute max-lg:bottom-0 "
       />
       <div className="flex flex-col pl-20 lg:pl-0 md:pl-60 ml-58 md:ml-84 lg:ml-0">
