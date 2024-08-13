@@ -1,5 +1,5 @@
 import InstantRatingBar from "./InstantRatingBar";
-import StarRating from "../StarRating";
+import StarRating from "../wineListPage/StarRating";
 import { WineReview } from "@/types/wineTypes";
 import useModalStore from "@/store/modalStore";
 import { useFormType } from "@/store/reviewStore";
@@ -51,12 +51,13 @@ const StarRatingSection = ({
           );
         })}
       </div>
-      <div className="max-md:flex max-md:justify-end">
+      <div className="max-md:flex max-md:justify-end frame">
         <button
-          className="lg:row-span-2 w-100 h-40 md:w-113 md:h-42 lg:order-none mt-0 md:mt-20 lg:mt-30 bg-main font-bold-14 md:font-bold-16 text-white rounded-12"
+          className="lg:row-span-2 w-100 h-40 md:w-113 md:h-42 lg:order-none mt-0 md:mt-20 lg:mt-30 bg-main 
+          font-bold-14 md:font-bold-16 text-white rounded-12 custom-btn btn-any"
           onClick={handleClick}
         >
-          리뷰 남기기
+          <span>리뷰 남기기</span>
         </button>
       </div>
     </section>

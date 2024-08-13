@@ -1,13 +1,19 @@
 import { useRouter } from "next/router";
 import { login } from "@/lib/authApi";
 import { Tooltip } from "react-tooltip";
+import { useAuthStore } from "@/store/authStore";
 
 export default function GuestLogin() {
   const router = useRouter();
+  const { setUser } = useAuthStore();
 
   const handleGuestLoginClick = async () => {
     try {
-      await login({ email: "guest1004@gmail.com", password: "1234qwer!" });
+      const response = await login({
+        email: "guest1004@gmail.com",
+        password: "1234qwer!",
+      });
+      setUser(response.user);
       router.push("/");
     } catch (error) {
       console.error("게스트 로그인에 실패했습니다", error);

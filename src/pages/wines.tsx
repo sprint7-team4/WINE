@@ -1,9 +1,9 @@
 import { FC, useEffect, useState, useCallback } from "react";
-import BestWineList from "@/components/BestWineList";
-import TopFiltering from "@/components/TopFiltering";
-import SideFiltering from "@/components/SideFiltering";
-import WineListCardList from "@/components/WineListCardList";
-import WineRegistrationModal from "@/components/WineRegistrationModal";
+import BestWineList from "@/components/wineListPage/BestWineList";
+import TopFiltering from "@/components/wineListPage/TopFiltering";
+import SideFiltering from "@/components/wineListPage/SideFiltering";
+import WineListCardList from "@/components/wineListPage/WineListCardList";
+import WineRegistrationModal from "@/components/wineListPage/WineRegistrationModal";
 import { useLayoutStore } from "@/store/layoutStore";
 import { useDebounce } from "@/hooks/useDebounce";
 
@@ -52,7 +52,7 @@ const WineListPage: FC = () => {
         </div>
         <TopFiltering />
         <div className="mt-62 w-full flex justify-between">
-          <SideFiltering />
+          <SideFiltering hideButton={false} />
           <div>
             <WineListCardList />
           </div>

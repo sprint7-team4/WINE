@@ -22,7 +22,11 @@ import MyWineCard from "@/components/myprofile/MyWineCard";
 import { REVIEW_MODE } from "@/types/reviewTypes";
 import { showToast } from "@/components/common/Toast";
 import ReviewModal from "@/components/wineDetails/ReviewModal";
+
 import { useReviewRerenderStore } from "@/store/reviewStore";
+
+import WineEditModal from "@/components/wineListPage/WineEditModal";
+import useRedirectAuthenticated from "@/hooks/useRedirectAuthenticated";
 
 export interface ProfileData {
   id: number;
@@ -52,6 +56,8 @@ export default function Myprofile() {
       isReviewCardRerendered: state.isReviewCardRerendered,
       setReviewCardRerendered: state.setReviewCardRerendered,
     }));
+
+  useRedirectAuthenticated();
 
   const handleImageClick = () => {
     fileInputRef.current?.click();
@@ -170,6 +176,7 @@ export default function Myprofile() {
                   onChange={handleFileChange}
                   className="hidden"
                   accept="image/*"
+                  title="파일 선택"
                 />
               </div>
               <div

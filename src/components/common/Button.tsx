@@ -37,10 +37,10 @@ const itemVariants = {
 };
 
 export default function Button(props: ButtonProps) {
-  const { title, icon, items, onClick, isModal } = props;
+  const { title, icon, items, onClick, isModal, ...rest } = props;
 
   return (
-    <button className={itemVariants[items]} onClick={onClick}>
+    <button className={itemVariants[items]} onClick={onClick} {...rest}>
       {title}
       {/* 버튼 이름 */}
     </button>

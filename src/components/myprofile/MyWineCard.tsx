@@ -5,9 +5,10 @@ import Dropdown from "../common/Dropdown";
 import menuImg from "@/assets/img/3dot-large.svg";
 import { EDIT_MENU, MenuItem } from "@/constants/dropdown";
 import { showToast } from "../common/Toast";
-import useModalStore from "@/store/modalStore";
+import useModalSecondStore from "@/store/modalSecondStore";
 import { useReviewRerenderStore } from "@/store/reviewStore";
 import { deleteWine } from "@/lib/wineApi";
+import WineEditModal from "../wineListPage/WineEditModal";
 
 interface myWineCardProps {
   wine: Wine;
@@ -20,7 +21,7 @@ interface myWineCardProps {
 // export default MyWineCard;
 
 function MyWineCard({ wine }: myWineCardProps) {
-  const { openModal } = useModalStore();
+  const { openSecondModal } = useModalSecondStore();
 
   const setReviewRerendered = useReviewRerenderStore(
     (state) => state.setReviewRerendered
@@ -34,7 +35,7 @@ function MyWineCard({ wine }: myWineCardProps) {
       return;
     }
     if (item === EDIT_MENU.EDIT) {
-      openModal();
+      openSecondModal(`${wine.id}`);
     } else if (item === EDIT_MENU.DELETE) {
       try {
         await deleteWine(wine.id);
@@ -52,7 +53,8 @@ function MyWineCard({ wine }: myWineCardProps) {
         <div className="relative w-53 h-full">
           <img
             src={wine.image}
-            className="absolute bottom-0 h-185 w-53 object-bottom"
+            alt="wine_img"
+            className="absolute bottom-0 h-185 w-53 object-cover"
           />
         </div>
         <div className="flex flex-col gap-15">
@@ -74,6 +76,7 @@ function MyWineCard({ wine }: myWineCardProps) {
           onSelect={handleSelect}
         ></Dropdown>
       </div>
+      <WineEditModal wineId={wine.id} wineData={wine} />
     </div>
   );
 }

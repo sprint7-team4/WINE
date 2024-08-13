@@ -121,6 +121,7 @@ const refreshAccessToken = async () => {
     // 리프레시 토큰도 만료된 경우 로그인 페이지로 이동
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
+    localStorage.removeItem("auth-storage");
     Router.push("/login");
     throw new Error("로그인이 필요합니다.");
   }

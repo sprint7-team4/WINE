@@ -29,10 +29,10 @@ const NoReview = () => {
           작성된 리뷰가 없어요
         </p>
         <button
-          className="w-137 md:w-169 h-48 mt-40 md:mt-48 font-semibold-16 text-white bg-main rounded-12"
+          className="w-137 md:w-169 h-48 mt-40 md:mt-48 font-semibold-16 text-white bg-main rounded-12 btn-any"
           onClick={handleClick}
         >
-          리뷰 남기기
+          <span>리뷰 남기기</span>
         </button>
       </section>
     </>
