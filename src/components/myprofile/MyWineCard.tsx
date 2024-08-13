@@ -7,6 +7,7 @@ import { EDIT_MENU, MenuItem } from "@/constants/dropdown";
 import { showToast } from "../common/Toast";
 import useModalSecondStore from "@/store/newModalStore";
 import { useReviewRerenderStore } from "@/store/reviewStore";
+import { useWineRerenderStore } from "@/store/wineStore";
 import { deleteWine } from "@/lib/wineApi";
 import WineEditModal from "../wineListPage/WineEditModal";
 
@@ -26,6 +27,7 @@ function MyWineCard({ wine }: myWineCardProps) {
   const setReviewRerendered = useReviewRerenderStore(
     (state) => state.setReviewRerendered
   );
+  const { setMyWineRerendered } = useWineRerenderStore();
 
   const handleSelect = async (item: MenuItem) => {
     const token = localStorage.getItem("accessToken");
@@ -40,6 +42,7 @@ function MyWineCard({ wine }: myWineCardProps) {
       try {
         await deleteWine(wine.id);
         setReviewRerendered(true);
+        setMyWineRerendered(true);
         showToast("삭제되었습니다!", "success");
       } catch (error) {
         console.error("Failed to delete review", error);

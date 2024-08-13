@@ -8,6 +8,7 @@ import photo_icon from "@/assets/img/photo.svg";
 import { editWine } from "@/lib/wineApi";
 import { imageUpload } from "@/lib/imageApi";
 import { showToast } from "@/components/common/Toast";
+import { useWineRerenderStore } from "@/store/wineStore";
 
 const wineType: WineType[] = ["RED", "WHITE", "SPARKLING"];
 
@@ -19,6 +20,7 @@ interface Props {
 export default function WineEditModal({ wineData, wineId }: Props) {
   const imageRef = useRef<HTMLInputElement>(null);
   const { closeSecondModal } = useModalSecondStore();
+  const { setMyWineRerendered } = useWineRerenderStore();
 
   const {
     control,
@@ -87,6 +89,7 @@ export default function WineEditModal({ wineData, wineId }: Props) {
       const modifiedData = { ...data, price: Number(data.price) };
       await editWine(wineId, modifiedData);
       showToast("와인 수정에 성공했습니다!", "success");
+      setMyWineRerendered(true);
       handleCancelClick();
     } catch (error) {
       console.error("와인 수정 중 오류 발생:", error);

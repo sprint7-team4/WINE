@@ -3,6 +3,7 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { PostWine, WineType } from "@/types/wineTypes";
 import ModalSecond from "@/components/common/ModalSecond";
 import useModalSecondStore from "@/store/newModalStore";
+import { useWineRerenderStore } from "@/store/wineStore";
 import photo_icon from "@/assets/img/photo.svg";
 import { postWine } from "@/lib/wineApi";
 import { imageUpload } from "@/lib/imageApi";
@@ -13,6 +14,7 @@ const wineType: WineType[] = ["RED", "WHITE", "SPARKLING"];
 export default function WineRegistrationModal() {
   const imageRef = useRef<HTMLInputElement>(null);
   const { closeSecondModal } = useModalSecondStore();
+  const { setWineRerendered } = useWineRerenderStore();
   const {
     control,
     handleSubmit,
@@ -86,6 +88,7 @@ export default function WineRegistrationModal() {
     try {
       await postWine(data);
       showToast("와인 등록에 성공했습니다!", "success");
+      setWineRerendered(true);
       handleCancelClick();
     } catch (error) {
       console.error("와인 등록 중 오류 발생:", error);
