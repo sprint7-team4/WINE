@@ -1,6 +1,7 @@
 // myProfileTypes.ts
 
 import { REVIEW_MODE } from "./reviewTypes";
+import { RecentReview } from "./wineTypes";
 
 export interface User {
   id: number;
@@ -21,6 +22,23 @@ export interface Review {
   updatedAt: string;
   user: User;
   wine: Wine;
+}
+
+export interface feachWine {
+  avgRating: number;
+  id: number;
+  image: string;
+  name: string;
+  price: number;
+  recentReview: {
+    user: {
+      image: string | null;
+    };
+  };
+  region: string;
+  reviewCount: number;
+  type: "RED" | "WHITE" | "SPARKLING";
+  userId: number;
 }
 
 export interface ReviewsResponse {

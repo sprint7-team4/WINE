@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef, ChangeEvent } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { PostWine, WineType } from "@/types/wineTypes";
+import { WineType } from "@/types/wineTypes";
+import { feachWine, Wine } from "@/types/myProfileTypes";
 import ModalSecond from "@/components/common/ModalSecond";
-import Button from "@/components/common/Button";
 import useModalSecondStore from "@/store/modalSecondStore";
 import photo_icon from "@/assets/img/photo.svg";
 import { editWine } from "@/lib/wineApi";
@@ -12,7 +12,7 @@ import { showToast } from "@/components/common/Toast";
 const wineType: WineType[] = ["RED", "WHITE", "SPARKLING"];
 
 interface Props {
-  wineData: PostWine;
+  wineData: feachWine;
   wineId: number;
 }
 
@@ -28,7 +28,7 @@ export default function WineEditModal({ wineData, wineId }: Props) {
     formState: { errors, isValid },
     trigger,
     reset,
-  } = useForm<PostWine>({
+  } = useForm<feachWine>({
     mode: "onChange",
     defaultValues: wineData,
   });
@@ -82,7 +82,7 @@ export default function WineEditModal({ wineData, wineId }: Props) {
     }
   };
 
-  const onSubmit: SubmitHandler<PostWine> = async (data) => {
+  const onSubmit: SubmitHandler<feachWine> = async (data) => {
     try {
       const modifiedData = { ...data, price: Number(data.price) };
       await editWine(wineId, modifiedData);
