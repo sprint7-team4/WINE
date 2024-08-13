@@ -271,13 +271,17 @@ export default function WineEditModal({ wineData, wineId }: Props) {
           )}
         </div>
         <div className="flex-center gap-8 md:gap-10">
-          <Button
-            items="wineRegisterCancel"
+          <button
+            className="w-[30%] md:w-108 h-54 rounded-12 bg-main-10 font-bold-16 text-main whitespace-nowrap"
+            type="button"
             title="취소"
             onClick={handleCancelClick}
-          />
+          >
+            취소
+          </button>
           <button
             className={`w-[70%] md:w-294 h-54 ${isValid ? "bg-main" : "bg-gray-300"} font-bold-16 text-white rounded-12 whitespace-nowrap`}
+            type="button"
             title="와인 수정하기"
             onClick={handleSubmit(onSubmit)}
             disabled={!isValid}
