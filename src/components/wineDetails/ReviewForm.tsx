@@ -63,8 +63,7 @@ const ReviewForm = ({ mode, wineId }: ReviewFormProps) => {
     formState: { errors },
     trigger,
   } = useForm<SendReview>({
-    defaultValues:
-      mode === REVIEW_MODE.CREATE ? INITIAL_REVIEW_DATA : INITIAL_REVIEW_DATA,
+    defaultValues: INITIAL_REVIEW_DATA,
   });
 
   const { wineData, setWineData } = useWineDataStore((state) => ({

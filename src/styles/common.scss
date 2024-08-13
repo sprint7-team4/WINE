@@ -56,6 +56,12 @@ input[type="range"]#taste-slider::-webkit-slider-thumb {
   }
 }
 
+.button_container {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 30%;
+}
 /* button any */
 .btn-any {
   border: none;
@@ -80,10 +86,10 @@ input[type="range"]#taste-slider::-webkit-slider-thumb {
 .btn-any:after {
   content: "";
   position: absolute;
-  left: 0;
+  left: 105px;
   top: 0;
-  height: 500%;
-  width: 180%;
+  height: 800px;
+  width: 1000px;
   background: var(--main);
   transition: all 0.5s ease-in-out;
   transform: translateX(-98%) translateY(-25%) rotate(45deg);
