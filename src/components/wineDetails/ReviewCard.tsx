@@ -188,7 +188,7 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
             alt="유저 프로필"
             width={64}
             height={64}
-            className="w-42 h-42 md:w-64 md:h-64 rounded-50 border border-grayscale-100"
+            className="w-42 h-42 md:w-64 md:h-64 rounded-50 border border-grayscale-100 object-contain"
           />
           <div className="flex flex-col gap-0 md:gap-4">
             <span className="font-semibold-16 md:font-semibold-18 text-grayscale-800">
