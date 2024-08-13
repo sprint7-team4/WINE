@@ -86,7 +86,8 @@ export default function WineRegistrationModal() {
 
   const onSubmit: SubmitHandler<PostWine> = async (data) => {
     try {
-      await postWine(data);
+      const modifiedData = { ...data, price: Number(data.price) };
+      await postWine(modifiedData);
       showToast("와인 등록에 성공했습니다!", "success");
       setWineRerendered(true);
       handleCancelClick();
