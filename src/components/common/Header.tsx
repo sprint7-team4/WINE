@@ -46,6 +46,7 @@ export default function Header() {
     signOut({ callbackUrl: "/login" });
     logout();
     localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
   };
 
   const handleSelect = (item: MenuItem) => {
