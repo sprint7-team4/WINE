@@ -19,7 +19,7 @@ interface Props {
 
 export default function WineEditModal({ wineData, wineId }: Props) {
   const imageRef = useRef<HTMLInputElement>(null);
-  const { closeSecondModal } = useModalSecondStore();
+  const { modals, closeSecondModal } = useModalSecondStore();
   const { setMyWineRerendered } = useWineRerenderStore();
 
   const {
@@ -37,6 +37,14 @@ export default function WineEditModal({ wineData, wineId }: Props) {
 
   const [imgFile, setImgFile] = useState<File | null>(null);
   const [imgPreview, setImgPreview] = useState(wineData.image);
+
+  useEffect(() => {
+    if (modals) {
+      reset(wineData);
+      setImgFile(null);
+      setImgPreview(wineData.image);
+    }
+  }, [modals]);
 
   useEffect(() => {
     if (imgFile) {
