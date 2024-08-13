@@ -12,7 +12,7 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
 }) => {
   return (
     <Modal className="bg-[#101318] bg-opacity-30 rounded-16">
-      <div className="bg-white max-w-528">
+      <div className="bg-white max-w-375 md:max-w-528">
         <ReviewForm mode={mode} />
       </div>
     </Modal>
