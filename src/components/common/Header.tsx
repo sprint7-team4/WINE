@@ -60,7 +60,7 @@ export default function Header() {
   return (
     <header
       role="banner"
-      className="flex justify-between items-center fixed top-0 inset-x-0 z-10 mx-16 md:mx-20 lg:mx-auto mt-16 md:mt-24 px-20 md:px-60 lg:max-w-[1140px] h-50 md:h-70 rounded-16 bg-black"
+      className="flex justify-between items-center fixed top-0 inset-x-0 mx-16 md:mx-20 lg:mx-auto mt-16 md:mt-24 px-20 md:px-60 lg:max-w-[1140px] h-50 md:h-70 rounded-16 bg-black"
     >
       <Link href="/" className="flex">
         <button type="button" title="메인로고버튼" className="h-15">
