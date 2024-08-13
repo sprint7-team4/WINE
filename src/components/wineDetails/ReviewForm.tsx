@@ -220,8 +220,8 @@ const ReviewForm = ({ mode, wineId }: ReviewFormProps) => {
       className="flex flex-col justify-between max-w-528 h-auto p-[24px_24px] text-grayscale-800"
     >
       <div>
-        <div className="flex justify-between mb-48">
-          <h1 className="font-bold-32">
+        <div className="flex justify-between mb-40 md:mb-48">
+          <h1 className="font-bold-20 md:font-bold-32">
             {mode === REVIEW_MODE.CREATE ? "리뷰 등록" : "수정하기"}
           </h1>
           <button type="button" onClick={resetForm}>
@@ -230,7 +230,7 @@ const ReviewForm = ({ mode, wineId }: ReviewFormProps) => {
         </div>
         <div className="flex items-center gap-16">
           <Image src={wineIcon} alt="와인 아이콘" width={68} height={68} />
-          <div className="w-full flex flex-col justify-between font-semibold-18">
+          <div className="w-full flex flex-col justify-between font-bold-16 md:font-semibold-18">
             <h2 className="mb-8">{!isMyPage ? wineData?.name : wineName}</h2>
             <Controller
               name="rating"
@@ -289,7 +289,9 @@ const ReviewForm = ({ mode, wineId }: ReviewFormProps) => {
           />
           <div className="flex flex-col gap-40 mt-40">
             <div>
-              <h3 className="font-bold-20 mb-24">와인의 맛은 어땠나요?</h3>
+              <h3 className="font-bold-18 md:font-bold-20 mb-24">
+                와인의 맛은 어땠나요?
+              </h3>
               <div className="flex flex-col gap-18">
                 <Controller
                   name="lightBold"
@@ -305,7 +307,9 @@ const ReviewForm = ({ mode, wineId }: ReviewFormProps) => {
               </div>
             </div>
             <div>
-              <h3 className="font-bold-20 mb-24">기억에 남는 향이 있나요?</h3>
+              <h3 className="font-bold-18 md:font-bold-20 mb-24">
+                기억에 남는 향이 있나요?
+              </h3>
               <div className="flex flex-wrap gap-4 md:gap-10 ">
                 {Object.entries(AROMA_TO_KR).map(([aroma, korean]) => (
                   <ReviewTag

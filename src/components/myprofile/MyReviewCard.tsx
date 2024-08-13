@@ -16,6 +16,7 @@ import { showToast } from "../common/Toast";
 import useModalStore from "@/store/modalStore";
 import { deleteReview } from "@/lib/reviewApi";
 import Link from "next/link";
+import ConfirmPopup from "../common/ConfirmPopup";
 
 interface MyReviewCardProps {
   review: Review;
@@ -23,18 +24,17 @@ interface MyReviewCardProps {
 }
 
 const MyReviewCard: React.FC<MyReviewCardProps> = ({ review, mode }) => {
-  const setReviewRerendered = useReviewRerenderStore(
-    (state) => state.setReviewRerendered
-  );
+  const { isReviewRerendered, setReviewRerendered } = useReviewRerenderStore();
   const { setReviewId } = useReviewStore((state) => ({
     setReviewId: state.setReviewId,
   }));
   const { openModal } = useModalStore();
 
-  const { wineName, setWineName } = useWineNameStore((state) => ({
+  const { setWineName } = useWineNameStore((state) => ({
     wineName: state.wineName,
     setWineName: state.setWineName,
   }));
+  const [isConfirmVisible, setIsConfirmVisible] = useState(false);
 
   const handleSelect = async (item: MenuItem) => {
     const token = localStorage.getItem("accessToken");
@@ -48,16 +48,31 @@ const MyReviewCard: React.FC<MyReviewCardProps> = ({ review, mode }) => {
       setWineName(review.wine.name);
       openModal();
     } else if (item === EDIT_MENU.DELETE) {
-      try {
-        await deleteReview(review.id);
-        setReviewRerendered(true);
-        showToast("삭제되었습니다!", "success");
-      } catch (error) {
-        console.error("Failed to delete review", error);
-        showToast("유효한 로그인이 아니거나, 삭제 권한이 없습니다.", "error");
-      }
+      setIsConfirmVisible(true);
     }
   };
+
+  const handleCancel = () => {
+    setIsConfirmVisible(false);
+  };
+
+  const handleDeleteConfirm = async () => {
+    try {
+      await deleteReview(review.id);
+      setReviewRerendered(true);
+      setIsConfirmVisible(false);
+      showToast("삭제되었습니다!", "success");
+    } catch (error) {
+      console.error("Failed to delete review", error);
+      showToast("유효한 로그인이 아니거나, 삭제 권한이 없습니다.", "error");
+    }
+  };
+
+  useEffect(() => {
+    if (isReviewRerendered) {
+      setReviewRerendered(false);
+    }
+  }, [isReviewRerendered, setReviewRerendered]);
 
   return (
     <div className="w-auto flex flex-col gap-17 px-20 py-16 rounded-16 border border-color-grayscale-300">
@@ -89,6 +104,15 @@ const MyReviewCard: React.FC<MyReviewCardProps> = ({ review, mode }) => {
           <p className="font-regular-16">{review.content}</p>
         </div>
       </Link>
+      {isConfirmVisible && (
+        <ConfirmPopup
+          message="정말로 삭제하시겠습니까?"
+          onConfirm={handleDeleteConfirm}
+          onCancel={handleCancel}
+          confirmButtonText="삭제"
+          cancelButtonText="취소"
+        />
+      )}
     </div>
   );
 };
