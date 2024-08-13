@@ -22,6 +22,7 @@ import MyWineCard from "@/components/myprofile/MyWineCard";
 import { REVIEW_MODE } from "@/types/reviewTypes";
 import { showToast } from "@/components/common/Toast";
 import ReviewModal from "@/components/wineDetails/ReviewModal";
+import WineEditModal from "@/components/wineListPage/WineEditModal";
 import useRedirectAuthenticated from "@/hooks/useRedirectAuthenticated";
 
 export interface ProfileData {

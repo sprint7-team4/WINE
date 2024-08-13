@@ -6,8 +6,13 @@ export interface PostWine {
   name: string;
   region: string;
   image: string;
-  price: string | number;
+  price: number;
   type: WineType;
+  avgRating: number;
+  id?: number;
+  userId?: number;
+  reviewCount?: number;
+  recentReview?: RecentReview;
 }
 
 export interface GetWinesParams {
