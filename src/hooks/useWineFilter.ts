@@ -24,7 +24,7 @@ export const useWineFilter = () => {
       setIsLoading(true);
 
       const params: GetWinesParams = {
-        limit: 10,
+        limit: 999,
         cursor,
         type: wineType,
         minPrice,
