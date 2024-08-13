@@ -56,6 +56,13 @@ input[type="range"]#taste-slider::-webkit-slider-thumb {
   }
 }
 
+.button_container {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 30%;
+}
+
 /* button any */
 .btn-any {
   border: none;
@@ -80,10 +87,10 @@ input[type="range"]#taste-slider::-webkit-slider-thumb {
 .btn-any:after {
   content: "";
   position: absolute;
-  left: 0;
+  left: 105px;
   top: 0;
-  height: 500%;
-  width: 180%;
+  height: 800px;
+  width: 1000px;
   background: var(--main);
   transition: all 0.5s ease-in-out;
   transform: translateX(-98%) translateY(-25%) rotate(45deg);
@@ -95,4 +102,181 @@ input[type="range"]#taste-slider::-webkit-slider-thumb {
 
 .btn-any:hover:after {
   transform: translateX(-9%) translateY(-25%) rotate(45deg);
+}
+
+/* heart any */
+svg {
+  height: 100%;
+  width: 100%;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+.container {
+  position: absolute;
+  width: 150px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+$duration: 1.8s;
+
+@keyframes heart {
+  0% {
+    transform: scale(1);
+  }
+  17.5% {
+    transform: scale(0.5);
+  }
+}
+
+#Heart_2_ {
+  cursor: pointer;
+  will-change: transform;
+  transform-origin: 50% 50%;
+  animation: heart $duration cubic-bezier(0.17, 0.89, 0.32, 1.49);
+}
+
+@keyframes fadeInDown {
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes bubble {
+  0%,
+  100% {
+    transform: scale(0);
+    opacity: 0;
+    stroke-width: 0;
+    stroke: rgba(#e9acc1, 0);
+  }
+  15% {
+    fill: #e9acc1;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+    stroke: #e9acc1;
+    stroke-width: 6;
+  }
+  100% {
+    fill: rgba(#e9acc1, 0);
+  }
+}
+
+#Circle {
+  fill: #e9acc1;
+  will-change: transform;
+  transform: scale(0);
+  transform-origin: 50% 50%;
+  animation: bubble $duration cubic-bezier(0.21, 0.61, 0.35, 1);
+  animation-fill-mode: forwards;
+  animation-delay: ($duration / 6);
+}
+
+@keyframes particle {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  40% {
+    transform: translate(0, 0) scale(1);
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(0, 0) scale(0);
+  }
+}
+
+[id*="Particle"] {
+  will-change: transform;
+  transform-origin: 50% 50%;
+  transform-box: fill-box;
+  opacity: 0;
+  animation: particle ($duration * 1.5) cubic-bezier(0.21, 0.61, 0.35, 1);
+  animation-fill-mode: forwards;
+  animation-delay: ($duration / 4);
+}
+
+@for $i from 1 through 18 {
+  [id*="Particle"]:nth-child(#{$i}) {
+    $dur: random(1000) + 1000ms;
+    animation-duration: $dur;
+  }
+}
+
+[id*="Particle"]:nth-child(1) {
+  transform: translate(500%, 500%) scale(0);
+}
+
+[id*="Particle"]:nth-child(2) {
+  transform: translate(250%, 500%) scale(0);
+}
+
+[id*="Particle"]:nth-child(3) {
+  transform: translate(0, 500%) scale(0);
+}
+
+[id*="Particle"]:nth-child(4) {
+  transform: translate(-250%, 500%) scale(0);
+}
+
+[id*="Particle"]:nth-child(5) {
+  transform: translate(-500%, 500%) scale(0);
+}
+
+[id*="Particle"]:nth-child(6) {
+  transform: translate(-500%, 250%) scale(0);
+}
+
+[id*="Particle"]:nth-child(7) {
+  transform: translate(-500%, 0%) scale(0);
+}
+
+[id*="Particle"]:nth-child(8) {
+  transform: translate(-500%, -250%) scale(0);
+}
+
+[id*="Particle"]:nth-child(9) {
+  transform: translate(-500%, -500%) scale(0);
+}
+
+[id*="Particle"]:nth-child(10) {
+  transform: translate(-250%, -500%) scale(0);
+}
+
+[id*="Particle"]:nth-child(11) {
+  transform: translate(0%, -500%) scale(0);
+}
+
+[id*="Particle"]:nth-child(12) {
+  transform: translate(250%, -500%) scale(0);
+}
+
+[id*="Particle"]:nth-child(13) {
+  transform: translate(500%, -500%) scale(0);
+}
+
+[id*="Particle"]:nth-child(14) {
+  transform: translate(500%, -250%) scale(0);
+}
+
+[id*="Particle"]:nth-child(15) {
+  transform: translate(500%, 0%) scale(0);
+}
+
+[id*="Particle"]:nth-child(16) {
+  transform: translate(500%, 250%) scale(0);
+}
+
+[id*="Particle"]:nth-child(17) {
+  transform: translate(500%, 500%) scale(0);
+}
+
+[id*="Particle"]:nth-child(18) {
+  transform: translate(500%, 500%) scale(0);
 }
