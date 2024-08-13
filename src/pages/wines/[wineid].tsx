@@ -93,7 +93,7 @@ const WineDetailPage = ({ wine }: { wine: WineReview }) => {
   }
 
   return (
-    <div className="max-w-1140 mx-auto pt-[20px] mb-100">
+    <div className="max-w-1140 mx-auto pt-[20px] mb-100 overflow-hidden">
       <WineHero wine={wineData} />
       <div className="flex flex-col mt-60">
         <h2 className="font-bold-20 text-grayscale-800 max-lg:hidden">
@@ -106,6 +106,7 @@ const WineDetailPage = ({ wine }: { wine: WineReview }) => {
             hasMore={hasMore}
             loader={<h4>Loading...</h4>}
             endMessage={<p>마지막 리뷰입니다.</p>}
+            style={{ overflow: "hidden" }}
           >
             <div className="flex flex-col lg:flex-row gap-20">
               <div className="flex flex-col gap-16">
