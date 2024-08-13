@@ -87,8 +87,8 @@ export default function Myprofile() {
   };
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewNickname(e.target.value);
-    console.log(newNickname);
+    setNewNickname(e.target.value.trim());
+    newNickname.trim();
   };
 
   useEffect(() => {
@@ -117,13 +117,19 @@ export default function Myprofile() {
         console.error("Failed to fetch data:", error);
       }
     };
+
     fetchData();
   }, [isReviewRerendered, isReviewCardRerendered, setReviewCardRerendered]);
 
   const handleUpdateNickname = async () => {
+    if (newNickname === profile?.nickname) {
+      return; // 닉네임이 변경되지 않았다면 함수 실행을 중단
+    }
+
     try {
       const updatedProfile = await updateUser({ nickname: newNickname });
       setProfile(updatedProfile);
+
       showToast("닉네임이 성공적으로 변경되었습니다.", "success");
     } catch (error) {
       console.error("Failed to update nickname:", error);
@@ -131,8 +137,9 @@ export default function Myprofile() {
     }
   };
 
-  const handleKeyPress = (e: any) => {
-    if (e.key === "Enter") {
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && !e.nativeEvent.isComposing) {
+      e.preventDefault(); // 기본 동작(버튼 클릭 등)을 막음
       handleUpdateNickname();
     }
   };
@@ -216,7 +223,6 @@ export default function Myprofile() {
                     title="변경하기"
                     items="changeProfile"
                     onClick={handleUpdateNickname}
-                    onKeyDown={handleKeyPress}
                   />
                 </div>
               </div>
