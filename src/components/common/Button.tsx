@@ -40,8 +40,12 @@ export default function Button(props: ButtonProps) {
   const { title, icon, items, onClick, isModal, ...rest } = props;
 
   return (
-    <button className={itemVariants[items]} onClick={onClick} {...rest}>
-      {title}
+    <button
+      className={`${itemVariants[items]} btn-any`}
+      onClick={onClick}
+      {...rest}
+    >
+      <span>{title}</span>
       {/* 버튼 이름 */}
     </button>
   );
