@@ -5,6 +5,7 @@ import {
   PostWine,
   Wine,
 } from "../types/wineTypes";
+import { feachWine } from "@/types/myProfileTypes";
 
 export const getWines = async (
   params: GetWinesParams
@@ -82,7 +83,7 @@ export const deleteWine = async (id: number) => {
   return res.status === 200;
 };
 
-export const editWine = async (wineId: number, wineData: PostWine) => {
+export const editWine = async (wineId: number, wineData: feachWine) => {
   const token = localStorage.getItem("accessToken");
 
   const { id, userId, reviewCount, recentReview, ...dataToPatch } = wineData;

@@ -2,7 +2,7 @@ import WineHero from "@/components/wineDetails/WineHero";
 import ReviewCard from "@/components/wineDetails/ReviewCard";
 import StarRatingSection from "@/components/wineDetails/StarRatingSection";
 import { getWineId } from "@/lib/reviewApi";
-import { WineReview } from "@/types/wineTypes";
+import { Review, WineReview } from "@/types/wineTypes";
 import { GetServerSideProps } from "next";
 import { useEffect, useState } from "react";
 import {
@@ -12,6 +12,7 @@ import {
 } from "@/store/reviewStore";
 import ReviewModal from "@/components/wineDetails/ReviewModal";
 import NoReview from "@/components/wineDetails/NoReview";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const wineId = context.params?.wineid;
@@ -51,6 +52,11 @@ const WineDetailPage = ({ wine }: { wine: WineReview }) => {
     })
   );
 
+  const [allReviews, setAllReviews] = useState<Review[]>([]);
+  const [visibleReviews, setVisibleReviews] = useState<Review[]>([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const reviewsPerPage = 5;
   const { formType } = useFormType((state) => ({
     formType: state.formType,
     setFormType: state.setFormType,
@@ -58,16 +64,29 @@ const WineDetailPage = ({ wine }: { wine: WineReview }) => {
 
   useEffect(() => {
     setWine(wine);
+    setAllReviews(wine.reviews);
+    setVisibleReviews(wine.reviews.slice(0, reviewsPerPage));
   }, [wine, setWine]);
 
-  useEffect(() => {}, [
-    wineData,
-    wine,
-    setWine,
-    isReviewRerendered,
-    wine.id,
-    setReviewRerendered,
-  ]);
+  useEffect(() => {
+    if (isReviewRerendered && wineData) {
+      setAllReviews(wineData.reviews);
+      setVisibleReviews(wineData.reviews.slice(0, reviewsPerPage));
+      setPage(1);
+      setHasMore(true);
+      setReviewRerendered(false);
+    }
+  }, [isReviewRerendered, wineData?.reviews, setReviewRerendered, wineData]);
+
+  const fetchMoreReviews = () => {
+    const nextPage = page + 1;
+    const newVisibleReviews = allReviews.slice(0, nextPage * reviewsPerPage);
+    setVisibleReviews(newVisibleReviews);
+    setPage(nextPage);
+    if (newVisibleReviews.length >= allReviews.length) {
+      setHasMore(false);
+    }
+  };
 
   if (!wineData) {
     return <div>Loading...</div>;
@@ -80,10 +99,16 @@ const WineDetailPage = ({ wine }: { wine: WineReview }) => {
         <h2 className="font-bold-20 text-grayscale-800 max-lg:hidden">
           리뷰 목록
         </h2>
-        {wineData?.reviews.length !== 0 ? (
+        <InfiniteScroll
+          dataLength={visibleReviews.length}
+          next={fetchMoreReviews}
+          hasMore={hasMore}
+          loader={<h4>Loading...</h4>}
+          endMessage={<p className="mt-20">마지막 리뷰입니다.</p>}
+        >
           <div className="flex flex-col lg:flex-row gap-20 md:gap-36 lg:gap-60">
             <div className="order-2 lg:order-none flex flex-col gap-16 md:gap-24 lg:gap-20 mt-0 lg:mt-22">
-              {wineData?.reviews.map((review) => (
+              {visibleReviews.map((review) => (
                 <ReviewCard key={review.id} review={review} />
               ))}
             </div>
@@ -91,9 +116,8 @@ const WineDetailPage = ({ wine }: { wine: WineReview }) => {
               <StarRatingSection wine={wineData} />
             </div>
           </div>
-        ) : (
-          <NoReview />
-        )}
+        </InfiniteScroll>
+        {visibleReviews.length === 0 && <NoReview />}
       </div>
       {formType && <ReviewModal mode={formType} />}
     </div>

@@ -231,7 +231,7 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
           </div>
         </div>
       </div>
-      <p
+      <div
         className={`mt-16 md:mt-24 mb-16 md:mb-20 font-regular-14 md:font-regular-16 
           transition-all duration-300 overflow-hidden ${
             isExpanded ? "max-h-[800px]" : "max-h-0"
@@ -241,7 +241,7 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
         <div className="flex flex-col gap-15 md:gap-18 mt-20">
           <ProfileSliders profilesArray={profilesArray} />
         </div>
-      </p>
+      </div>
       <div className="flex flex-center mt-16 md:mt-24 lg:mt-[6.5px]">
         <button onClick={handleToggle}>
           <Image
