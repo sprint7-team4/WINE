@@ -22,6 +22,7 @@ import MyWineCard from "@/components/myprofile/MyWineCard";
 import { REVIEW_MODE } from "@/types/reviewTypes";
 import { showToast } from "@/components/common/Toast";
 import ReviewModal from "@/components/wineDetails/ReviewModal";
+import { useReviewRerenderStore } from "@/store/reviewStore";
 
 export interface ProfileData {
   id: number;
@@ -39,6 +40,18 @@ export default function Myprofile() {
   const [activeTab, setActiveTab] = useState<"reviews" | "wines">("reviews");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuthStore();
+
+  const { isReviewRerendered, setReviewRerendered } = useReviewRerenderStore(
+    (state) => ({
+      isReviewRerendered: state.isReviewRerendered,
+      setReviewRerendered: state.setReviewRerendered,
+    })
+  );
+  const { isReviewCardRerendered, setReviewCardRerendered } =
+    useReviewRerenderStore((state) => ({
+      isReviewCardRerendered: state.isReviewCardRerendered,
+      setReviewCardRerendered: state.setReviewCardRerendered,
+    }));
 
   const handleImageClick = () => {
     fileInputRef.current?.click();
@@ -73,6 +86,10 @@ export default function Myprofile() {
   };
 
   useEffect(() => {
+    if (isReviewCardRerendered) {
+      setReviewCardRerendered(false);
+    }
+
     const fetchData = async () => {
       try {
         const userProfile = await getUser();
@@ -95,7 +112,7 @@ export default function Myprofile() {
       }
     };
     fetchData();
-  }, []);
+  }, [isReviewRerendered, isReviewCardRerendered, setReviewCardRerendered]);
 
   const handleUpdateNickname = async () => {
     try {
@@ -105,6 +122,12 @@ export default function Myprofile() {
     } catch (error) {
       console.error("Failed to update nickname:", error);
       showToast("닉네임 변경에 실패했습니다.", "error");
+    }
+  };
+
+  const handleKeyPress = (e: any) => {
+    if (e.key === "Enter") {
+      handleUpdateNickname();
     }
   };
 
@@ -178,6 +201,7 @@ export default function Myprofile() {
                     placeholder={profile?.nickname}
                     value={newNickname}
                     onChange={handleNicknameChange}
+                    onKeyDown={handleKeyPress}
                   />
                 </div>
                 <div className="flex justify-end">
@@ -185,6 +209,7 @@ export default function Myprofile() {
                     title="변경하기"
                     items="changeProfile"
                     onClick={handleUpdateNickname}
+                    onKeyDown={handleKeyPress}
                   />
                 </div>
               </div>
