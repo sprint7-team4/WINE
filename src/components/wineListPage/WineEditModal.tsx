@@ -7,6 +7,7 @@ import useModalSecondStore from "@/store/modalSecondStore";
 import photo_icon from "@/assets/img/photo.svg";
 import { editWine } from "@/lib/wineApi";
 import { imageUpload } from "@/lib/imageApi";
+import { showToast } from "@/components/common/Toast";
 
 const wineType: WineType[] = ["RED", "WHITE", "SPARKLING"];
 
@@ -57,7 +58,13 @@ export default function WineEditModal({ wineData, wineId }: Props) {
 
     if (file) {
       if (!file.type.startsWith("image/")) {
-        alert("이미지 파일만 업로드할 수 있습니다.");
+        showToast("이미지 파일만 업로드할 수 있습니다.", "error");
+        return;
+      }
+
+      // 5MB 크기 제한 확인 (5MB = 5 * 1024 * 1024 바이트)
+      if (file.size > 5 * 1024 * 1024) {
+        showToast("5MB 이하의 이미지 파일만 업로드할 수 있습니다.", "error");
         return;
       }
 
@@ -70,6 +77,7 @@ export default function WineEditModal({ wineData, wineId }: Props) {
         setImgFile(file);
       } catch (error) {
         console.error("이미지 업로드 중 오류 발생:", error);
+        showToast("이미지 업로드에 실패했습니다.", "error");
       }
     }
   };
@@ -78,10 +86,11 @@ export default function WineEditModal({ wineData, wineId }: Props) {
     try {
       const modifiedData = { ...data, price: Number(data.price) };
       await editWine(wineId, modifiedData);
+      showToast("와인 수정에 성공했습니다!", "success");
       handleCancelClick();
     } catch (error) {
       console.error("와인 수정 중 오류 발생:", error);
-      console.log(data);
+      showToast("정확한 값을 입력해주세요", "error");
     }
   };
 
@@ -262,13 +271,17 @@ export default function WineEditModal({ wineData, wineId }: Props) {
           )}
         </div>
         <div className="flex-center gap-8 md:gap-10">
-          <Button
-            items="wineRegisterCancel"
+          <button
+            className="w-[30%] md:w-108 h-54 rounded-12 bg-main-10 font-bold-16 text-main whitespace-nowrap"
+            type="button"
             title="취소"
             onClick={handleCancelClick}
-          />
+          >
+            취소
+          </button>
           <button
             className={`w-[70%] md:w-294 h-54 ${isValid ? "bg-main" : "bg-gray-300"} font-bold-16 text-white rounded-12 whitespace-nowrap`}
+            type="button"
             title="와인 수정하기"
             onClick={handleSubmit(onSubmit)}
             disabled={!isValid}

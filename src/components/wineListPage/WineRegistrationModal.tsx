@@ -7,6 +7,7 @@ import useModalSecondStore from "@/store/modalSecondStore";
 import photo_icon from "@/assets/img/photo.svg";
 import { postWine } from "@/lib/wineApi";
 import { imageUpload } from "@/lib/imageApi";
+import { showToast } from "@/components/common/Toast";
 
 const wineType: WineType[] = ["RED", "WHITE", "SPARKLING"];
 
@@ -21,6 +22,7 @@ export default function WineRegistrationModal() {
     reset,
     formState: { errors, isValid },
     trigger,
+    clearErrors,
   } = useForm<PostWine>({
     mode: "onChange",
     defaultValues: {
@@ -57,7 +59,13 @@ export default function WineRegistrationModal() {
 
     if (file) {
       if (!file.type.startsWith("image/")) {
-        alert("이미지 파일만 업로드할 수 있습니다.");
+        showToast("이미지 파일만 업로드할 수 있습니다.", "error");
+        return;
+      }
+
+      // 5MB 크기 제한 확인 (5MB = 5 * 1024 * 1024 바이트)
+      if (file.size > 5 * 1024 * 1024) {
+        showToast("5MB 이하의 이미지 파일만 업로드할 수 있습니다.", "error");
         return;
       }
 
@@ -70,6 +78,7 @@ export default function WineRegistrationModal() {
         setImgFile(file);
       } catch (error) {
         console.error("이미지 업로드 중 오류 발생:", error);
+        showToast("이미지 업로드에 실패했습니다.", "error");
       }
     }
   };
@@ -77,9 +86,11 @@ export default function WineRegistrationModal() {
   const onSubmit: SubmitHandler<PostWine> = async (data) => {
     try {
       await postWine(data);
+      showToast("와인 등록에 성공했습니다!", "success");
       handleCancelClick();
     } catch (error) {
       console.error("와인 등록 중 오류 발생:", error);
+      showToast("정확한 값을 입력해주세요", "error");
     }
   };
 
@@ -91,6 +102,7 @@ export default function WineRegistrationModal() {
       image: "",
       type: "RED",
     });
+    clearErrors();
     setImgFile(null);
     setImgPreview("");
     closeSecondModal("register");
@@ -273,13 +285,17 @@ export default function WineRegistrationModal() {
         </div>
 
         <div className="flex-center gap-8 md:gap-10">
-          <Button
-            items="wineRegisterCancel"
+          <button
+            className="w-[30%] md:w-108 h-54 rounded-12 bg-main-10 font-bold-16 text-main whitespace-nowrap"
+            type="button"
             title="취소"
             onClick={handleCancelClick}
-          />
+          >
+            취소
+          </button>
           <button
             className={`w-[70%] md:w-294 h-54 ${isValid && imgFile ? "bg-main" : "bg-gray-300"} font-bold-16 text-white rounded-12 whitespace-nowrap`}
+            type="button"
             title="와인 등록하기"
             onClick={handleSubmit(onSubmit)}
             disabled={!isValid || !imgFile}

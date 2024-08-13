@@ -102,8 +102,8 @@ export default function SignupForm() {
         rules={{
           required: "닉네임은 필수 입력입니다.",
           maxLength: {
-            value: 20,
-            message: "닉네임은 최대 20자까지 가능합니다.",
+            value: 10,
+            message: "닉네임은 최대 10자까지 가능합니다.",
           },
         }}
         render={({ field }) => (
