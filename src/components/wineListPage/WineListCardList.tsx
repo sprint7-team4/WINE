@@ -7,8 +7,15 @@ import { useWineFilter } from "@/hooks/useWineFilter";
 
 const WineListCardList = () => {
   const { fetchWines, filteredWines } = useWineFilter();
-  const { wineType, minPrice, maxPrice, ratingRange, searchTerm, sortBy } =
-    useWineStore();
+  const {
+    nextCursor,
+    wineType,
+    minPrice,
+    maxPrice,
+    ratingRange,
+    searchTerm,
+    sortBy,
+  } = useWineStore();
   const { isMobile } = useLayoutStore();
 
   useEffect(() => {
@@ -18,6 +25,7 @@ const WineListCardList = () => {
 
     loadWines();
   }, [
+    nextCursor,
     wineType,
     minPrice,
     maxPrice,
