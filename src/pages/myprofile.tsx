@@ -126,6 +126,10 @@ export default function Myprofile() {
       return; // 닉네임이 변경되지 않았다면 함수 실행을 중단
     }
 
+    if (newNickname.length > 10) {
+      return showToast("10글자를 초과할 수 없습니다.", "error");
+    }
+
     try {
       const updatedProfile = await updateUser({ nickname: newNickname });
       setProfile(updatedProfile);
@@ -213,7 +217,6 @@ export default function Myprofile() {
                     md:rounded-16 md:w-480
                     lg:w-240"
                     placeholder={profile?.nickname}
-                    value={newNickname}
                     onChange={handleNicknameChange}
                     onKeyDown={handleKeyPress}
                   />
