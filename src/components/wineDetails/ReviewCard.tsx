@@ -30,7 +30,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { showToast } from "../common/Toast";
 import useModalStore from "@/store/modalStore";
 import { useRouter } from "next/router";
-import LikeSelector from "./LikeSelector";
+import FavoriteSelector from "./FavoriteSelector";
 import { useAuthStore } from "@/store/authStore";
 import ConfirmPopup from "../common/ConfirmPopup";
 
@@ -200,7 +200,7 @@ const ReviewCard = ({ review: { id } }: { review: Review }) => {
           </div>
         </div>
         <div className="flex items-center gap-18 md:gap-24">
-          {isLogin && !isReviewer && <LikeSelector id={id} />}
+          {isLogin && !isReviewer && <FavoriteSelector id={id} />}
           {isReviewer && (
             <Dropdown
               trigger={
