@@ -6,26 +6,16 @@ import menuImg from "@/assets/img/3dot-large.svg";
 import { EDIT_MENU, MenuItem } from "@/constants/dropdown";
 import { showToast } from "../common/Toast";
 import useModalSecondStore from "@/store/newModalStore";
-import { useReviewRerenderStore } from "@/store/reviewStore";
-import { deleteWine } from "@/lib/wineApi";
 import WineEditModal from "../wineListPage/WineEditModal";
+import MyWineDeleteModal from "./MyWineDeleteModal";
+import Link from "next/link";
 
 interface myWineCardProps {
   wine: Wine;
 }
 
-// function MyWineCard({ wine }: myWineCardProps) {
-//   return <div className="w-auto flex gap-20">와인 이름</div>;
-// }
-
-// export default MyWineCard;
-
 function MyWineCard({ wine }: myWineCardProps) {
   const { openSecondModal } = useModalSecondStore();
-
-  const setReviewRerendered = useReviewRerenderStore(
-    (state) => state.setReviewRerendered
-  );
 
   const handleSelect = async (item: MenuItem) => {
     const token = localStorage.getItem("accessToken");
@@ -37,38 +27,33 @@ function MyWineCard({ wine }: myWineCardProps) {
     if (item === EDIT_MENU.EDIT) {
       openSecondModal(`${wine.id}`);
     } else if (item === EDIT_MENU.DELETE) {
-      try {
-        await deleteWine(wine.id);
-        setReviewRerendered(true);
-        showToast("삭제되었습니다!", "success");
-      } catch (error) {
-        console.error("Failed to delete review", error);
-        showToast("유효한 로그인이 아니거나, 삭제 권한이 없습니다.", "error");
-      }
+      openSecondModal(`${wine.id}delete`);
     }
   };
   return (
     <div className="w-auto h-164 mt-20 px-20  rounded-12 border border-color-grayscale-300 relative">
-      <div className="flex items-center gap-20 h-full">
-        <div className="relative w-53 h-full">
-          <img
-            src={wine.image}
-            alt="wine_img"
-            className="absolute bottom-0 h-185 w-53 object-cover"
-          />
-        </div>
-        <div className="flex flex-col gap-15">
-          <p className="font-bold-20 w-187">{wine.name}</p>
-          <div className="flex flex-col gap-4.5">
-            <p className="font-medium-14 text-grayscale-500">{wine.region}</p>
-            <div className="w-fit h-full rounded-10 px-10 py-6 bg-main-10">
-              <p className="flex-center font-bold-14 text-main">
-                ₩ {wine.price}
-              </p>
+      <Link href={`/wines/${wine.id}`}>
+        <div className="flex items-center gap-20 h-full">
+          <div className="relative w-53 h-full">
+            <img
+              src={wine.image}
+              alt="wine_img"
+              className="absolute bottom-0 h-185 w-53 object-cover"
+            />
+          </div>
+          <div className="flex flex-col gap-15">
+            <p className="font-bold-20 w-187">{wine.name}</p>
+            <div className="flex flex-col gap-4.5">
+              <p className="font-medium-14 text-grayscale-500">{wine.region}</p>
+              <div className="w-fit h-full rounded-10 px-10 py-6 bg-main-10">
+                <p className="flex-center font-bold-14 text-main">
+                  ₩ {wine.price}
+                </p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </Link>
       <div className="absolute top-20 right-10">
         <Dropdown
           trigger={<Image src={menuImg} alt="메뉴" width={24} height={24} />}
@@ -77,6 +62,7 @@ function MyWineCard({ wine }: myWineCardProps) {
         ></Dropdown>
       </div>
       <WineEditModal wineId={wine.id} wineData={wine} />
+      <MyWineDeleteModal wineId={wine.id} />
     </div>
   );
 }
