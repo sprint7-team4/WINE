@@ -8,6 +8,7 @@ import WineFilterModal from "../wineListPage/WineFilterModal";
 import useModalSecondStore from "@/store/newModalStore";
 import WineRegistrationModal from "../wineListPage/WineRegistrationModal";
 import MobileWineCard from "@/components/wineListPage/MobileWineCard";
+import { useState } from "react";
 
 type FilterValue =
   | "latest"
@@ -24,6 +25,8 @@ interface FilterOption {
 const MobilePage: FC = () => {
   const { searchTerm, setSearchTerm, sortBy, setSortBy } = useWineStore();
   const { openSecondModal } = useModalSecondStore();
+
+  const [hoveredFilter, setHoveredFilter] = useState<FilterValue | null>(null);
 
   const filterList: FilterOption[] = [
     { value: "recommended", label: "추천순" },
@@ -73,13 +76,36 @@ const MobilePage: FC = () => {
 
         <div className="w-240 h-38 flex justify-between">
           {filterList.map((filterName) => (
-            <span
-              className={`cursor-pointer h-48 text-12 font-medium flex items-center ${sortBy === filterName.value ? "text-main" : "text-grayscale-500"}`}
+            <div
               key={filterName.value}
-              onClick={() => handleSelectFiltering(filterName.value)}
+              className="relative"
+              onMouseEnter={() => setHoveredFilter(filterName.value)}
+              onMouseLeave={() => setHoveredFilter(null)}
             >
-              {filterName.label}
-            </span>
+              {/* 보라빛 배경 효과 */}
+              <div
+                className={`absolute inset-0 h-30 bg-white rounded-lg transition-all duration-300 ${
+                  hoveredFilter === filterName.value ||
+                  sortBy === filterName.value
+                    ? "opacity-100 scale-125"
+                    : "opacity-0 scale-0"
+                }`}
+              />
+
+              {/* 필터 텍스트 */}
+              <span
+                className={`cursor-pointer h-30 text-13 font-medium flex items-center justify-center relative z-10 px-3 rounded-lg transition-all duration-300 ${
+                  sortBy === filterName.value
+                    ? "text-main transform scale-110 shadow-md"
+                    : hoveredFilter === filterName.value
+                      ? "text-main"
+                      : "text-grayscale-500"
+                }`}
+                onClick={() => handleSelectFiltering(filterName.value)}
+              >
+                {filterName.label}
+              </span>
+            </div>
           ))}
         </div>
       </div>

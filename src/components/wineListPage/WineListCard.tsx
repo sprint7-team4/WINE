@@ -36,6 +36,7 @@ const WineListCard: React.FC<WineListCardProps> = ({ wine }) => {
             alt={`${name} 이미지`}
             width={60}
             height={208}
+            unoptimized
           />
           <div className="w-549 h-218 flex justify-between">
             <div className="flex flex-col w-300 h-208 justify-between">

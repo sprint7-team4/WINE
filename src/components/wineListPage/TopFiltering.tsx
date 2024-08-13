@@ -20,6 +20,8 @@ const TopFiltering = () => {
   const { setSearchTerm, sortBy, setSortBy } = useWineStore();
   const [inputValue, setInputValue] = useState("");
 
+  const [hoveredFilter, setHoveredFilter] = useState<FilterValue | null>(null);
+
   const filterList: FilterOption[] = [
     { value: "recommended", label: "추천순" },
     { value: "mostReviews", label: "많은리뷰" },
@@ -55,6 +57,7 @@ const TopFiltering = () => {
           src={searchIcon}
           alt="SearchIcon"
           onClick={handleSearch}
+          unoptimized
         />
         <input
           className="w-400 h-48 border border-grayscale-300 focus:outline-main rounded-50 pl-51 mr-102"
@@ -67,15 +70,36 @@ const TopFiltering = () => {
       </div>
       <div className="w-298 h-48 flex justify-between">
         {filterList.map((filterName) => (
-          <span
-            className={`cursor-pointer h-48 text-16 font-medium flex items-center ${
-              sortBy === filterName.value ? "text-main" : "text-grayscale-500"
-            }`}
+          <div
             key={filterName.value}
-            onClick={() => handleSelectFiltering(filterName.value)}
+            className="relative"
+            onMouseEnter={() => setHoveredFilter(filterName.value)}
+            onMouseLeave={() => setHoveredFilter(null)}
           >
-            {filterName.label}
-          </span>
+            {/* 보라빛 배경 효과 */}
+            <div
+              className={`absolute inset-0 h-30 bg-transport rounded-lg transition-all duration-300 ${
+                hoveredFilter === filterName.value ||
+                sortBy === filterName.value
+                  ? "opacity-100 scale-125"
+                  : "opacity-0 scale-0"
+              }`}
+            />
+
+            {/* 필터 텍스트 */}
+            <span
+              className={`cursor-pointer h-30 text-16 font-medium flex items-center justify-center relative z-10 px-3 rounded-lg transition-all duration-300 ${
+                sortBy === filterName.value
+                  ? "text-main transform scale-110 shadow-md"
+                  : hoveredFilter === filterName.value
+                    ? "text-main"
+                    : "text-grayscale-500"
+              }`}
+              onClick={() => handleSelectFiltering(filterName.value)}
+            >
+              {filterName.label}
+            </span>
+          </div>
         ))}
       </div>
     </div>

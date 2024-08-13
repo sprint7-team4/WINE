@@ -123,6 +123,7 @@ const BestWineList = () => {
                             alt="와인 이미지"
                             width={44}
                             height={161}
+                            unoptimized
                           />
                         </div>
                         <div className="w-100 h-125">
