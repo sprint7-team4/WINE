@@ -96,9 +96,12 @@ const WineDetailPage = ({ wine }: { wine: WineReview }) => {
     <div className="max-w-1140 mx-auto pt-[20px] mb-100 overflow-hidden">
       <WineHero wine={wineData} />
       <div className="flex flex-col mt-60">
-        <h2 className="font-bold-20 text-grayscale-800 max-lg:hidden">
-          리뷰 목록
-        </h2>
+        <div className="max-w-800 flex items-center justify-between">
+          <h2 className="font-bold-20 text-grayscale-800 max-lg:hidden">
+            리뷰 목록
+          </h2>
+          <h2 className="text-grayscale-500 max-lg:hidden">{`(${wineData.reviewCount}개의 리뷰)`}</h2>
+        </div>
         {visibleReviews.length > 0 ? (
           <InfiniteScroll
             dataLength={visibleReviews.length}
