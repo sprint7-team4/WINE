@@ -1,5 +1,5 @@
 import { EN_AROMAS } from "@/constants/aroma";
-import { Review } from "./wineTypes";
+import { RecentReview, Review } from "./wineTypes";
 
 export enum WineBalanceEnum {
   DRY_SWEET = "drySweet",
@@ -83,4 +83,17 @@ export interface ProfileScales {
   [WineBalanceEnum.LIGHT_BOLD]: { scale: number };
   [WineBalanceEnum.SMOOTH_TANNIC]: { scale: number };
   [WineBalanceEnum.SOFT_ACIDIC]: { scale: number };
+}
+
+export interface ReviewWine {
+  id: number;
+  name: string;
+  region: string;
+  image: string;
+  price: number;
+  avgRating: number;
+  reviewCount: number;
+  recentReview?: RecentReview;
+  userId: number;
+  reviews: Review[];
 }
