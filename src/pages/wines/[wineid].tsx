@@ -3,8 +3,8 @@ import ReviewCard from "@/components/wineDetails/ReviewCard";
 import StarRatingSection from "@/components/wineDetails/StarRatingSection";
 import { getWineId } from "@/lib/reviewApi";
 import { Review, WineReview } from "@/types/wineTypes";
-import { GetServerSideProps } from "next";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { useRouter } from "next/router";
 import {
   useFormType,
   useReviewRerenderStore,
@@ -14,35 +14,13 @@ import ReviewModal from "@/components/wineDetails/ReviewModal";
 import NoReview from "@/components/wineDetails/NoReview";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const wineId = context.params?.wineid;
+const WineDetailPage = () => {
+  const router = useRouter();
+  const { wineid } = router.query;
 
-  if (!wineId || typeof wineId !== "string") {
-    return {
-      notFound: true,
-    };
-  }
-
-  try {
-    const res = await getWineId(wineId);
-
-    return {
-      props: {
-        wine: res,
-      },
-    };
-  } catch (error) {
-    console.error("Error fetching wine data:", error);
-    return {
-      notFound: true,
-    };
-  }
-};
-
-const WineDetailPage = ({ wine }: { wine: WineReview }) => {
-  const { wineData, setWine } = useWineDataStore((state) => ({
+  const [wine, setWine] = useState<WineReview | null>(null);
+  const { setWine: setWineData } = useWineDataStore((state) => ({
     setWine: state.setWineData,
-    wineData: state.wineData,
   }));
 
   const { isReviewRerendered, setReviewRerendered } = useReviewRerenderStore(
@@ -62,21 +40,35 @@ const WineDetailPage = ({ wine }: { wine: WineReview }) => {
     setFormType: state.setFormType,
   }));
 
-  useEffect(() => {
-    setWine(wine);
-    setAllReviews(wine.reviews);
-    setVisibleReviews(wine.reviews.slice(0, reviewsPerPage));
-  }, [wine, setWine]);
+  const fetchWineData = useCallback(async () => {
+    if (!wineid) {
+      console.error("No wine ID found");
+      return;
+    }
+
+    try {
+      const res = await getWineId(wineid as string);
+      setWine(res);
+      setWineData(res);
+      setAllReviews(res.reviews);
+      setVisibleReviews(res.reviews.slice(0, reviewsPerPage));
+    } catch (error) {
+      console.error("Error fetching wine data:", error);
+    }
+  }, [wineid, setWineData]);
 
   useEffect(() => {
-    if (isReviewRerendered && wineData) {
-      setAllReviews(wineData.reviews);
-      setVisibleReviews(wineData.reviews.slice(0, reviewsPerPage));
-      setPage(1);
-      setHasMore(true);
+    if (wineid) {
+      fetchWineData();
+    }
+  }, [fetchWineData, wineid]);
+
+  useEffect(() => {
+    if (isReviewRerendered) {
+      fetchWineData();
       setReviewRerendered(false);
     }
-  }, [isReviewRerendered, wineData?.reviews, setReviewRerendered, wineData]);
+  }, [isReviewRerendered, setReviewRerendered, fetchWineData]);
 
   const fetchMoreReviews = () => {
     const nextPage = page + 1;
@@ -88,19 +80,19 @@ const WineDetailPage = ({ wine }: { wine: WineReview }) => {
     }
   };
 
-  if (!wineData) {
+  if (!wine) {
     return <div>Loading...</div>;
   }
 
   return (
     <div className="max-w-1140 mx-auto pt-[20px] mb-100 overflow-hidden">
-      <WineHero wine={wineData} />
+      <WineHero wine={wine} />
       <div className="flex flex-col mt-60">
         <div className="max-w-800 flex items-center justify-between">
           <h2 className="font-bold-20 text-grayscale-800 max-lg:hidden">
             리뷰 목록
           </h2>
-          <h2 className="text-grayscale-500 max-lg:hidden">{`(${wineData.reviewCount}개의 리뷰)`}</h2>
+          <h2 className="text-grayscale-500 max-lg:hidden">{`(${wine.reviewCount}개의 리뷰)`}</h2>
         </div>
         {visibleReviews.length > 0 ? (
           <InfiniteScroll
@@ -109,10 +101,7 @@ const WineDetailPage = ({ wine }: { wine: WineReview }) => {
             hasMore={hasMore}
             loader={<h4>Loading...</h4>}
             endMessage={
-              <p
-                className="mt-20 text-gray-800 border boder-gray-300 rounded-16 w-200 
-              p-[10px_20px] text-center"
-              >
+              <p className="mt-20 text-gray-800 border boder-gray-300 rounded-16 w-200 p-[10px_20px] text-center">
                 마지막 리뷰입니다.
               </p>
             }
@@ -125,7 +114,7 @@ const WineDetailPage = ({ wine }: { wine: WineReview }) => {
                 ))}
               </div>
               <div className="flex-shrink-0 order-1 lg:order-none">
-                <StarRatingSection wine={wineData} />
+                <StarRatingSection wine={wine} />
               </div>
             </div>
           </InfiniteScroll>
