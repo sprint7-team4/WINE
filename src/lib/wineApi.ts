@@ -28,7 +28,7 @@ export const getRecommendedWines = async (
     });
     return res.data;
   } catch (error) {
-    console.log("Error fetching recommended Wines", error);
+    // console.log("Error fetching recommended Wines", error);
     throw error;
   }
 };

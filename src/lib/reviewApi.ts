@@ -7,8 +7,13 @@ export const getAccessToken = () => {
 };
 
 export const getWineId = async (id: string) => {
+  const token = getAccessToken();
   try {
-    const response = await axios.get<WineReview>(`wines/${id}`);
+    const response = await axios.get<WineReview>(`wines/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Error fetching wines", error);
@@ -17,8 +22,13 @@ export const getWineId = async (id: string) => {
 };
 
 export const getReviewId = async (id: number) => {
+  const token = getAccessToken();
   try {
-    const response = await axios.get<Review>(`reviews/${id}`);
+    const response = await axios.get<Review>(`reviews/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Error fetching wines", error);
