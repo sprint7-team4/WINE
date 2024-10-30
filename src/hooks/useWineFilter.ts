@@ -29,7 +29,7 @@ export const useWineFilter = () => {
         type: wineType,
         minPrice,
         maxPrice,
-        rating: ratingRange[0],
+        rating: undefined,
         name: searchTerm,
       };
 
@@ -40,9 +40,12 @@ export const useWineFilter = () => {
 
         console.log("와인리스트 :::", wineList);
 
-        if (ratingRange[1] < 5) {
+        if (ratingRange[0] !== 0) {
+          // 전체가 아닐 때
           wineList = wineList.filter(
-            (wine) => wine.avgRating <= ratingRange[1]
+            (wine) =>
+              wine.avgRating >= ratingRange[0] && // 최소값 체크
+              wine.avgRating < ratingRange[1] // 최대값 체크
           );
         }
         // 클라이언트 측 정렬
