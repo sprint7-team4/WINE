@@ -1,4 +1,5 @@
-![image](src/assets/img/logo-white.svg)
+![image](src/assets/img/logo-white.svg)  
+![image](src/assets/img/logo-black.svg)
 
 #### 한 곳에서 관리하는 나만의 와인 창고. 내가 마셔본 와인을 공유하고 리뷰를 등록하며 내게 맞는 와인을 찾아가는 플랫폼.
 
