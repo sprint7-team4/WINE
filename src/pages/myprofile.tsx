@@ -22,7 +22,7 @@ import MyWineCard from "@/components/myprofile/MyWineCard";
 import { REVIEW_MODE } from "@/types/reviewTypes";
 import { showToast } from "@/components/common/Toast";
 import ReviewModal from "@/components/wineDetails/ReviewModal";
-
+import InfiniteScroll from "react-infinite-scroll-component";
 import { useReviewRerenderStore } from "@/store/reviewStore";
 
 import useRedirectAuthenticated from "@/hooks/useRedirectAuthenticated";
@@ -105,8 +105,8 @@ export default function Myprofile() {
           setNewNickname(userProfile.nickname);
         }
 
-        const reviewsData = await getReviews(10);
-        const winesList: Wine[] = await getWines(10);
+        const reviewsData = await getReviews(100);
+        const winesList: Wine[] = await getWines(100);
 
         setReview(reviewsData);
         setWine({
@@ -156,6 +156,50 @@ export default function Myprofile() {
       e.preventDefault(); // 기본 동작(버튼 클릭 등)을 막음
       handleUpdateNickname();
     }
+  };
+
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const itemsPerPage = 10;
+  const [visibleReviews, setVisibleReviews] = useState<Review[]>([]);
+  const [visibleWines, setVisibleWines] = useState<Wine[]>([]);
+
+  useEffect(() => {
+    if (reviews?.list) {
+      setVisibleReviews(reviews.list.slice(0, itemsPerPage));
+      setHasMore(reviews.list.length > itemsPerPage);
+      console.log("초기 hasMore 설정:", reviews.list.length > itemsPerPage);
+      console.log("전체 리뷰 수:", reviews.list.length);
+      console.log("한 페이지당 아이템 수:", itemsPerPage);
+    }
+  }, [reviews]);
+
+  useEffect(() => {
+    if (wines?.list) {
+      setVisibleWines(wines.list.slice(0, itemsPerPage));
+      setHasMore(wines.list.length >= visibleWines.length);
+      console.log(wines.list.length >= visibleWines.length);
+    }
+  }, [wines]);
+
+  const fetchMoreData = () => {
+    console.log("fetchMoreData 호출됨");
+
+    const nextPage = page + 1;
+
+    if (activeTab === "reviews" && reviews?.list) {
+      const newVisibleReviews = reviews.list.slice(0, nextPage * itemsPerPage);
+      console.log("다음 페이지 리뷰 수:", newVisibleReviews.length);
+      console.log("전체 리뷰 수:", reviews.list.length);
+      setVisibleReviews(newVisibleReviews);
+      setHasMore(newVisibleReviews.length < reviews.list.length);
+    } else if (activeTab === "wines" && wines?.list) {
+      const newVisibleWines = wines.list.slice(0, nextPage * itemsPerPage);
+      setVisibleWines(newVisibleWines);
+      setHasMore(newVisibleWines.length < wines.list.length);
+    }
+
+    setPage(nextPage);
   };
 
   return (
@@ -266,7 +310,7 @@ export default function Myprofile() {
               개
             </p>
           </div>
-          <div className="flex flex-col gap-16">
+          {/* <div className="flex flex-col gap-16">
             {activeTab === "reviews" &&
               reviews?.list.map((review) => (
                 <MyReviewCard
@@ -279,6 +323,50 @@ export default function Myprofile() {
               wines?.list.map((wine) => (
                 <MyWineCard key={wine.id} wine={wine} />
               ))}
+          </div>
+        </div>
+        <ReviewModal mode={REVIEW_MODE.EDIT} />
+      </div> */}
+          <div className="flex flex-col gap-16">
+            {activeTab === "reviews" ? (
+              <InfiniteScroll
+                dataLength={visibleReviews.length}
+                next={fetchMoreData}
+                hasMore={hasMore}
+                loader={<h4>Loading...</h4>}
+                endMessage={
+                  <p className="mt-20 text-gray-800 border boder-gray-300 rounded-16 w-200 p-[10px_20px] text-center">
+                    마지막 리뷰입니다.
+                  </p>
+                }
+                style={{ overflow: "auto" }}
+              >
+                {visibleReviews.map((review) => (
+                  <MyReviewCard
+                    key={review.id}
+                    review={review}
+                    mode={REVIEW_MODE.EDIT}
+                  />
+                ))}
+              </InfiniteScroll>
+            ) : (
+              <InfiniteScroll
+                dataLength={visibleWines.length}
+                next={fetchMoreData}
+                hasMore={hasMore}
+                loader={<h4>Loading...</h4>}
+                endMessage={
+                  <p className="mt-20 text-gray-800 border boder-gray-300 rounded-16 w-200 p-[10px_20px] text-center">
+                    마지막 와인입니다.
+                  </p>
+                }
+                style={{ overflow: "hidden" }}
+              >
+                {visibleWines.map((wine) => (
+                  <MyWineCard key={wine.id} wine={wine} />
+                ))}
+              </InfiniteScroll>
+            )}
           </div>
         </div>
         <ReviewModal mode={REVIEW_MODE.EDIT} />
