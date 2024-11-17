@@ -37,11 +37,17 @@ export interface ProfileData {
   teamId: string;
 }
 export default function Myprofile() {
-  const [reviews, setReview] = useState<ReviewsResponse | null>(null);
-  const [wines, setWine] = useState<WinesResponse | null>(null);
+  const [reviews, setReview] = useState<Review[]>([]);
+  const [wines, setWine] = useState<Wine[]>([]);
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [newNickname, setNewNickname] = useState("");
   const [activeTab, setActiveTab] = useState<"reviews" | "wines">("reviews");
+  const [reviewCursor, setReviewCursor] = useState<number | null>(null);
+  const [wineCursor, setWineCursor] = useState<number | null>(null);
+  const [hasMoreReviews, setHasMoreReviews] = useState(true);
+  const [hasMoreWines, setHasMoreWines] = useState(true);
+  const [totalReviews, setTotalReviews] = useState(0);
+  const [totalWines, setTotalWines] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuthStore();
   const { isMyWineRerendered, setMyWineRerendered } = useWineRerenderStore();
@@ -92,38 +98,40 @@ export default function Myprofile() {
     newNickname.trim();
   };
 
+  const fetchInitialData = async () => {
+    try {
+      const userProfile = await getUser();
+      if (userProfile) {
+        setProfile(userProfile);
+        setNewNickname(userProfile.nickname);
+      }
+
+      const reviewsData = await getReviews(10);
+      setReview(reviewsData.list);
+      setReviewCursor(reviewsData.nextCursor);
+      setHasMoreReviews(!!reviewsData.nextCursor);
+      setTotalReviews(reviewsData.totalCount);
+
+      const winesData = await getWines(10);
+      setWine(winesData.list);
+      setWineCursor(winesData.nextCursor);
+      setHasMoreWines(!!winesData.nextCursor);
+      setTotalWines(winesData.totalCount);
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    }
+  };
+
   useEffect(() => {
     if (isReviewCardRerendered) {
       setReviewCardRerendered(false);
     }
 
-    const fetchData = async () => {
-      try {
-        const userProfile = await getUser();
-        if (userProfile) {
-          setProfile(userProfile);
-          setNewNickname(userProfile.nickname);
-        }
-
-        const reviewsData = await getReviews(100);
-        const winesList: Wine[] = await getWines(100);
-
-        setReview(reviewsData);
-        setWine({
-          totalCount: winesList.length,
-          nextCursor: null, // 적절한 값으로 대체
-          list: winesList,
-        });
-      } catch (error) {
-        console.error("Failed to fetch data:", error);
-      }
-    };
-
     if (isMyWineRerendered) {
       setMyWineRerendered(false);
     }
 
-    fetchData();
+    fetchInitialData();
   }, [
     isMyWineRerendered,
     isReviewRerendered,
@@ -158,48 +166,18 @@ export default function Myprofile() {
     }
   };
 
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const itemsPerPage = 10;
-  const [visibleReviews, setVisibleReviews] = useState<Review[]>([]);
-  const [visibleWines, setVisibleWines] = useState<Wine[]>([]);
-
-  useEffect(() => {
-    if (reviews?.list) {
-      setVisibleReviews(reviews.list.slice(0, itemsPerPage));
-      setHasMore(reviews.list.length > itemsPerPage);
-      console.log("초기 hasMore 설정:", reviews.list.length > itemsPerPage);
-      console.log("전체 리뷰 수:", reviews.list.length);
-      console.log("한 페이지당 아이템 수:", itemsPerPage);
+  const fetchMoreData = async () => {
+    if (activeTab === "reviews" && hasMoreReviews && reviewCursor) {
+      const newReviews = await getReviews(10, reviewCursor);
+      setReview((prev) => [...prev, ...newReviews.list]);
+      setReviewCursor(newReviews.nextCursor);
+      setHasMoreReviews(!!newReviews.nextCursor);
+    } else if (activeTab === "wines" && hasMoreWines && wineCursor) {
+      const newWines = await getWines(10, wineCursor);
+      setWine((prev) => [...prev, ...newWines.list]);
+      setWineCursor(newWines.nextCursor);
+      setHasMoreWines(!!newWines.nextCursor);
     }
-  }, [reviews]);
-
-  useEffect(() => {
-    if (wines?.list) {
-      setVisibleWines(wines.list.slice(0, itemsPerPage));
-      setHasMore(wines.list.length >= visibleWines.length);
-      console.log(wines.list.length >= visibleWines.length);
-    }
-  }, [wines]);
-
-  const fetchMoreData = () => {
-    console.log("fetchMoreData 호출됨");
-
-    const nextPage = page + 1;
-
-    if (activeTab === "reviews" && reviews?.list) {
-      const newVisibleReviews = reviews.list.slice(0, nextPage * itemsPerPage);
-      console.log("다음 페이지 리뷰 수:", newVisibleReviews.length);
-      console.log("전체 리뷰 수:", reviews.list.length);
-      setVisibleReviews(newVisibleReviews);
-      setHasMore(newVisibleReviews.length < reviews.list.length);
-    } else if (activeTab === "wines" && wines?.list) {
-      const newVisibleWines = wines.list.slice(0, nextPage * itemsPerPage);
-      setVisibleWines(newVisibleWines);
-      setHasMore(newVisibleWines.length < wines.list.length);
-    }
-
-    setPage(nextPage);
   };
 
   return (
@@ -303,36 +281,15 @@ export default function Myprofile() {
               </button>
             </div>
             <p className="font-regular-12 text-main flex-center">
-              총{" "}
-              {activeTab === "reviews"
-                ? reviews?.totalCount
-                : wines?.totalCount}
-              개
+              총 {activeTab === "reviews" ? totalReviews : totalWines}개
             </p>
           </div>
-          {/* <div className="flex flex-col gap-16">
-            {activeTab === "reviews" &&
-              reviews?.list.map((review) => (
-                <MyReviewCard
-                  key={review.id}
-                  review={review}
-                  mode={REVIEW_MODE.EDIT}
-                />
-              ))}
-            {activeTab === "wines" &&
-              wines?.list.map((wine) => (
-                <MyWineCard key={wine.id} wine={wine} />
-              ))}
-          </div>
-        </div>
-        <ReviewModal mode={REVIEW_MODE.EDIT} />
-      </div> */}
-          <div className="flex flex-col gap-16">
+          <div className="flex flex-col">
             {activeTab === "reviews" ? (
               <InfiniteScroll
-                dataLength={visibleReviews.length}
+                dataLength={reviews.length}
                 next={fetchMoreData}
-                hasMore={hasMore}
+                hasMore={hasMoreReviews}
                 loader={<h4>Loading...</h4>}
                 endMessage={
                   <p className="mt-20 text-gray-800 border boder-gray-300 rounded-16 w-200 p-[10px_20px] text-center">
@@ -341,19 +298,21 @@ export default function Myprofile() {
                 }
                 style={{ overflow: "auto" }}
               >
-                {visibleReviews.map((review) => (
-                  <MyReviewCard
-                    key={review.id}
-                    review={review}
-                    mode={REVIEW_MODE.EDIT}
-                  />
+                {reviews.map((review) => (
+                  <div className="mb-16">
+                    <MyReviewCard
+                      key={review.id}
+                      review={review}
+                      mode={REVIEW_MODE.EDIT}
+                    />
+                  </div>
                 ))}
               </InfiniteScroll>
             ) : (
               <InfiniteScroll
-                dataLength={visibleWines.length}
+                dataLength={wines.length}
                 next={fetchMoreData}
-                hasMore={hasMore}
+                hasMore={hasMoreWines}
                 loader={<h4>Loading...</h4>}
                 endMessage={
                   <p className="mt-20 text-gray-800 border boder-gray-300 rounded-16 w-200 p-[10px_20px] text-center">
@@ -362,7 +321,7 @@ export default function Myprofile() {
                 }
                 style={{ overflow: "hidden" }}
               >
-                {visibleWines.map((wine) => (
+                {wines.map((wine) => (
                   <MyWineCard key={wine.id} wine={wine} />
                 ))}
               </InfiniteScroll>
