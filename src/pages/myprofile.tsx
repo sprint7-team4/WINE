@@ -284,6 +284,21 @@ export default function Myprofile() {
               총 {activeTab === "reviews" ? totalReviews : totalWines}개
             </p>
           </div>
+          {/* <div className="flex flex-col gap-16">
+            {activeTab === "reviews" &&
+              reviews?.map((review) => (
+                <MyReviewCard
+                  key={review.id}
+                  review={review}
+                  mode={REVIEW_MODE.EDIT}
+                />
+              ))}
+            {activeTab === "wines" &&
+              wines?.map((wine) => <MyWineCard key={wine.id} wine={wine} />)}
+          </div>
+        </div>
+        <ReviewModal mode={REVIEW_MODE.EDIT} />
+      </div> */}
           <div className="flex flex-col">
             {activeTab === "reviews" ? (
               <InfiniteScroll
@@ -296,16 +311,19 @@ export default function Myprofile() {
                     마지막 리뷰입니다.
                   </p>
                 }
-                style={{ overflow: "auto" }}
+                style={{
+                  overflow: "auto",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "16px",
+                }}
               >
-                {reviews.map((review) => (
-                  <div className="mb-16">
-                    <MyReviewCard
-                      key={review.id}
-                      review={review}
-                      mode={REVIEW_MODE.EDIT}
-                    />
-                  </div>
+                {reviews.map((review, index) => (
+                  <MyReviewCard
+                    key={`review-${review.id}-${index}`}
+                    review={review}
+                    mode={REVIEW_MODE.EDIT}
+                  />
                 ))}
               </InfiniteScroll>
             ) : (
@@ -321,8 +339,8 @@ export default function Myprofile() {
                 }
                 style={{ overflow: "hidden" }}
               >
-                {wines.map((wine) => (
-                  <MyWineCard key={wine.id} wine={wine} />
+                {wines.map((wine, index) => (
+                  <MyWineCard key={`wine-${wine.id}-${index}`} wine={wine} />
                 ))}
               </InfiniteScroll>
             )}
