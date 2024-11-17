@@ -22,7 +22,7 @@ import MyWineCard from "@/components/myprofile/MyWineCard";
 import { REVIEW_MODE } from "@/types/reviewTypes";
 import { showToast } from "@/components/common/Toast";
 import ReviewModal from "@/components/wineDetails/ReviewModal";
-
+import InfiniteScroll from "react-infinite-scroll-component";
 import { useReviewRerenderStore } from "@/store/reviewStore";
 
 import useRedirectAuthenticated from "@/hooks/useRedirectAuthenticated";
@@ -37,11 +37,17 @@ export interface ProfileData {
   teamId: string;
 }
 export default function Myprofile() {
-  const [reviews, setReview] = useState<ReviewsResponse | null>(null);
-  const [wines, setWine] = useState<WinesResponse | null>(null);
+  const [reviews, setReview] = useState<Review[]>([]);
+  const [wines, setWine] = useState<Wine[]>([]);
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [newNickname, setNewNickname] = useState("");
   const [activeTab, setActiveTab] = useState<"reviews" | "wines">("reviews");
+  const [reviewCursor, setReviewCursor] = useState<number | null>(null);
+  const [wineCursor, setWineCursor] = useState<number | null>(null);
+  const [hasMoreReviews, setHasMoreReviews] = useState(true);
+  const [hasMoreWines, setHasMoreWines] = useState(true);
+  const [totalReviews, setTotalReviews] = useState(0);
+  const [totalWines, setTotalWines] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuthStore();
   const { isMyWineRerendered, setMyWineRerendered } = useWineRerenderStore();
@@ -92,38 +98,40 @@ export default function Myprofile() {
     newNickname.trim();
   };
 
+  const fetchInitialData = async () => {
+    try {
+      const userProfile = await getUser();
+      if (userProfile) {
+        setProfile(userProfile);
+        setNewNickname(userProfile.nickname);
+      }
+
+      const reviewsData = await getReviews(10);
+      setReview(reviewsData.list);
+      setReviewCursor(reviewsData.nextCursor);
+      setHasMoreReviews(!!reviewsData.nextCursor);
+      setTotalReviews(reviewsData.totalCount);
+
+      const winesData = await getWines(10);
+      setWine(winesData.list);
+      setWineCursor(winesData.nextCursor);
+      setHasMoreWines(!!winesData.nextCursor);
+      setTotalWines(winesData.totalCount);
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    }
+  };
+
   useEffect(() => {
     if (isReviewCardRerendered) {
       setReviewCardRerendered(false);
     }
 
-    const fetchData = async () => {
-      try {
-        const userProfile = await getUser();
-        if (userProfile) {
-          setProfile(userProfile);
-          setNewNickname(userProfile.nickname);
-        }
-
-        const reviewsData = await getReviews(10);
-        const winesList: Wine[] = await getWines(10);
-
-        setReview(reviewsData);
-        setWine({
-          totalCount: winesList.length,
-          nextCursor: null, // 적절한 값으로 대체
-          list: winesList,
-        });
-      } catch (error) {
-        console.error("Failed to fetch data:", error);
-      }
-    };
-
     if (isMyWineRerendered) {
       setMyWineRerendered(false);
     }
 
-    fetchData();
+    fetchInitialData();
   }, [
     isMyWineRerendered,
     isReviewRerendered,
@@ -155,6 +163,20 @@ export default function Myprofile() {
     if (e.key === "Enter" && !e.nativeEvent.isComposing) {
       e.preventDefault(); // 기본 동작(버튼 클릭 등)을 막음
       handleUpdateNickname();
+    }
+  };
+
+  const fetchMoreData = async () => {
+    if (activeTab === "reviews" && hasMoreReviews && reviewCursor) {
+      const newReviews = await getReviews(10, reviewCursor);
+      setReview((prev) => [...prev, ...newReviews.list]);
+      setReviewCursor(newReviews.nextCursor);
+      setHasMoreReviews(!!newReviews.nextCursor);
+    } else if (activeTab === "wines" && hasMoreWines && wineCursor) {
+      const newWines = await getWines(10, wineCursor);
+      setWine((prev) => [...prev, ...newWines.list]);
+      setWineCursor(newWines.nextCursor);
+      setHasMoreWines(!!newWines.nextCursor);
     }
   };
 
@@ -259,16 +281,12 @@ export default function Myprofile() {
               </button>
             </div>
             <p className="font-regular-12 text-main flex-center">
-              총{" "}
-              {activeTab === "reviews"
-                ? reviews?.totalCount
-                : wines?.totalCount}
-              개
+              총 {activeTab === "reviews" ? totalReviews : totalWines}개
             </p>
           </div>
-          <div className="flex flex-col gap-16">
+          {/* <div className="flex flex-col gap-16">
             {activeTab === "reviews" &&
-              reviews?.list.map((review) => (
+              reviews?.map((review) => (
                 <MyReviewCard
                   key={review.id}
                   review={review}
@@ -276,9 +294,56 @@ export default function Myprofile() {
                 />
               ))}
             {activeTab === "wines" &&
-              wines?.list.map((wine) => (
-                <MyWineCard key={wine.id} wine={wine} />
-              ))}
+              wines?.map((wine) => <MyWineCard key={wine.id} wine={wine} />)}
+          </div>
+        </div>
+        <ReviewModal mode={REVIEW_MODE.EDIT} />
+      </div> */}
+          <div className="flex flex-col">
+            {activeTab === "reviews" ? (
+              <InfiniteScroll
+                dataLength={reviews.length}
+                next={fetchMoreData}
+                hasMore={hasMoreReviews}
+                loader={<h4>Loading...</h4>}
+                endMessage={
+                  <p className="mt-20 text-gray-800 border boder-gray-300 rounded-16 w-200 p-[10px_20px] text-center">
+                    마지막 리뷰입니다.
+                  </p>
+                }
+                style={{
+                  overflow: "auto",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "16px",
+                }}
+              >
+                {reviews.map((review, index) => (
+                  <MyReviewCard
+                    key={`review-${review.id}-${index}`}
+                    review={review}
+                    mode={REVIEW_MODE.EDIT}
+                  />
+                ))}
+              </InfiniteScroll>
+            ) : (
+              <InfiniteScroll
+                dataLength={wines.length}
+                next={fetchMoreData}
+                hasMore={hasMoreWines}
+                loader={<h4>Loading...</h4>}
+                endMessage={
+                  <p className="mt-20 text-gray-800 border boder-gray-300 rounded-16 w-200 p-[10px_20px] text-center">
+                    마지막 와인입니다.
+                  </p>
+                }
+                style={{ overflow: "hidden" }}
+              >
+                {wines.map((wine, index) => (
+                  <MyWineCard key={`wine-${wine.id}-${index}`} wine={wine} />
+                ))}
+              </InfiniteScroll>
+            )}
           </div>
         </div>
         <ReviewModal mode={REVIEW_MODE.EDIT} />

@@ -68,10 +68,11 @@ export const getUser = async (): Promise<ProfileData | undefined> => {
 };
 
 export const getReviews = async (
-  limit: number = 10
+  limit: number = 10,
+  cursor?: number
 ): Promise<ReviewsResponse> => {
   const token = getAccessToken();
-  const url = `/users/me/reviews?limit=${limit}`;
+  const url = `/users/me/reviews?limit=${limit}${cursor ? `&cursor=${cursor.toString()}` : ""}`;
   const options = {
     method: "GET",
     headers: {
@@ -84,10 +85,13 @@ export const getReviews = async (
   return data;
 };
 
-export const getWines = async (limit: number = 10): Promise<Wine[]> => {
+export const getWines = async (
+  limit: number = 10,
+  cursor?: number
+): Promise<WinesResponse> => {
   const token = getAccessToken();
 
-  const url = `/users/me/wines?limit=${limit}`;
+  const url = `/users/me/wines?limit=${limit}${cursor ? `&cursor=${cursor.toString()}` : ""}`;
   const options = {
     method: "GET",
     headers: {
@@ -97,7 +101,7 @@ export const getWines = async (limit: number = 10): Promise<Wine[]> => {
   };
 
   const data: WinesResponse = await fetchRequest(url, options);
-  return data.list;
+  return data;
 };
 
 export const updateUser = async (

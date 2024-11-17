@@ -44,7 +44,7 @@ export interface feachWine {
 export interface ReviewsResponse {
   list: Review[];
   totalCount: number;
-  nextCursor: string | null;
+  nextCursor: number | null;
 }
 
 export interface Wine {
@@ -63,7 +63,7 @@ export interface Wine {
 
 export interface WinesResponse {
   totalCount: number;
-  nextCursor: string | null;
+  nextCursor: number | null;
   list: Wine[];
 }
 
