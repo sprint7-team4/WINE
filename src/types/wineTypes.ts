@@ -17,7 +17,7 @@ export interface PostWine {
 
 export interface GetWinesParams {
   limit: number;
-  cursor?: number;
+  cursor?: number | null;
   type?: "RED" | "WHITE" | "SPARKLING" | null;
   minPrice?: number;
   maxPrice?: number;
