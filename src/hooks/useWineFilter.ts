@@ -20,11 +20,11 @@ export const useWineFilter = () => {
   const [filteredWines, setFilteredWines] = useState<Wine[]>([]);
 
   const fetchWines = useCallback(
-    async (cursor?: number) => {
+    async (cursor?: number | null) => {
       setIsLoading(true);
 
       const params: GetWinesParams = {
-        limit: 999,
+        limit: 10,
         cursor,
         type: wineType,
         minPrice,
@@ -35,37 +35,41 @@ export const useWineFilter = () => {
 
       try {
         const response = await getWines(params);
-
-        let wineList: Wine[] = response.list;
-
-        console.log("와인리스트 :::", wineList);
+        let newWineList: Wine[] = response.list;
 
         if (ratingRange[0] !== 0) {
-          // 전체가 아닐 때
-          wineList = wineList.filter(
+          newWineList = newWineList.filter(
             (wine) =>
-              wine.avgRating >= ratingRange[0] && // 최소값 체크
-              wine.avgRating < ratingRange[1] // 최대값 체크
+              wine.avgRating >= ratingRange[0] &&
+              wine.avgRating < ratingRange[1]
           );
         }
-        // 클라이언트 측 정렬
+
+        // 새로운 데이터만 정렬
         if (sortBy === "latest") {
-          wineList.sort(
+          newWineList.sort(
             (a, b) =>
               new Date(b.recentReview?.updatedAt || "").getTime() -
               new Date(a.recentReview?.updatedAt || "").getTime()
           );
         } else if (sortBy === "mostReviews") {
-          wineList.sort((a, b) => b.reviewCount - a.reviewCount);
+          newWineList.sort((a, b) => b.reviewCount - a.reviewCount);
         } else if (sortBy === "priceHigh") {
-          wineList.sort((a, b) => b.price - a.price);
+          newWineList.sort((a, b) => b.price - a.price);
         } else if (sortBy === "priceLow") {
-          wineList.sort((a, b) => a.price - b.price);
+          newWineList.sort((a, b) => a.price - b.price);
         } else if (sortBy === "recommended") {
-          wineList.sort((a, b) => b.avgRating - a.avgRating);
+          newWineList.sort((a, b) => b.avgRating - a.avgRating);
         }
 
-        setFilteredWines(wineList);
+        // cursor가 없으면 초기 로드로 간주하여 데이터 초기화
+        if (!cursor) {
+          setFilteredWines(newWineList);
+        } else {
+          // cursor가 있으면 기존 데이터에 새 데이터 추가
+          setFilteredWines((prevWines) => [...prevWines, ...newWineList]);
+        }
+
         setTotalCount(response.totalCount);
         setNextCursor(response.nextCursor);
       } catch (error) {
