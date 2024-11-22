@@ -19,11 +19,11 @@ export const useWineFilter = () => {
 
   const [filteredWines, setFilteredWines] = useState<Wine[]>([]);
 
-  const fetchWines = useCallback(
-    async (cursor?: number | null) => {
-      setIsLoading(true);
-
-      const params: GetWinesParams = {
+  const findWinesRecursively = async (
+    cursor?: number | null
+  ): Promise<Wine[]> => {
+    try {
+      const response = await getWines({
         limit: 10,
         cursor,
         type: wineType,
@@ -31,47 +31,62 @@ export const useWineFilter = () => {
         maxPrice,
         rating: undefined,
         name: searchTerm,
-      };
+      });
+
+      // 현재 페이지에서 해당 별점 범위의 와인 필터링
+      let filteredList = response.list;
+      if (ratingRange[0] !== 0) {
+        filteredList = response.list.filter(
+          (wine) =>
+            wine.avgRating >= ratingRange[0] && wine.avgRating < ratingRange[1]
+        );
+      }
+
+      // 정렬 로직
+      if (sortBy === "latest") {
+        filteredList.sort(
+          (a, b) =>
+            new Date(b.recentReview?.updatedAt || "").getTime() -
+            new Date(a.recentReview?.updatedAt || "").getTime()
+        );
+      } else if (sortBy === "mostReviews") {
+        filteredList.sort((a, b) => b.reviewCount - a.reviewCount);
+      } else if (sortBy === "priceHigh") {
+        filteredList.sort((a, b) => b.price - a.price);
+      } else if (sortBy === "priceLow") {
+        filteredList.sort((a, b) => a.price - b.price);
+      } else if (sortBy === "recommended") {
+        filteredList.sort((a, b) => b.avgRating - a.avgRating);
+      }
+
+      // 필터링된 와인이 있거나 더 이상 다음 페이지가 없으면 현재 결과 반환
+      if (filteredList.length > 0 || !response.nextCursor) {
+        setNextCursor(response.nextCursor);
+        return filteredList;
+      }
+
+      // 필터링된 와인이 없고 다음 페이지가 있으면 재귀적으로 다음 페이지 호출
+      return findWinesRecursively(response.nextCursor);
+    } catch (error) {
+      console.error("Failed to fetch wines:", error);
+      return [];
+    }
+  };
+
+  const fetchWines = useCallback(
+    async (cursor?: number | null) => {
+      setIsLoading(true);
 
       try {
-        const response = await getWines(params);
-        let newWineList: Wine[] = response.list;
-
-        if (ratingRange[0] !== 0) {
-          newWineList = newWineList.filter(
-            (wine) =>
-              wine.avgRating >= ratingRange[0] &&
-              wine.avgRating < ratingRange[1]
-          );
-        }
-
-        // 새로운 데이터만 정렬
-        if (sortBy === "latest") {
-          newWineList.sort(
-            (a, b) =>
-              new Date(b.recentReview?.updatedAt || "").getTime() -
-              new Date(a.recentReview?.updatedAt || "").getTime()
-          );
-        } else if (sortBy === "mostReviews") {
-          newWineList.sort((a, b) => b.reviewCount - a.reviewCount);
-        } else if (sortBy === "priceHigh") {
-          newWineList.sort((a, b) => b.price - a.price);
-        } else if (sortBy === "priceLow") {
-          newWineList.sort((a, b) => a.price - b.price);
-        } else if (sortBy === "recommended") {
-          newWineList.sort((a, b) => b.avgRating - a.avgRating);
-        }
-
-        // cursor가 없으면 초기 로드로 간주하여 데이터 초기화
         if (!cursor) {
-          setFilteredWines(newWineList);
+          // 초기 로드나 필터 변경시에는 재귀적으로 찾기
+          const wines = await findWinesRecursively(cursor);
+          setFilteredWines(wines);
         } else {
-          // cursor가 있으면 기존 데이터에 새 데이터 추가
-          setFilteredWines((prevWines) => [...prevWines, ...newWineList]);
+          // 스크롤로 추가 데이터 요청시에는 한 번만 호출
+          const wines = await findWinesRecursively(cursor);
+          setFilteredWines((prev) => [...prev, ...wines]);
         }
-
-        setTotalCount(response.totalCount);
-        setNextCursor(response.nextCursor);
       } catch (error) {
         console.error("Failed to fetch wines:", error);
       } finally {
@@ -91,5 +106,5 @@ export const useWineFilter = () => {
     ]
   );
 
-  return { fetchWines, filteredWines };
+  return { fetchWines, filteredWines, setFilteredWines };
 };

@@ -8,7 +8,7 @@ import { useWineRerenderStore } from "@/store/wineStore";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 const WineListCardList = () => {
-  const { fetchWines, filteredWines } = useWineFilter();
+  const { fetchWines, filteredWines, setFilteredWines } = useWineFilter();
 
   const {
     nextCursor,
@@ -25,10 +25,12 @@ const WineListCardList = () => {
   useEffect(() => {
     const loadWines = async () => {
       await fetchWines();
+      window.scrollTo(0, 0);
     };
     if (isWineRerendered) {
       setWineRerendered(false);
     }
+    setFilteredWines([]);
     loadWines();
   }, [
     wineType,
